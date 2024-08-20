@@ -18,6 +18,7 @@ fantastic [dotfiles video](https://www.youtube.com/watch?v=y6XCebnB9gs).
    files:
 
    ```bash
+   cd ~/dotfiles
    stow .
    ```
 
