@@ -1,0 +1,6 @@
+[user]
+	signingkey = zach@zmc.dev
+	email = zach@zmc.dev
+	name = Zach Callahan
+[commit]
+	gpgsign = true
