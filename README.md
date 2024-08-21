@@ -19,7 +19,11 @@ fantastic [dotfiles video](https://www.youtube.com/watch?v=y6XCebnB9gs).
 
    ```bash
    cd ~/dotfiles
-   stow .
+
+   # --no-folding symlinks files directly instead of directories
+   # this prevents extra content in those directories from polluting
+   # our dotfiles
+   stow --no-folding .
    ```
 
 3. Restart your terminal and wait for zsh and tmux plugins to install.
