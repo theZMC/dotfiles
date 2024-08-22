@@ -5,6 +5,7 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrocommunity",
+  { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
   { import = "astrocommunity.completion.copilot-cmp" },
   { import = "astrocommunity.diagnostics.trouble-nvim" },
   { import = "astrocommunity.editing-support.refactoring-nvim" },
