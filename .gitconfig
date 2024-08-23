@@ -6,5 +6,8 @@
 [commit]
 	gpgsign = true
 
+[rerere]
+	enabled = true
+
 [include]
 	path = ~/.gitconfig.local
