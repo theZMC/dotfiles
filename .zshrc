@@ -11,10 +11,8 @@ export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch gpg-agent
 gpg-connect-agent updatestartuptty /bye > /dev/null
 
-is_installed nvim && export EDITOR=nvim
-is_installed nvim && export VISUAL=nvim
-is_installed go && export GOPATH="$HOME/go"
-is_installed go && export PATH="$GOPATH/bin:$PATH"
+is_installed nvim && export EDITOR=nvim && export VISUAL=nvim
+is_installed go && test -z $GOPATH && export GOPATH="$HOME/go" && export PATH="$GOPATH/bin:$PATH"
 is_installed rustup && export PATH="$HOME/.cargo/bin:$PATH"
 is_installed pyenv && eval "$(pyenv init --path)"
 is_installed tmux && export ZSH_TMUX_AUTOSTART=true
