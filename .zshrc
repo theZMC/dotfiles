@@ -4,7 +4,7 @@ function is_installed() {
 
 autoload -Uz compinit && compinit
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+test -f /opt/homebrew/bin/brew && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
