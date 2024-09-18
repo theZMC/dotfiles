@@ -11,8 +11,9 @@ export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch gpg-agent
 gpg-connect-agent updatestartuptty /bye > /dev/null
 
-is_installed nvim && export EDITOR=nvim && export VISUAL=nvim
-is_installed go && test -z $GOPATH && export GOPATH="$HOME/go" && export PATH="$GOPATH/bin:$PATH"
+is_installed nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
+is_installed podman && export CONTAINER_RUNTIME=podman && alias docker=podman
+is_installed go && export GOPATH="${GOPATH:-$HOME/go}" && export PATH="$GOPATH/bin:$PATH"
 is_installed rustup && export PATH="$HOME/.cargo/bin:$PATH"
 is_installed pyenv && eval "$(pyenv init --path)"
 is_installed tmux && export ZSH_TMUX_AUTOSTART=true
@@ -55,8 +56,9 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-source <(fzf --zsh)
-source <(zoxide init --cmd cd zsh)
+is_installed fzf && source <(fzf --zsh)
+is_installed zoxide && source <(zoxide init --cmd cd zsh)
 
-alias vi=vim
-alias vim=nvim
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
