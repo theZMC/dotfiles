@@ -62,6 +62,7 @@ if have_cmd gpgconf; then
 fi
 
 zsh_config_root="${XDG_CONFIG_HOME:-${HOME}}/.config/zsh"
+test -d "$zsh_config_root" || mkdir -p "$zsh_config_root"
 antidote_dir="$zsh_config_root/antidote"
 
 test -d "$antidote_dir" || git clone --depth=1 https://github.com/mattmc3/antidote.git "$antidote_dir"
@@ -71,12 +72,9 @@ autoload -Uz antidote
 
 zsh_plugins_root="$zsh_config_root/plugins"
 test -f "$zsh_plugins_root.txt" || touch "$zsh_plugins_root.txt"
+test -f "$zsh_plugins_root.zsh" || touch "$zsh_plugins_root.zsh"
 if ! diff <(echo "$zsh_plugins") "$zsh_plugins_root.txt" >/dev/null 2>&1; then
   echo "$zsh_plugins" > "$zsh_plugins_root.txt"
-fi
-
-test -f "$zsh_plugins_root.zsh" || touch "$zsh_plugins_root.zsh"
-if [[ "$zsh_plugins_root.zsh" -ot "$zsh_plugins_root.txt" ]]; then
   antidote bundle <"$zsh_plugins_root.txt" >|"$zsh_plugins_root.zsh"
 fi
 source "$zsh_plugins_root.zsh"
