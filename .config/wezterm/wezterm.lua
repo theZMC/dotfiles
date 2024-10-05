@@ -1,21 +1,39 @@
 local wezterm = require("wezterm")
-return {
-	font = wezterm.font({ family = "RecMonoCasual Nerd Font Mono", weight = 400 }),
-	font_size = 16.0,
-	font_rules = {
-		{
-			italic = true,
-			font = wezterm.font_with_fallback({
-				{ family = "Recursive", weight = 400, italic = true },
-				{ family = "RecMonoCasual Nerd Font Mono", weight = 400, italic = true },
-			}),
-		},
+
+local is_darwin = wezterm.target_triple:find("darwin") ~= nil
+local is_linux = wezterm.target_triple:find("linux") ~= nil
+local is_windows = wezterm.target_triple:find("windows") ~= nil
+local config = {}
+
+config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
+config.font = wezterm.font({ family = "RecMonoCasual Nerd Font Mono", weight = 400 })
+config.font_size = 16.0
+config.font_rules = {
+	{
+		italic = true,
+		font = wezterm.font_with_fallback({
+			{ family = "Recursive", weight = 400, italic = true },
+			{ family = "RecMonoCasual Nerd Font Mono", weight = 400, italic = true },
+		}),
 	},
-	enable_tab_bar = false,
-	enable_wayland = true,
-	color_scheme = "Astrodark",
-	window_background_opacity = 0.85,
-	macos_window_background_blur = 80,
-	win32_system_backdrop = "Acrylic",
-	front_end = "WebGpu",
 }
+config.enable_tab_bar = false
+if not is_linux then
+	config.color_scheme = "Astrodark"
+else
+	config.color_scheme = "Dark+"
+end
+if is_linux then
+	config.enable_wayland = true
+end
+if is_darwin then
+	config.macos_window_background_blur = 80
+	config.window_background_opacity = 0.85
+end
+if is_windows then
+	config.window_background_opacity = 0.85
+	config.win32_system_backdrop = "Acrylic"
+end
+config.front_end = "WebGpu"
+
+return config
