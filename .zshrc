@@ -45,14 +45,7 @@ ohmyzsh/ohmyzsh path:plugins/vi-mode
 EOF
 )"
 
-have_cmd tofu && alias terraform=tofu
-have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
-have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
-have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
-have_cmd pyenv && source <(pyenv init --path)
 have_cmd tmux && export ZSH_TMUX_AUTOSTART=true && zsh_plugins="${zsh_plugins}\nohmyzsh/ohmyzsh path:plugins/tmux"
-have_cmd fzf && source <(fzf --zsh)
-have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 
 if have_cmd gpgconf; then
   export GPG_TTY="$(tty)" && \
@@ -80,6 +73,14 @@ fi
 source "$zsh_plugins_root.zsh"
 
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
+
+have_cmd tofu && alias terraform=tofu
+have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
+have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
+have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
+have_cmd pyenv && source <(pyenv init --path)
+have_cmd fzf && source <(fzf --zsh)
+have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 
 HISTSIZE=10000
 SAVEHIST=10000
