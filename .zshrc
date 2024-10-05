@@ -74,6 +74,8 @@ source "$zsh_plugins_root.zsh"
 
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
 
+FAST_HIGHLIGHT[git-cmsg-len]=80
+
 have_cmd tofu && alias terraform=tofu
 have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
 have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
