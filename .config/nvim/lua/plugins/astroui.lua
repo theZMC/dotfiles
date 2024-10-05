@@ -19,9 +19,6 @@ return {
         -- Normal = { bg = "#000000" },
       },
     },
-    style = {
-      transparent = true,
-    },
     -- Icons can be configured throughout the interface
     icons = {
       -- configure the loading of the lsp in the status line
@@ -35,6 +32,17 @@ return {
       LSPLoading8 = "⠧",
       LSPLoading9 = "⠇",
       LSPLoading10 = "⠏",
+    },
+  },
+  {
+    "AstroNvim/astrotheme",
+    opts = {
+      style = {
+        transparent = true,
+        neotree = false,
+        inactive = false,
+        float = false,
+      },
     },
   },
 }
