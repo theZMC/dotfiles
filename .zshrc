@@ -48,9 +48,9 @@ EOF
 have_cmd tmux && export ZSH_TMUX_AUTOSTART=true && zsh_plugins="${zsh_plugins}\nohmyzsh/ohmyzsh path:plugins/tmux"
 
 if have_cmd gpgconf; then
-  export GPG_TTY="$(tty)" && \
-  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) && \
-  gpgconf --launch gpg-agent && \
+  export GPG_TTY="$(tty)"
+  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) 
+  gpgconf --launch gpg-agent 
   gpg-connect-agent updatestartuptty /bye > /dev/null
 fi
 
