@@ -19,8 +19,7 @@ test -f /opt/homebrew/bin/brew && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
-zsh_plugins="$(cat <<EOF
-
+zsh_plugins=$(cat <<EOF
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-completions
 Aloxaf/fzf-tab
@@ -41,9 +40,9 @@ ohmyzsh/ohmyzsh path:plugins/terraform
 ohmyzsh/ohmyzsh path:plugins/github
 ohmyzsh/ohmyzsh path:plugins/golang
 ohmyzsh/ohmyzsh path:plugins/vi-mode
-
+ohmyzsh/ohmyzsh path:plugins/vagrant
 EOF
-)"
+)
 
 have_cmd tmux && export ZSH_TMUX_AUTOSTART=true && zsh_plugins="${zsh_plugins}\nohmyzsh/ohmyzsh path:plugins/tmux"
 
@@ -54,7 +53,7 @@ if have_cmd gpgconf; then
   gpg-connect-agent updatestartuptty /bye > /dev/null
 fi
 
-zsh_config_root="${XDG_CONFIG_HOME:-${HOME}}/.config/zsh"
+zsh_config_root="${XDG_CONFIG_HOME:-${HOME}/.config}/zsh"
 test -d "$zsh_config_root" || mkdir -p "$zsh_config_root"
 antidote_dir="$zsh_config_root/antidote"
 
@@ -75,12 +74,14 @@ source "$zsh_plugins_root.zsh"
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
 
 have_cmd tofu && alias terraform=tofu
+have_cmd kubectl && source <(kubectl completion zsh)
 have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
 have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
 have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
 have_cmd pyenv && source <(pyenv init --path)
 have_cmd fzf && source <(fzf --zsh)
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
+have_cmd pulumi && source <(pulumi gen-completion zsh)
 
 HISTSIZE=10000
 SAVEHIST=10000
@@ -100,3 +101,4 @@ zstyle ':completion:*' menu no
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
