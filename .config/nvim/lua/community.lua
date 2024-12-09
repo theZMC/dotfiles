@@ -5,17 +5,38 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrocommunity",
-  -- { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
   { import = "astrocommunity.completion.copilot-lua-cmp" },
-  { import = "astrocommunity.completion.avante-nvim" },
   { import = "astrocommunity.diagnostics.trouble-nvim" },
+  {
+    import = "astrocommunity.diagnostics.tiny-inline-diagnostic-nvim",
+    "rachartier/tiny-inline-diagnostic.nvim",
+    opts = {
+      preset = "powerline",
+      options = {
+        multilines = true,
+        show_source = true,
+      },
+    },
+  },
+  { import = "astrocommunity.docker.lazydocker" },
   { import = "astrocommunity.editing-support.refactoring-nvim" },
-  { import = "astrocommunity.editing-support.copilotchat-nvim" },
+  {
+    import = "astrocommunity.editing-support.copilotchat-nvim",
+    "CopilotC-Nvim/CopilotChat.nvim",
+    opts = {
+      model = "claude-3.5-sonnet",
+      window = {
+        layout = "float",
+      },
+    },
+  },
+  { import = "astrocommunity.file-explorer.oil-nvim" },
   { import = "astrocommunity.game.leetcode-nvim" },
-  { import = "astrocommunity.git.git-blame-nvim" },
+  { import = "astrocommunity.git.blame-nvim" },
   { import = "astrocommunity.git.diffview-nvim" },
   { import = "astrocommunity.git.gitgraph-nvim" },
   { import = "astrocommunity.lsp.ts-error-translator-nvim" },
+  { import = "astrocommunity.lsp.actions-preview-nvim" },
   { import = "astrocommunity.markdown-and-latex.peek-nvim" },
   { import = "astrocommunity.markdown-and-latex.markdown-preview-nvim" },
   { import = "astrocommunity.markdown-and-latex.markview-nvim" },
@@ -39,6 +60,8 @@ return {
   { import = "astrocommunity.pack.terraform" },
   { import = "astrocommunity.pack.typescript-all-in-one" },
   { import = "astrocommunity.pack.yaml" },
+  { import = "astrocommunity.recipes.astrolsp-no-insert-inlay-hints" },
+  { import = "astrocommunity.recipes.telescope-lsp-mappings" },
   { import = "astrocommunity.recipes.vscode" },
   {
     import = "astrocommunity.test.neotest",
