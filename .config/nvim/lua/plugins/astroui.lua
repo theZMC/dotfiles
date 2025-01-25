@@ -34,15 +34,15 @@ return {
       LSPLoading10 = "⠏",
     },
   },
-  {
-    "AstroNvim/astrotheme",
-    opts = {
-      style = {
-        transparent = true,
-        neotree = false,
-        inactive = false,
-        float = false,
-      },
-    },
-  },
+  -- {
+  --   "AstroNvim/astrotheme",
+  --   opts = {
+  --     style = {
+  --       transparent = false,
+  --       neotree = false,
+  --       inactive = false,
+  --       float = false,
+  --     },
+  --   },
+  -- },
 }
