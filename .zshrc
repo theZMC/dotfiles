@@ -74,14 +74,12 @@ source "$zsh_plugins_root.zsh"
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
 
 have_cmd tofu && alias terraform=tofu
-have_cmd kubectl && source <(kubectl completion zsh)
 have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
 have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
 have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
 have_cmd pyenv && source <(pyenv init --path)
 have_cmd fzf && source <(fzf --zsh)
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
-have_cmd pulumi && source <(pulumi gen-completion zsh)
 
 HISTSIZE=10000
 SAVEHIST=10000
@@ -128,3 +126,4 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
+autoload -U +X bashcompinit && bashcompinit
