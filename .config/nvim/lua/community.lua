@@ -65,16 +65,16 @@ return {
   { import = "astrocommunity.recipes.vscode" },
   {
     import = "astrocommunity.test.neotest",
-    "nvim-neotest/neotest",
-    dependencies = {
-      "marilari88/neotest-vitest",
-      "thenbe/neotest-playwright",
-    },
-    opts = function(_, opts)
-      if not opts.adapters then opts.adapters = {} end
-      table.insert(opts.adapters, require "neotest-vitest"(require("astrocore").plugin_opts "neotest-vitest"))
-      table.insert(opts.adapters, require "neotest-playwright"(require("astrocore").plugin_opts "neotest-playwright"))
-    end,
+    -- "nvim-neotest/neotest",
+    -- dependencies = {
+    --   "marilari88/neotest-vitest",
+    --   "thenbe/neotest-playwright",
+    -- },
+    -- opts = function(_, opts)
+    --   if not opts.adapters then opts.adapters = {} end
+    --   table.insert(opts.adapters, require "neotest-vitest"(require("astrocore").plugin_opts "neotest-vitest"))
+    --   table.insert(opts.adapters, require "neotest-playwright"(require("astrocore").plugin_opts "neotest-playwright"))
+    -- end,
   },
   { import = "astrocommunity.test.nvim-coverage" },
 }
