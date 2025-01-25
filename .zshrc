@@ -96,6 +96,31 @@ setopt hist_ignore_dups
 setopt hist_find_no_dups
 unsetopt BEEP
 
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+  --highlight-line \
+  --info=inline-right \
+  --ansi \
+  --no-height \
+  --no-reverse \
+  --border=none \
+  --color=bg+:#1E222A \
+  --color=bg:#1A1D23 \
+  --color=border:#3A3E47 \
+  --color=fg:#ADB0BB \
+  --color=gutter:#1A1D23 \
+  --color=header:#50A4E9 \
+  --color=hl+:#5EB7FF \
+  --color=hl:#5EB7FF \
+  --color=info:#3A3E47 \
+  --color=marker:#5EB7FF \
+  --color=pointer:#5EB7FF \
+  --color=prompt:#5EB7FF \
+  --color=query:#ADB0BB:regular \
+  --color=scrollbar:#3A3E47 \
+  --color=separator:#3A3E47 \
+  --color=spinner:#5EB7FF \
+"
+
 zstyle ':omz:lib:theme-and-appearance' gnu-ls yes
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' menu no
