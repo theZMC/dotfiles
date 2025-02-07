@@ -14,3 +14,10 @@
 
 [init]
 	defaultBranch = main
+
+[rebase]
+	autoStash = true
+
+[diff]
+	compactionheuristic = true
+	mnemonicprefix = true 
