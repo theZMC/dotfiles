@@ -6,6 +6,9 @@
 [commit]
 	gpgsign = true
 
+[pull]
+	autostash = true
+
 [rerere]
 	enabled = true
 
@@ -21,3 +24,6 @@
 [diff]
 	compactionheuristic = true
 	mnemonicprefix = true 
+
+[fetch]
+	prune = true
