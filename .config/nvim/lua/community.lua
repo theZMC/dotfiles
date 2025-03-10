@@ -25,7 +25,7 @@ return {
     import = "astrocommunity.editing-support.copilotchat-nvim",
     "CopilotC-Nvim/CopilotChat.nvim",
     opts = {
-      model = "claude-3.5-sonnet",
+      model = "claude-3.7-sonnet-thought",
       window = {
         layout = "float",
       },
