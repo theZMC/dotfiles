@@ -12,7 +12,7 @@ return {
     import = "astrocommunity.diagnostics.tiny-inline-diagnostic-nvim",
     "rachartier/tiny-inline-diagnostic.nvim",
     opts = {
-      preset = "powerline",
+      preset = "minimal",
       options = {
         multilines = true,
         show_source = true,
