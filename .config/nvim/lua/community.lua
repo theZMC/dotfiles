@@ -7,6 +7,7 @@ return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.colorscheme.monokai-pro-nvim" },
   { import = "astrocommunity.completion.copilot-lua-cmp" },
+  { import = "astrocommunity.completion.avante-nvim" },
   { import = "astrocommunity.diagnostics.trouble-nvim" },
   {
     import = "astrocommunity.diagnostics.tiny-inline-diagnostic-nvim",
@@ -21,16 +22,17 @@ return {
   },
   { import = "astrocommunity.docker.lazydocker" },
   { import = "astrocommunity.editing-support.refactoring-nvim" },
-  {
-    import = "astrocommunity.editing-support.copilotchat-nvim",
-    "CopilotC-Nvim/CopilotChat.nvim",
-    opts = {
-      model = "claude-3.7-sonnet-thought",
-      window = {
-        layout = "float",
-      },
-    },
-  },
+  { import = "astrocommunity.editing-support.mcphub-nvim" },
+  -- {
+  --   import = "astrocommunity.editing-support.copilotchat-nvim",
+  --   "CopilotC-Nvim/CopilotChat.nvim",
+  --   opts = {
+  --     model = "claude-3.7-sonnet-thought",
+  --     window = {
+  --       layout = "float",
+  --     },
+  --   },
+  -- },
   { import = "astrocommunity.file-explorer.oil-nvim" },
   { import = "astrocommunity.game.leetcode-nvim" },
   { import = "astrocommunity.git.blame-nvim" },
