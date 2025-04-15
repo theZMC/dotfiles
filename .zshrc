@@ -1,3 +1,7 @@
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 function have_cmd() {
   command -v "$1" >/dev/null 2>&1
 }
@@ -77,9 +81,13 @@ have_cmd tofu && alias terraform=tofu
 have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
 have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
 have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
+have_cmd npm && export NPM_CONFIG_PREFIX="${NPM_CONFIG_PREFIX:-$HOME/.npm-global}" && export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+have_cmd pnpm && export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}" && export PATH="$PNPM_HOME:$PATH"
+have_cmd yarn && export PATH="$HOME/.yarn/bin:$PATH"
 have_cmd pyenv && source <(pyenv init --path)
 have_cmd fzf && source <(fzf --zsh)
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
+have_cmd gh && source <(gh copilot alias -- zsh 2>/dev/null) # Just in case we're not authed yet
 
 HISTSIZE=10000
 SAVEHIST=10000
