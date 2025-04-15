@@ -15,6 +15,7 @@ config.font_rules = {
 		font = wezterm.font_with_fallback({
 			{ family = "Recursive", weight = 400, italic = true },
 			{ family = "RecMonoCasual Nerd Font Mono", weight = 400, italic = true },
+			{ family = "Symbols Nerd Font Mono", weight = 400, italic = true },
 		}),
 	},
 }
