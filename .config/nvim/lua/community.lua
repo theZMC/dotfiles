@@ -9,30 +9,11 @@ return {
   { import = "astrocommunity.completion.copilot-lua-cmp" },
   { import = "astrocommunity.completion.avante-nvim" },
   { import = "astrocommunity.diagnostics.trouble-nvim" },
-  {
-    import = "astrocommunity.diagnostics.tiny-inline-diagnostic-nvim",
-    "rachartier/tiny-inline-diagnostic.nvim",
-    opts = {
-      preset = "minimal",
-      options = {
-        multilines = true,
-        show_source = true,
-      },
-    },
-  },
+  { import = "astrocommunity.diagnostics.tiny-inline-diagnostic-nvim" },
   { import = "astrocommunity.docker.lazydocker" },
+  { import = "astrocommunity.editing-support.conform-nvim" },
   { import = "astrocommunity.editing-support.refactoring-nvim" },
-  { import = "astrocommunity.editing-support.mcphub-nvim" },
-  -- {
-  --   import = "astrocommunity.editing-support.copilotchat-nvim",
-  --   "CopilotC-Nvim/CopilotChat.nvim",
-  --   opts = {
-  --     model = "claude-3.7-sonnet-thought",
-  --     window = {
-  --       layout = "float",
-  --     },
-  --   },
-  -- },
+  { import = "astrocommunity.editing-support.copilotchat-nvim" },
   { import = "astrocommunity.file-explorer.oil-nvim" },
   { import = "astrocommunity.game.leetcode-nvim" },
   { import = "astrocommunity.git.blame-nvim" },
@@ -43,12 +24,12 @@ return {
   { import = "astrocommunity.markdown-and-latex.peek-nvim" },
   { import = "astrocommunity.markdown-and-latex.markdown-preview-nvim" },
   { import = "astrocommunity.markdown-and-latex.render-markdown-nvim" },
-  -- { import = "astrocommunity.markdown-and-latex.markview-nvim" },
   { import = "astrocommunity.motion.flash-nvim" },
   { import = "astrocommunity.pack.astro" },
   { import = "astrocommunity.pack.bash" },
   { import = "astrocommunity.pack.cs" },
   { import = "astrocommunity.pack.docker" },
+  { import = "astrocommunity.pack.full-dadbod" },
   { import = "astrocommunity.pack.go" },
   { import = "astrocommunity.pack.helm" },
   { import = "astrocommunity.pack.html-css" },
@@ -56,7 +37,7 @@ return {
   { import = "astrocommunity.pack.lua" },
   { import = "astrocommunity.pack.markdown" },
   { import = "astrocommunity.pack.php" },
-  -- { import = "astrocommunity.pack.proto" },
+  { import = "astrocommunity.pack.proto" },
   { import = "astrocommunity.pack.ps1" },
   { import = "astrocommunity.pack.python" },
   { import = "astrocommunity.pack.rust" },
@@ -68,18 +49,6 @@ return {
   { import = "astrocommunity.recipes.astrolsp-no-insert-inlay-hints" },
   { import = "astrocommunity.recipes.telescope-lsp-mappings" },
   { import = "astrocommunity.recipes.vscode" },
-  {
-    import = "astrocommunity.test.neotest",
-    -- "nvim-neotest/neotest",
-    -- dependencies = {
-    --   "marilari88/neotest-vitest",
-    --   "thenbe/neotest-playwright",
-    -- },
-    -- opts = function(_, opts)
-    --   if not opts.adapters then opts.adapters = {} end
-    --   table.insert(opts.adapters, require "neotest-vitest"(require("astrocore").plugin_opts "neotest-vitest"))
-    --   table.insert(opts.adapters, require "neotest-playwright"(require("astrocore").plugin_opts "neotest-playwright"))
-    -- end,
-  },
+  { import = "astrocommunity.test.neotest" },
   { import = "astrocommunity.test.nvim-coverage" },
 }
