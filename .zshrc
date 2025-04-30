@@ -78,7 +78,7 @@ source "$zsh_plugins_root.zsh"
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
 
 have_cmd tofu && alias terraform=tofu
-have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim
+have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim && echo '' > ~/.local/state/nvim/lsp.log
 have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
 have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
 have_cmd npm && export NPM_CONFIG_PREFIX="${NPM_CONFIG_PREFIX:-$HOME/.npm-global}" && export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
