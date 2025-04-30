@@ -89,6 +89,8 @@ have_cmd fzf && source <(fzf --zsh)
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 have_cmd gh && source <(gh copilot alias -- zsh 2>/dev/null) # Just in case we're not authed yet
 
+test -d /opt/homebrew/opt/coreutils/libexec/gnubin && PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+
 HISTSIZE=10000
 SAVEHIST=10000
 HISTDUP=erase
