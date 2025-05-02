@@ -6,8 +6,10 @@ local is_windows = wezterm.target_triple:find("windows") ~= nil
 local config = {}
 
 config.adjust_window_size_when_changing_font_size = false
-config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
-config.font = wezterm.font({ family = "RecMonoCasual Nerd Font Mono", weight = 400 })
+config.font = wezterm.font_with_fallback({
+	{ family = "RecMonoCasual Nerd Font Mono", weight = 400 },
+	{ family = "Symbols Nerd Font Mono", weight = 400 },
+})
 config.font_size = 16.0
 config.font_rules = {
 	{
