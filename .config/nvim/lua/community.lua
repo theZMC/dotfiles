@@ -38,7 +38,7 @@ return {
   { import = "astrocommunity.pack.php" },
   { import = "astrocommunity.pack.proto" },
   { import = "astrocommunity.pack.ps1" },
-  { import = "astrocommunity.pack.python" },
+  { import = "astrocommunity.pack.python-ruff" },
   { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.svelte" },
   { import = "astrocommunity.pack.tailwindcss" },
