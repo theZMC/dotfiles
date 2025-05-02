@@ -47,7 +47,8 @@ return {
         vue = { "deno_fmt" },
         sql = { "deno_fmt" },
         yaml = { "yamlfmt" },
-        terraform = { "hclfmt" },
+        terraform = { "hcl" },
+        lua = { "stylua" },
         zsh = {},
       },
       formatters = {
