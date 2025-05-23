@@ -88,6 +88,7 @@ have_cmd pyenv && source <(pyenv init --path)
 have_cmd fzf && source <(fzf --zsh)
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 have_cmd gh && source <(gh copilot alias -- zsh 2>/dev/null) # Just in case we're not authed yet
+have_cmd k9s && export K9S_CONFIG_DIR="${K9S_CONFIG_DIR:-${XDG_CONFIG_DIR/k9s:-$HOME/.config/k9s}}"
 
 test -d /opt/homebrew/opt/coreutils/libexec/gnubin && PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 
