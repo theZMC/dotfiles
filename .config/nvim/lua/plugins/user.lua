@@ -1,9 +1,11 @@
 ---@type LazySpec
 return {
   {
-    "Saghen/blink.cmp",
-    version = "*",
-    build = "cargo build --release",
+    "akinsho/toggleterm.nvim",
+    optional = true,
+    opts = {
+      direction = "float",
+    },
   },
   {
     "rachartier/tiny-inline-diagnostic.nvim",
