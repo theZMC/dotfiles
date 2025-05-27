@@ -6,7 +6,8 @@
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.colorscheme.monokai-pro-nvim" },
-  { import = "astrocommunity.completion.copilot-lua-cmp" },
+  { import = "astrocommunity.completion.copilot-lua" },
+  { import = "astrocommunity.completion.copilot-cmp" },
   { import = "astrocommunity.diagnostics.trouble-nvim" },
   { import = "astrocommunity.docker.lazydocker" },
   { import = "astrocommunity.editing-support.conform-nvim" },
@@ -51,5 +52,4 @@ return {
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.test.neotest" },
   { import = "astrocommunity.test.nvim-coverage" },
-  { import = "astrocommunity.workflow.hardtime-nvim" },
 }
