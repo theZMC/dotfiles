@@ -19,6 +19,16 @@ return {
     },
   },
   {
+    "zbirenbaum/copilot.lua",
+    optional = true,
+    opts = {
+      filetypes = {
+        markdown = true,
+        yaml = true,
+      },
+    },
+  },
+  {
     "CopilotC-Nvim/CopilotChat.nvim",
     optional = true,
     opts = {
