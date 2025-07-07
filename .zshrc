@@ -44,6 +44,7 @@ ohmyzsh/ohmyzsh path:plugins/dotnet
 ohmyzsh/ohmyzsh path:plugins/terraform
 ohmyzsh/ohmyzsh path:plugins/github
 ohmyzsh/ohmyzsh path:plugins/golang
+ohmyzsh/ohmyzsh path:plugins/uv
 ohmyzsh/ohmyzsh path:plugins/vi-mode
 ohmyzsh/ohmyzsh path:plugins/vagrant
 ohmyzsh/ohmyzsh path:plugins/web-search
