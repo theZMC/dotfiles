@@ -79,6 +79,7 @@ fi
 source "$zsh_plugins_root.zsh"
 
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
+test -f ~/.zshrc.local && source ~/.zshrc.local
 
 have_cmd tofu && alias terraform=tofu
 have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim && echo '' > ~/.local/state/nvim/lsp.log
