@@ -29,6 +29,15 @@ return {
     },
   },
   {
+    "MeanderingProgrammer/render-markdown.nvim",
+    optional = true,
+    opts = {
+      code = {
+        border = "thick",
+      },
+    },
+  },
+  {
     "CopilotC-Nvim/CopilotChat.nvim",
     optional = true,
     opts = {
