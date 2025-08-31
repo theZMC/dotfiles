@@ -1,2 +1,28 @@
 font-family = RecMonoCasual Nerd Font Mono
 font-size = 18
+
+background = #1A1D23
+foreground = #ADB0BB
+
+selection-foreground = #ADB0BB
+selection-background = #26343F
+
+background-opacity = 0.97
+background-blur = 30
+
+palette = 0=#111317
+palette = 8=#34363A
+palette = 1=#FF838B       
+palette = 9=#FFA6AE
+palette = 2=#87C05F
+palette = 10=#AAE382
+palette = 3=#DFAB25
+palette = 11=#FFCE48
+palette = 4=#5EB7FF
+palette = 12=#81DAFF
+palette = 5=#DD97F1
+palette = 13=#FFBAFF
+palette = 6=#4AC2B8
+palette = 14=#6DE5DB
+palette = 7=#9B9FA9
+palette = 15=#D0D3DE
