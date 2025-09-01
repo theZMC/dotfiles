@@ -1,3 +1,5 @@
+config-file = ?config.local
+
 font-family = RecMonoCasual Nerd Font Mono
 font-size = 18
 
