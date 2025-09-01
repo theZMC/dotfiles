@@ -41,6 +41,7 @@ return {
   { import = "astrocommunity.pack.ps1" },
   { import = "astrocommunity.pack.python-ruff" },
   { import = "astrocommunity.pack.rust" },
+  { import = "astrocommunity.pack.spring-boot" },
   { import = "astrocommunity.pack.svelte" },
   { import = "astrocommunity.pack.tailwindcss" },
   { import = "astrocommunity.pack.terraform" },
