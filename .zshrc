@@ -43,6 +43,8 @@ ohmyzsh/ohmyzsh path:plugins/mvn
 ohmyzsh/ohmyzsh path:plugins/dotnet
 ohmyzsh/ohmyzsh path:plugins/terraform
 ohmyzsh/ohmyzsh path:plugins/github
+ohmyzsh/ohmyzsh path:plugins/gnu-utils
+ohmyzsh/ohmyzsh path:plugins/gpg-agent
 ohmyzsh/ohmyzsh path:plugins/golang
 ohmyzsh/ohmyzsh path:plugins/uv
 ohmyzsh/ohmyzsh path:plugins/vi-mode
@@ -52,13 +54,6 @@ EOF
 )
 
 have_cmd tmux && export ZSH_TMUX_AUTOSTART=true && zsh_plugins="${zsh_plugins}\nohmyzsh/ohmyzsh path:plugins/tmux"
-
-if have_cmd gpgconf; then
-  export GPG_TTY="$(tty)"
-  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) 
-  gpgconf --launch gpg-agent 
-  gpg-connect-agent updatestartuptty /bye > /dev/null
-fi
 
 zsh_config_root="${XDG_CONFIG_HOME:-${HOME}/.config}/zsh"
 test -d "$zsh_config_root" || mkdir -p "$zsh_config_root"
@@ -93,8 +88,6 @@ have_cmd fzf && source <(fzf --zsh)
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 have_cmd gh && source <(gh copilot alias -- zsh 2>/dev/null) # Just in case we're not authed yet
 have_cmd k9s && export K9S_CONFIG_DIR="${K9S_CONFIG_DIR:-${XDG_CONFIG_DIR/k9s:-$HOME/.config/k9s}}"
-
-test -d /opt/homebrew/opt/coreutils/libexec/gnubin && PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 
 HISTSIZE=10000
 SAVEHIST=10000
