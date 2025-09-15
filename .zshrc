@@ -76,18 +76,19 @@ source "$zsh_plugins_root.zsh"
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
 test -f ~/.zshrc.local && source ~/.zshrc.local
 
-have_cmd tofu && alias terraform=tofu
-have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim && echo '' > ~/.local/state/nvim/lsp.log
-have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
-have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
-have_cmd npm && export NPM_CONFIG_PREFIX="${NPM_CONFIG_PREFIX:-$HOME/.npm-global}" && export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
-have_cmd pnpm && export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}" && export PATH="$PNPM_HOME:$PATH"
-have_cmd yarn && export PATH="$HOME/.yarn/bin:$PATH"
-have_cmd pyenv && source <(pyenv init --path)
+have_cmd crush && source <(crush completion zsh)
 have_cmd fzf && source <(fzf --zsh)
-have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 have_cmd gh && source <(gh copilot alias -- zsh 2>/dev/null) # Just in case we're not authed yet
+have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
 have_cmd k9s && export K9S_CONFIG_DIR="${K9S_CONFIG_DIR:-${XDG_CONFIG_DIR/k9s:-$HOME/.config/k9s}}"
+have_cmd npm && export NPM_CONFIG_PREFIX="${NPM_CONFIG_PREFIX:-$HOME/.npm-global}" && export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim && echo '' > ~/.local/state/nvim/lsp.log
+have_cmd pnpm && export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}" && export PATH="$PNPM_HOME:$PATH"
+have_cmd pyenv && source <(pyenv init --path)
+have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
+have_cmd tofu && alias terraform=tofu
+have_cmd yarn && export PATH="$HOME/.yarn/bin:$PATH"
+have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 
 HISTSIZE=10000
 SAVEHIST=10000
