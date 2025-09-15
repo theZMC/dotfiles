@@ -75,6 +75,7 @@ source "$zsh_plugins_root.zsh"
 
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
 test -f ~/.zshrc.local && source ~/.zshrc.local
+test -d ~/.local/bin && export PATH="$HOME/.local/bin:$PATH"
 
 have_cmd crush && source <(crush completion zsh)
 have_cmd fzf && source <(fzf --zsh)
