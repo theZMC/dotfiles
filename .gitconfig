@@ -42,3 +42,6 @@
 
 [gui]
 	skipDiscardChangeWarning = true
+
+[worktree]
+	guessRemote = true
