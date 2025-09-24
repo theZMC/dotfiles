@@ -22,6 +22,11 @@ if not is_linux then
 else
 	config.color_scheme = "Dark+"
 end
+
+if is_linux then
+	config.window_background_opacity = 0.95
+	config.kde_window_background_blur = true
+end
 if is_darwin then
 	config.macos_window_background_blur = 80
 	config.window_background_opacity = 0.85
@@ -30,6 +35,5 @@ if is_windows then
 	config.window_background_opacity = 0.85
 	config.win32_system_backdrop = "Acrylic"
 end
-config.front_end = "WebGpu"
 
 return config
