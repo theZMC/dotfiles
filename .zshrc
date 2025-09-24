@@ -90,6 +90,7 @@ have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
 have_cmd tofu && alias terraform=tofu
 have_cmd yarn && export PATH="$HOME/.yarn/bin:$PATH"
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
+have_cmd go-task && alias task=go-task
 
 HISTSIZE=10000
 SAVEHIST=10000
