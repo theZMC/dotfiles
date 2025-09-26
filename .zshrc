@@ -92,6 +92,7 @@ have_cmd yarn && export PATH="$HOME/.yarn/bin:$PATH"
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 have_cmd go-task && alias task=go-task
 have_cmd glab && source <(glab completion -s zsh)
+have_cmd bat && export BAT_THEME="GitHub-Dark" && export BAT_PAGER="less -R" && alias cat=bat
 
 HISTSIZE=10000
 SAVEHIST=10000
