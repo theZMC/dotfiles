@@ -1,16 +1,16 @@
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 function have_cmd() {
-  (( $+commands[$1] ))
+  (( $+commands[${1}] ))
 }
 
 can_start=true
 have_cmd git || (echo "git must be installed for this zsh config to work" && can_start=false)
 have_cmd wget || have_cmd curl || (echo "either wget or curl must be installed for this zsh config to work" && can_start=false)
 
-if ! $can_start; then
+if ! ${can_start}; then
   return
 fi
 
@@ -56,39 +56,39 @@ EOF
 have_cmd tmux && export ZSH_TMUX_AUTOSTART=true && zsh_plugins="${zsh_plugins}\nohmyzsh/ohmyzsh path:plugins/tmux"
 
 zsh_config_root="${XDG_CONFIG_HOME:-${HOME}/.config}/zsh"
-test -d "$zsh_config_root" || mkdir -p "$zsh_config_root"
-antidote_dir="$zsh_config_root/antidote"
+test -d "${zsh_config_root}" || mkdir -p "${zsh_config_root}"
+antidote_dir="${zsh_config_root}/antidote"
 
-test -d "$antidote_dir" || git clone --depth=1 https://github.com/mattmc3/antidote.git "$antidote_dir"
-source "$antidote_dir/antidote.zsh"
-fpath=("$antidote_dir/functions" $fpath)
+test -d "${antidote_dir}" || git clone --depth=1 https://github.com/mattmc3/antidote.git "${antidote_dir}"
+source "${antidote_dir}/antidote.zsh"
+fpath=("${antidote_dir}/functions" ${fpath})
 autoload -Uz antidote
 
-zsh_plugins_root="$zsh_config_root/plugins"
-test -f "$zsh_plugins_root.txt" || touch "$zsh_plugins_root.txt"
-test -f "$zsh_plugins_root.zsh" || touch "$zsh_plugins_root.zsh"
-if ! diff <(echo "$zsh_plugins") "$zsh_plugins_root.txt" >/dev/null 2>&1; then
-  echo "$zsh_plugins" > "$zsh_plugins_root.txt"
-  antidote bundle <"$zsh_plugins_root.txt" >|"$zsh_plugins_root.zsh"
+zsh_plugins_root="${zsh_config_root}/plugins"
+test -f "${zsh_plugins_root}.txt" || touch "${zsh_plugins_root}.txt"
+test -f "${zsh_plugins_root}.zsh" || touch "${zsh_plugins_root}.zsh"
+if ! diff <(echo "${zsh_plugins}") "${zsh_plugins_root}.txt" >/dev/null 2>&1; then
+  echo "${zsh_plugins}" > "${zsh_plugins_root}.txt"
+  antidote bundle <"${zsh_plugins_root}.txt" >|"${zsh_plugins_root}.zsh"
 fi
-source "$zsh_plugins_root.zsh"
+source "${zsh_plugins_root}.zsh"
 
 test -f ~/.p10k.zsh && source ~/.p10k.zsh
 test -f ~/.zshrc.local && source ~/.zshrc.local
-test -d ~/.local/bin && export PATH="$HOME/.local/bin:$PATH"
+test -d ~/.local/bin && export PATH="${HOME}/.local/bin:${PATH}"
 
 have_cmd crush && source <(crush completion zsh)
 have_cmd fzf && source <(fzf --zsh)
 have_cmd gh && source <(gh copilot alias -- zsh 2>/dev/null) # Just in case we're not authed yet
-have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="$GOPATH/bin:$PATH"
-have_cmd k9s && export K9S_CONFIG_DIR="${K9S_CONFIG_DIR:-${XDG_CONFIG_DIR/k9s:-$HOME/.config/k9s}}"
-have_cmd npm && export NPM_CONFIG_PREFIX="${NPM_CONFIG_PREFIX:-$HOME/.npm-global}" && export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+have_cmd go && export GOPATH="${GOPATH:-${HOME}/go}" && export PATH="${GOPATH}/bin:${PATH}"
+have_cmd k9s && export K9S_CONFIG_DIR="${K9S_CONFIG_DIR:-${XDG_CONFIG_DIR/k9s:-${HOME}/.config/k9s}}"
+have_cmd npm && export NPM_CONFIG_PREFIX="${NPM_CONFIG_PREFIX:-${HOME}/.npm-global}" && export PATH="${NPM_CONFIG_PREFIX}/bin:${PATH}"
 have_cmd nvim && export EDITOR=nvim && export VISUAL=nvim && alias vi=vim && alias vim=nvim && echo '' > ~/.local/state/nvim/lsp.log
-have_cmd pnpm && export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}" && export PATH="$PNPM_HOME:$PATH"
+have_cmd pnpm && export PNPM_HOME="${PNPM_HOME:-${HOME}/.local/share/pnpm}" && export PATH="${PNPM_HOME}:${PATH}"
 have_cmd pyenv && source <(pyenv init --path)
-have_cmd rustup && export PATH="$HOME/.cargo/bin:$PATH"
+have_cmd rustup && export PATH="${HOME}/.cargo/bin:${PATH}"
 have_cmd tofu && alias terraform=tofu
-have_cmd yarn && export PATH="$HOME/.yarn/bin:$PATH"
+have_cmd yarn && export PATH="${HOME}/.yarn/bin:${PATH}"
 have_cmd zoxide && source <(zoxide init --cmd cd zsh)
 have_cmd go-task && alias task=go-task
 have_cmd glab && source <(glab completion -s zsh)
@@ -107,7 +107,7 @@ setopt hist_ignore_dups
 setopt hist_find_no_dups
 unsetopt BEEP
 
-export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
   --highlight-line \
   --info=inline-right \
   --ansi \
