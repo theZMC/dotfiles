@@ -3,7 +3,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 function have_cmd() {
-  command -v "$1" >/dev/null 2>&1
+  (( $+commands[$1] ))
 }
 
 can_start=true
