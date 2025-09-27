@@ -3,7 +3,7 @@ local wezterm = require("wezterm")
 local is_darwin = wezterm.target_triple:find("darwin") ~= nil
 local is_linux = wezterm.target_triple:find("linux") ~= nil
 local is_windows = wezterm.target_triple:find("windows") ~= nil
-local config = {}
+local config = wezterm.config_builder()
 
 config.adjust_window_size_when_changing_font_size = false
 config.font = wezterm.font_with_fallback({
@@ -25,7 +25,10 @@ end
 
 if is_linux then
 	config.window_background_opacity = 0.95
-	config.kde_window_background_blur = true
+	if config.kde_window_background_blur ~= nil then
+		-- Enable background blur for KDE Plasma (only works on nightly)
+		config.kde_window_background_blur = true
+	end
 end
 if is_darwin then
 	config.macos_window_background_blur = 80
