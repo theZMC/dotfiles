@@ -1,0 +1,38 @@
+#!/usr/bin/env zsh
+
+if [ -d "$1" ]; then
+  ls --color "$1"
+elif [ -f "$1" ]; then
+  type=$(file --brief --dereference --mime -- "$1")
+  case $type in
+    image/*)
+      if (( $+commands[viu] )); then
+        viu -w 40 "$1"
+      else
+        echo "viu not installed; cannot preview image"
+      fi
+      ;;
+    text/* | */xml | */json | */yaml | */yml | */csv | application/*+xml | application/*+json)
+      if (( $+commands[bat] )); then
+        bat --color=always --style=numbers --line-range :500 "$1" || echo "No preview available"
+      else
+        cat "$1"
+      fi
+      ;;
+    binary/* | application/octet-stream)
+      # if the file name looks like a cert or pkcs12, try to decode it
+      if [[ "$1" == *.crt || "$1" == *.cer || "$1" == *.pem ]]; then
+        openssl x509 -in "$1" -text -noout || echo "Cannot decode certificate"
+      elif [[ "$1" == *.p12 || "$1" == *.pfx ]]; then
+        openssl pkcs12 -info -in "$1" -nodes || echo "Cannot decode PKCS#12 file"
+      else
+        echo "Binary file; no preview available"
+      fi
+      ;;
+    *)
+      echo "No preview available for file type: $type"
+      ;;
+  esac
+else
+  echo "$1 does not exist"
+fi
