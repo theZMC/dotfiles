@@ -10,6 +10,7 @@ export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
   --no-height \
   --no-reverse \
   --border=none \
+  --style=full \
   --color=bg+:#1E222A \
   --color=bg:#1A1D23 \
   --color=border:#3A3E47 \
@@ -29,7 +30,7 @@ export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
 "
 
 if (( $+commands[preview] )); then
-  export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_OPTS} --preview 'preview {}' --preview-window='right:60%'"
+  export FZF_CTRL_T_OPTS="${FZF_DEFAULT_OPTS} --preview 'preview {}' --preview-window='right:60%'"
 fi
 
 if (( $+commands[rg] )); then
