@@ -6,6 +6,7 @@ export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
   --highlight-line \
   --info=inline-right \
   --ansi \
+  --tmux 90% \
   --no-height \
   --no-reverse \
   --border=none \
@@ -28,7 +29,7 @@ export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
 "
 
 if (( $+commands[preview] )); then
-  export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} --preview 'preview {}' --preview-window='right:60%'"
+  export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_OPTS} --preview 'preview {}' --preview-window='right:60%'"
 fi
 
 if (( $+commands[rg] )); then
