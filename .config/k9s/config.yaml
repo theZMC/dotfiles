@@ -28,6 +28,8 @@ k9s:
     reactive: false
     # Toggles icons display as not all terminal support these chars. Default: true
     noIcons: false
+    # Allows to set certain views default fullscreen mode. (yaml, helm history, describe, value_extender, details, logs) Default false
+    defaultsToFullScreen: true
   # Toggles whether k9s should check for the latest revision from the Github repository releases. Default is false.
   skipLatestRevCheck: false
   # Disable count pods while in node view. Default is false.
@@ -68,8 +70,6 @@ k9s:
     buffer: 10000
     # Represents how far to go back in the log timeline in seconds. Setting to -1 will tail logs. Default is -1.
     sinceSeconds: 900
-    # Go full screen while displaying logs. Default false
-    fullScreen: true
     # Toggles log line wrap. Default false
     textWrap: true
     # Toggles log line timestamp info. Default false
