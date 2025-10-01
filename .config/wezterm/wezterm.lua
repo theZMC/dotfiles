@@ -18,7 +18,7 @@ config.font = wezterm.font_with_fallback({
 config.font_size = 16.0
 config.enable_tab_bar = false
 if not is_linux then
-	config.color_scheme = "Astrodark"
+	config.color_scheme = "astrodark"
 else
 	config.color_scheme = "Dark+"
 end
