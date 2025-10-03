@@ -17,15 +17,16 @@ if ! ${can_start}; then
   return
 fi
 
-test -f ~/.p10k.zsh \
-  && source ~/.p10k.zsh
-test -f ~/.zshrc.local \
-  && source ~/.zshrc.local
 test -d ~/.local/bin \
   && export PATH="${HOME}/.local/bin:${PATH}"
 
 for plugin in "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/{antidote,applications,config}/*.zsh; do
   source "$plugin"
 done
+
+test -f ~/.p10k.zsh \
+  && source ~/.p10k.zsh
+test -f ~/.zshrc.local \
+  && source ~/.zshrc.local
 
 unsetopt BEEP
