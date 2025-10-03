@@ -6,6 +6,7 @@ local is_windows = wezterm.target_triple:find("windows") ~= nil
 local config = wezterm.config_builder()
 
 config.adjust_window_size_when_changing_font_size = false
+config.max_fps = 120
 config.font = wezterm.font_with_fallback({
 	{
 		family = "RecMonoCasual Nerd Font Mono",
