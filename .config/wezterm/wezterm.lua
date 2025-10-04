@@ -16,13 +16,10 @@ config.font = wezterm.font_with_fallback({
 		},
 	},
 })
+
 config.font_size = 16.0
 config.enable_tab_bar = false
-if not is_linux then
-	config.color_scheme = "astrodark"
-else
-	config.color_scheme = "Dark+"
-end
+config.color_scheme = "Dark+"
 
 if is_linux then
 	config.window_background_opacity = 0.95
@@ -32,8 +29,8 @@ if is_linux then
 	end
 end
 if is_darwin then
-	config.macos_window_background_blur = 80
-	config.window_background_opacity = 0.85
+	config.macos_window_background_blur = 90
+	config.window_background_opacity = 0.90
 end
 if is_windows then
 	config.window_background_opacity = 0.85
