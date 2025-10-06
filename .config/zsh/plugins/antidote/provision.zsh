@@ -26,7 +26,12 @@ zsh_plugins=(
   "ohmyzsh/ohmyzsh path:plugins/web-search"
 )
 
-if (( $+commands[tmux] )); then
+if [ -d /opt/homebrew/bin ]; then
+  source <(/opt/homebrew/bin/brew shellenv)
+fi
+
+if command -v tmux 2>/dev/null; then
+  export ZSH_TMUX_AUTOSTART=true
   zsh_plugins+=("ohmyzsh/ohmyzsh path:plugins/tmux")
 fi
 
@@ -46,7 +51,7 @@ source "${antidote_dir}/antidote.zsh"
 fpath=("${antidote_dir}/functions" ${fpath})
 autoload -Uz antidote
 
-zsh_plugins_root="${zsh_config_root}/plugins/antidote"
+zsh_plugins_root="${zsh_config_root}/plugins/antidote/plugins"
 if [ ! -f "${zsh_plugins_root}.txt" ]; then
   touch "${zsh_plugins_root}.txt"
 fi
