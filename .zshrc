@@ -20,7 +20,9 @@ fi
 test -d ~/.local/bin \
   && export PATH="${HOME}/.local/bin:${PATH}"
 
-for plugin in "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/{antidote,applications,config}/*.zsh; do
+source "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/antidote/provision.zsh
+
+for plugin in "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/{applications,config}/*.zsh; do
   source "$plugin"
 done
 
