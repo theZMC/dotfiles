@@ -1,5 +1,9 @@
 if (( $+commands[fzf] )); then
-  source <(fzf --zsh)
+  if ! source <(fzf --zsh); then
+    if ! source /usr/share/doc/fzf/examples/key-bindings.zsh
+      echo "Failed to source fzf key bindings"
+      exit
+  fi
 fi
 
 export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
