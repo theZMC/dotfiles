@@ -22,11 +22,8 @@ config.enable_tab_bar = false
 config.color_scheme = "Dark+"
 
 if is_linux then
-	config.window_background_opacity = 0.95
-	if config.kde_window_background_blur ~= nil then
-		-- Enable background blur for KDE Plasma (only works on nightly)
-		config.kde_window_background_blur = true
-	end
+	config.window_background_opacity = 0.85
+	config.kde_window_background_blur = true
 end
 if is_darwin then
 	config.macos_window_background_blur = 90
