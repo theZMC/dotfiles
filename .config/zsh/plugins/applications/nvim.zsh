@@ -6,6 +6,7 @@ if (( $+commands[nvim] )); then
   alias vi=vim
   alias vim=nvim
   alias vimdiff="nvim -d"
+  alias diff=vimdiff
 
   # Clear the Neovim LSP log file if it exists
   if [[ -f ~/.local/state/nvim/lsp.log ]]; then
