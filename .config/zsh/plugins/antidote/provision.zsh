@@ -63,7 +63,7 @@ fi
 tmp_plugin_file=$(mktemp)
 printf '%s\n' "${zsh_plugins[@]}" > "$tmp_plugin_file"
 
-if ! cmp -s "${tmp_plugin_file}" "${zsh_plugins_root}.txt"; then
+if ! cmp -s "${tmp_plugin_file}" "${zsh_plugins_root}.txt" || ! test -d ~/.cache/antidote; then
   mv "${tmp_plugin_file}" "${zsh_plugins_root}.txt"
   antidote bundle <"${zsh_plugins_root}.txt" >|"${zsh_plugins_root}.zsh"
 fi
