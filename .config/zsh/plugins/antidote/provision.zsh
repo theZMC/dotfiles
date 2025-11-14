@@ -19,6 +19,7 @@ zsh_plugins=(
   "ohmyzsh/ohmyzsh path:plugins/kubectl"
   "ohmyzsh/ohmyzsh path:plugins/kubectx"
   "ohmyzsh/ohmyzsh path:plugins/mvn"
+  "ohmyzsh/ohmyzsh path:plugins/nvm"
   "ohmyzsh/ohmyzsh path:plugins/terraform"
   "ohmyzsh/ohmyzsh path:plugins/uv"
   "ohmyzsh/ohmyzsh path:plugins/vagrant"
