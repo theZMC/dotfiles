@@ -57,7 +57,6 @@ return {
         javascript = { "deno_fmt" },
         typescript = { "deno_fmt" },
         jsx = { "deno_fmt" },
-        tsx = { "deno_fmt" },
         css = { "deno_fmt" },
         html = { "deno_fmt" },
         scss = { "deno_fmt" },
