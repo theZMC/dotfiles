@@ -55,7 +55,7 @@ return {
         markdown = { "deno_fmt" },
         json = { "deno_fmt" },
         javascript = { "deno_fmt" },
-        typescript = { "deno_fmt" },
+        typescriptreact = { "prettier" },
         jsx = { "deno_fmt" },
         css = { "deno_fmt" },
         html = { "deno_fmt" },
