@@ -45,3 +45,6 @@
 
 [worktree]
 	guessRemote = true
+
+[advice]
+	detachedHead = false
