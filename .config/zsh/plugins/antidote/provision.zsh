@@ -1,3 +1,5 @@
+unset _style
+
 zsh_plugins=(
   "zsh-users/zsh-autosuggestions"
   "zsh-users/zsh-completions"
