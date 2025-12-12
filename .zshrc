@@ -2,6 +2,8 @@ if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" 
   source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+export CODE_HOME="${XDG_DATA_HOME:-${HOME}/Sync/code}"
+
 can_start=true
 if ! (( $+commands[git] )); then
   echo "git must be installed for this zsh config to work"

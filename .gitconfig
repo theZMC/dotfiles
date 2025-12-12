@@ -5,6 +5,7 @@
 
 [alias]
 	trueblame = blame -w -C -C -C
+	steal = "!f() {\n  url=\"$1\";\n\n  # Strip protocols\n  clean=\"${url#http://}\"\n  clean=\"${clean#https://}\"\n  clean=\"${clean#ssh://}\"\n  clean=\"${clean#git@}\"\n\n  # Convert git@github.com:user/repo.git → github.com/user/repo.git\n  clean=\"${clean/:/\\/}\"\n\n  # Remove trailing .git\n  clean=\"${clean%.git}\"\n\n  host=\"$(echo \"$clean\" | cut -d/ -f1)\"\n  user=\"$(echo \"$clean\" | cut -d/ -f2)\"\n  repo=\"$(echo \"$clean\" | cut -d/ -f3)\"\n\n  dest=\"${CODE_HOME:-${HOME}/code}/$host/$user/$repo\"\n\n  mkdir -p \"$dest\"\n\n  echo \"Cloning into: $dest\"\n  git clone \"$url\" \"$dest\"\n}; f"
 
 [branch]
 	autosetuprebase = always
