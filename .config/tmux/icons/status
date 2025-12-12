@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+cmd="$1"
+path="$2"
+
+declare -A cmd_icons
+
+cmd_icons=(
+    [nvim]=""
+    [vim]=""
+    [ssh]="󰣀"
+    [python]=""
+    [bash]=""
+    [node]=""
+    [go]=""
+    [rust]=""
+    [rustc]=""
+    [java]=""
+    [javac]=""
+    [javadoc]=""
+    [ruby]=""
+    [rails]=""
+    [docker]=""
+    [git]=""
+)
+
+declare -A dir_prefix_icons
+
+dir_prefix_icons=(
+    [~/Sync/code]="󰈮"
+    [~/Sync]="󱈖"
+    [~/dotfiles]=""
+    [~/code]="󰈮"
+    [~/Downloads]="󰥥"
+    [~/Documents]="󰈙"
+    [~/Pictures]="󰈟"
+    [~/Music]="󰈣"
+    [~/Videos]="󰈫"
+    [~/.config]="󱁻"
+    [~/.cache]=""
+    [~]=""
+)
+
+mapfile -t sorted_prefixes < <(printf '%s\n' "${!dir_prefix_icons[@]}" | awk '{ print length, $0 }' | sort -rn | cut -d" " -f2-)
+
+get_icon_for_cmd() {
+    local cmd="$1"
+    if [[ -n "${cmd_icons[$cmd]}" ]]; then
+        echo "${cmd_icons[$cmd]}"
+    else
+        echo ""  
+    fi
+}
+
+get_icon_for_path() {
+    local path="$1"
+    for prefix in "${sorted_prefixes[@]}"; do
+        if [[ "$path" == "$prefix"* ]]; then
+            echo "${dir_prefix_icons[$prefix]}"
+            return
+        fi
+    done
+    echo "󰉋"  
+}
+
+cmd_icon=$(get_icon_for_cmd "$cmd")
+path_icon=$(get_icon_for_path "$path")
+
+echo "${cmd_icon:-$path_icon}"

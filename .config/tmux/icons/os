@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+declare -A os_icons
+
+os_icons=(
+  [linux_generic]=
+  [arch]=󰣇
+  [debian]=󰣚
+  [centos]=
+  [ubuntu]=󰕈
+  [fedora]=󰣛
+  [darwin]=󰀵
+  [kali]=
+  [unknown]=󰟀
+)
+
+get_os_name() {
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if [ -f /etc/os-release ]; then
+      . /etc/os-release
+      echo "${ID,,}"
+    else
+      echo "linux_generic"
+    fi
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "darwin"
+  else
+    echo "unknown"
+  fi
+}
+
+echo "${os_icons[$(get_os_name)]:-${os_icons[unknown]}}"
