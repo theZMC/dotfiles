@@ -20,6 +20,7 @@ zsh_plugins=(
   "ohmyzsh/ohmyzsh path:plugins/istioctl"
   "ohmyzsh/ohmyzsh path:plugins/kubectl"
   "ohmyzsh/ohmyzsh path:plugins/kubectx"
+  "ohmyzsh/ohmyzsh path:plugins/mise"
   "ohmyzsh/ohmyzsh path:plugins/mvn"
   "ohmyzsh/ohmyzsh path:plugins/nvm"
   "ohmyzsh/ohmyzsh path:plugins/terraform"
