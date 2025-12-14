@@ -3,6 +3,11 @@
 cmd="$1"
 path="$2"
 
+if ! declare -A _test &>/dev/null; then
+    echo "󰉋"
+    exit 0
+fi
+
 declare -A cmd_icons
 
 cmd_icons=(
@@ -66,4 +71,12 @@ get_icon_for_path() {
 cmd_icon=$(get_icon_for_cmd "$cmd")
 path_icon=$(get_icon_for_path "$path")
 
+if git -C "$path" rev-parse --show-toplevel; then
+    path_icon="${path_icon} "
+    if [[ -n "$cmd_icon" ]]; then
+        cmd_icon="${cmd_icon} "
+    fi
+fi
+
 echo "${cmd_icon:-$path_icon}"
+
