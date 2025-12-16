@@ -27,6 +27,7 @@ cmd_icons=(
     [rails]=""
     [docker]=""
     [git]=""
+    [k9s]=""
 )
 
 declare -A dir_prefix_icons
