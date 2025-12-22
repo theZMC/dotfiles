@@ -53,23 +53,10 @@ return {
     opts = {
       formatters_by_ft = {
         markdown = { "deno_fmt" },
-        json = { "deno_fmt" },
-        javascript = { "deno_fmt" },
-        typescriptreact = { "prettier" },
-        jsx = { "deno_fmt" },
-        css = { "deno_fmt" },
-        html = { "deno_fmt" },
-        scss = { "deno_fmt" },
-        sass = { "deno_fmt" },
-        less = { "deno_fmt" },
         astro = { "deno_fmt", lsp_format = "never", stop_after_first = true },
-        svelte = { "deno_fmt" },
-        vue = { "deno_fmt" },
-        sql = { "deno_fmt" },
         yaml = { "yamlfmt" },
         terraform = { "hcl" },
         hcl = { "hcl" },
-        lua = { "stylua" },
         zsh = {},
       },
       formatters = {
@@ -83,8 +70,7 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     optional = true,
     opts = function(_, opts)
-      opts.ensure_installed =
-        require("astrocore").list_insert_unique(opts.ensure_installed, { "deno", "yamlfmt", "hclfmt" })
+      opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "yamlfmt", "hclfmt" })
     end,
   },
 }
