@@ -33,18 +33,18 @@ cmd_icons=(
 declare -A dir_prefix_icons
 
 dir_prefix_icons=(
-    [~/Sync/code]="󰈮"
-    [~/Sync]="󱈖"
-    [~/dotfiles]=""
-    [~/code]="󰈮"
-    [~/Downloads]="󰥥"
-    [~/Documents]="󰈙"
-    [~/Pictures]="󰈟"
-    [~/Music]="󰈣"
-    [~/Videos]="󰈫"
-    [~/.config]="󱁻"
-    [~/.cache]=""
-    [~]=""
+    ["$HOME/Sync/code"]="󰈮"
+    ["$HOME/Sync"]="󱈖"
+    ["$HOME/dotfiles"]=""
+    ["$HOME/code"]="󰈮"
+    ["$HOME/Downloads"]="󰥥"
+    ["$HOME/Documents"]="󰈙"
+    ["$HOME/Pictures"]="󰈟"
+    ["$HOME/Music"]="󰈣"
+    ["$HOME/Videos"]="󰈫"
+    ["$HOME/.config"]="󱁻"
+    ["$HOME/.cache"]=""
+    ["$HOME"]=""
 )
 
 mapfile -t sorted_prefixes < <(printf '%s\n' "${!dir_prefix_icons[@]}" | awk '{ print length, $0 }' | sort -rn | cut -d" " -f2-)
@@ -54,7 +54,7 @@ get_icon_for_cmd() {
     if [[ -n "${cmd_icons[$cmd]}" ]]; then
         echo "${cmd_icons[$cmd]}"
     else
-        echo ""  
+        echo ""
     fi
 }
 
@@ -66,13 +66,13 @@ get_icon_for_path() {
             return
         fi
     done
-    echo "󰉋"  
+    echo "󰉋"
 }
 
 cmd_icon=$(get_icon_for_cmd "$cmd")
 path_icon=$(get_icon_for_path "$path")
 
-if git -C "$path" rev-parse --show-toplevel; then
+if git -C "$path" rev-parse --show-toplevel >/dev/null 2>&1; then
     path_icon="${path_icon} "
     if [[ -n "$cmd_icon" ]]; then
         cmd_icon="${cmd_icon} "
@@ -80,4 +80,3 @@ if git -C "$path" rev-parse --show-toplevel; then
 fi
 
 echo "${cmd_icon:-$path_icon}"
-
