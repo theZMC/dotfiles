@@ -73,4 +73,11 @@ return {
       opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "yamlfmt", "hclfmt" })
     end,
   },
+  {
+    "cpea2506/one_monokai.nvim",
+    opts = {
+      transparent = true,
+      italics = true,
+    },
+  },
 }
