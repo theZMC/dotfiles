@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
+
+blocks:
+- type: prompt
+  alignment: left
+  segments:
+  - type: os
+    style: plain
+    min_width: 0
+    template: '{{ .Icon }}'
+  - properties:
+      folder_icon: 
+      folder_separator_icon: /
+      home_icon: '~'
+    type: path
+    min_width: 0
+    style: plain
+    template: '  {{ .Path }}'
+  - properties:
+      github_icon: 
+      gitlab_icon: 
+      bitbucket_icon: 
+      ahead_icon: 
+      behind_icon: 
+      branch_icon: 
+      conflict_icon: 
+      display_status: true
+      display_upstream: true
+      modified_icon: 
+      separator: ' | '
+      staged_icon: 
+      stashed_icon: 
+      untracked_icon: 
+    type: git
+    min_width: 0
+    template: ' '
+    style: plain
+- type: prompt
+  alignment: left
+  newline: true
+  segments:
+  - type: text
+    style: plain
+    min_width: 0
+    template: '❯ '
+    templates_logic: first_match
+version: 3
