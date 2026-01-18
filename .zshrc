@@ -25,6 +25,13 @@ test -d ~/.local/bin \
 source "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/antidote/provision.zsh
 
 for plugin in "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/{applications,config}/*.zsh; do
+  if [[ -L "$plugin" ]]; then
+    if [[ ! -e "$plugin" ]]; then
+      unlink "$plugin" # prune broken symlinks to gracefully handle plugin removals
+      continue
+    fi
+  fi
+
   source "$plugin"
 done
 
