@@ -41,7 +41,6 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     optional = true,
     opts = {
-      model = "claude-3.7-sonnet",
       window = {
         layout = "float",
       },
