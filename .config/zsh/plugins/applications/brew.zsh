@@ -4,4 +4,5 @@ if (( $+commands[brew] )); then
     PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
   fi
   export HOMEBREW_NO_ENV_HINTS=1
+  export HOMEBREW_BUNDLE_FILE="$HOME/.Brewfile"
 fi
