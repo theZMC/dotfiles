@@ -51,7 +51,6 @@ if [ ! -d "${antidote_dir}" ]; then
   git clone --depth=1 https://github.com/mattmc3/antidote.git "${antidote_dir}"
 fi
 
-source "${antidote_dir}/antidote.zsh"
 fpath=("${antidote_dir}/functions" ${fpath})
 autoload -Uz antidote
 
@@ -64,11 +63,8 @@ if [ ! -f "${zsh_plugins_root}.zsh" ]; then
   touch "${zsh_plugins_root}.zsh"
 fi
 
-tmp_plugin_file=$(mktemp)
-printf '%s\n' "${zsh_plugins[@]}" > "$tmp_plugin_file"
-
-if ! cmp -s "${tmp_plugin_file}" "${zsh_plugins_root}.txt" || ! test -d ~/.cache/antidote; then
-  mv "${tmp_plugin_file}" "${zsh_plugins_root}.txt"
+if ! cmp -s <(printf '%s\n' "${zsh_plugins[@]}") "${zsh_plugins_root}.txt" || ! test -d ~/.cache/antidote; then
+  printf '%s\n' "${zsh_plugins[@]}" > "${zsh_plugins_root}.txt"
   antidote bundle <"${zsh_plugins_root}.txt" >|"${zsh_plugins_root}.zsh"
 fi
 
