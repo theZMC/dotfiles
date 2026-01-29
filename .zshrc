@@ -19,6 +19,10 @@ if ! ${can_start}; then
   return
 fi
 
+if (( $+commands[mise] )); then
+  source <(mise activate zsh)
+fi
+
 test -d ~/.local/bin \
   && export PATH="${HOME}/.local/bin:${PATH}"
 
