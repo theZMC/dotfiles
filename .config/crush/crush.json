@@ -1,0 +1,92 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "options": {
+    "debug": true,
+    "debug_lsp": true
+  },
+  "lsp": {
+    "go": {
+      "command": "gopls",
+      "filetypes": [
+        "go"
+      ]
+    },
+    "typescript": {
+      "command": "vtsls",
+      "root_markers": [
+        "package.json",
+        "tsconfig.json",
+        "jsconfig.json"
+      ],
+      "args": [
+        "--stdio"
+      ],
+      "filetypes": [
+        "typescript",
+        "typescriptreact",
+        "javascript",
+        "javascriptreact"
+      ]
+    },
+    "terraform": {
+      "command": "terraform-ls",
+      "root_markers": [
+        ".terraform",
+        "main.tf",
+        "variables.tf",
+        "terraform.tf"
+      ],
+      "args": [
+        "serve"
+      ],
+      "filetypes": [
+        "terraform"
+      ]
+    },
+    "helm": {
+      "command": "helm_ls",
+      "args": [
+        "serve"
+      ],
+      "filetypes": [
+        "helm"
+      ],
+      "root_markers": [
+        "Chart.yaml",
+        "values.yaml"
+      ]
+    },
+    "rust": {
+      "command": "rust-analyzer",
+      "filetypes": [
+        "rust"
+      ],
+      "root_markers": [
+        "Cargo.toml",
+        "rust-project.json"
+      ]
+    },
+    "python": {
+      "command": "ruff",
+      "root_markers": [
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "requirements.txt"
+      ],
+      "args": [
+        "server"
+      ]
+    },
+    "bash": {
+      "command": "bash-language-server",
+      "args": [
+        "start"
+      ],
+      "filetypes": [
+        "sh",
+        "bash"
+      ]
+    }
+  }
+}
