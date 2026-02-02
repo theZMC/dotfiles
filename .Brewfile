@@ -45,6 +45,7 @@ cask "protonvpn"
 cask "raycast"
 cask "slack"
 cask "steam"
+cask "zed"
 cask "zoom"
 
 flatpak "com.discordapp.Discord"
