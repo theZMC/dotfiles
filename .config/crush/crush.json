@@ -4,6 +4,20 @@
     "debug": true,
     "debug_lsp": true
   },
+  "mcp": {
+    "terraform": {
+      "type": "stdio",
+      "command": "terraform-mcp-server"
+    },
+    "svelte": {
+      "type": "stdio",
+      "command": "svelte-mcp"
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "context7-mcp"
+    }
+  },
   "lsp": {
     "go": {
       "command": "gopls",
@@ -76,6 +90,35 @@
       ],
       "args": [
         "server"
+      ]
+    },
+    "svelte": {
+      "command": "svelteserver",
+      "args": [
+        "--stdio"
+      ],
+      "filetypes": [
+        "svelte"
+      ],
+      "root_markers": [
+        "package.json",
+        "svelte.config.js",
+        "svelte.config.cjs"
+      ]
+    },
+    "reactjs": {
+      "command": "reactjs-codegen-ls",
+      "args": [],
+      "filetypes": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+      ],
+      "root_markers": [
+        "package.json",
+        "tsconfig.json",
+        "jsconfig.json"
       ]
     },
     "bash": {
