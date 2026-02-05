@@ -9,12 +9,26 @@ if ! (( $+commands[wget] || $+commands[curl] )); then
   can_start=false
 fi
 
-if ! ${can_start}; then
+if ! $can_start; then
   return
 fi
 
-test -d ~/.local/bin \
-  && export PATH="${HOME}/.local/bin:${PATH}"
+if ! [[ $PATH =~ "${HOME}/.local/bin" ]]; then
+  export PATH="${HOME}/.local/bin:${PATH}"
+fi
+
+if ! (( $+commands[mise] )); then
+  if (( $+commands[curl] )); then
+    curl -fsSL https://mise.run | sh
+  else
+    wget -qO- https://mise.run | sh
+  fi
+  rehash # detect mise
+  mise install
+  rehash # detect everything mise installed
+fi
+
+export CODE_HOME="${CODE_HOME:-${HOME}/Sync/code}"
 
 source "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/antidote/provision.zsh
 
