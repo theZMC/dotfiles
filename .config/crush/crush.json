@@ -16,6 +16,22 @@
     "context7": {
       "type": "stdio",
       "command": "context7-mcp"
+    },
+    "shadcn": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": [
+        "dlx",
+        "shadcn@latest",
+        "mcp"
+      ]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer $(gh auth token)"
+      }
     }
   },
   "lsp": {
@@ -81,13 +97,13 @@
       ]
     },
     "python": {
-      "command": "ruff",
       "root_markers": [
         "pyproject.toml",
         "setup.py",
         "setup.cfg",
         "requirements.txt"
       ],
+      "command": "ruff",
       "args": [
         "server"
       ]
