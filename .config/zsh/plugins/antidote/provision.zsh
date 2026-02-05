@@ -4,9 +4,11 @@ zsh_plugins=(
   "zsh-users/zsh-autosuggestions"
   "zsh-users/zsh-completions"
   "Aloxaf/fzf-tab"
-  "romkatv/powerlevel10k"
   "zdharma-continuum/fast-syntax-highlighting kind:defer"
   "getantidote/use-omz"
+
+  "ohmyzsh/ohmyzsh path:plugins/mise"
+
   "ohmyzsh/ohmyzsh path:lib"
   "ohmyzsh/ohmyzsh path:plugins/aws"
   "ohmyzsh/ohmyzsh path:plugins/brew"
@@ -20,7 +22,6 @@ zsh_plugins=(
   "ohmyzsh/ohmyzsh path:plugins/istioctl"
   "ohmyzsh/ohmyzsh path:plugins/kubectl"
   "ohmyzsh/ohmyzsh path:plugins/kubectx"
-  "ohmyzsh/ohmyzsh path:plugins/mise"
   "ohmyzsh/ohmyzsh path:plugins/mvn"
   "ohmyzsh/ohmyzsh path:plugins/nvm"
   "ohmyzsh/ohmyzsh path:plugins/terraform"

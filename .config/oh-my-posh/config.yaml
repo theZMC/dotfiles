@@ -1,5 +1,10 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
 
+transient_prompt:
+  newline: false
+  background: transparent
+  foreground: '#FFFFFF'
+  template: '❯ '
 blocks:
 - type: prompt
   alignment: left
@@ -7,22 +12,28 @@ blocks:
   - type: os
     style: plain
     min_width: 0
+    foreground: '#FFFFFF'
     template: '{{ .Icon }}'
-  - properties:
+  - options:
+      style: agnoster_full
       folder_icon: 
       folder_separator_icon: /
       home_icon: '~'
+    foreground: '#5EB7FF'
     type: path
     min_width: 0
     style: plain
     template: '  {{ .Path }}'
-  - properties:
+  - options:
+      fetch_upstream_icon: true
+      fetch_status: true
+      fetch_push_status: true
       github_icon: 
       gitlab_icon: 
       bitbucket_icon: 
       ahead_icon: 
       behind_icon: 
-      branch_icon: 
+      branch_icon: ' '
       conflict_icon: 
       display_status: true
       display_upstream: true
@@ -31,17 +42,38 @@ blocks:
       staged_icon: 
       stashed_icon: 
       untracked_icon: 
+    cache:
+      duration: 10s
+      strategy: folder
+    foreground_templates:
+    - "{{ if or (.Working.Changed) (.Staging.Changed) }}#FFEB3B{{ end }}"
+    - "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#FFCC80{{ end }}"
+    - "{{ if gt .Ahead 0 }}#B388FF{{ end }}"
+    - "{{ if gt .Behind 0 }}#B388FB{{ end }}"
+    template: " {{ .UpstreamIcon }} {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }}"
     type: git
     min_width: 0
-    template: ' '
     style: plain
+- type: prompt
+  alignment: right
+  overflow: hide
+  force: true
+  newline: false
+  segments:
+  - type: status
+    style: plain
+    foreground_templates:
+    - '{{ if eq .Code 0 }}#00FF00{{ else }}#FF4444{{ end }}'
+    template: '{{ if eq .Code 0 }}✔{{ else }}✘{{ end }} {{ .String }}'
 - type: prompt
   alignment: left
   newline: true
+  overflow: hide
   segments:
   - type: text
     style: plain
     min_width: 0
+    foreground_templates:
+    - '{{ if eq .Code 0 }}#44FF44{{ else }}#FF4444{{ end }}'
     template: '❯ '
-    templates_logic: first_match
 version: 3

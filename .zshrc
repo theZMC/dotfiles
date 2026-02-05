@@ -1,9 +1,3 @@
-if [[ -r "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-${HOME}/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-export CODE_HOME="${XDG_DATA_HOME:-${HOME}/Sync/code}"
-
 can_start=true
 if ! (( $+commands[git] )); then
   echo "git must be installed for this zsh config to work"
@@ -35,8 +29,8 @@ for plugin in "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/{applications,co
   source "$plugin"
 done
 
-test -f ~/.p10k.zsh \
-  && source ~/.p10k.zsh
+source <(oh-my-posh init zsh --config "$HOME/.config/oh-my-posh/config.yaml")
+
 test -f ~/.zshrc.local \
   && source ~/.zshrc.local
 
