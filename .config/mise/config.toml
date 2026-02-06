@@ -1,3 +1,8 @@
+[settings]
+experimental = true
+auto_install = true
+lockfile = true
+
 [settings.npm]
 package_manager = "bun"
 
@@ -5,26 +10,26 @@ package_manager = "bun"
 aws-cli = { version = "2", symlink_bins = "true" }
 bat = "0"
 bun = "1"
-crush = "0"
 deno = "2"
 docker-cli = "29"
 dotnet = "10"
-dotnet-core = "9"
+dotnet-core = "10"
 fd = "10"
 flux2 = "2"
 fzf = "0"
 gh = "2"
 go = "1"
+"go:github.com/charmbracelet/crush" = "0"
 "go:github.com/hashicorp/terraform-mcp-server/cmd/terraform-mcp-server" = "latest"
 "go:golang.org/x/tools/gopls" = "latest"
-helm = "3"
+helm = "3.20"
 helm-ls = "0"
 java = "25"
 k9s = "0"
 kubectl = "1"
 neovim = "0.11"
 node = "25"
-npm = "9"
+npm = "11"
 "npm:@astrojs/language-server" = "2"
 "npm:@slidev/cli" = "latest"
 "npm:@sveltejs/mcp" = "0"
