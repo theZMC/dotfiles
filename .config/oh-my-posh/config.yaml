@@ -1,9 +1,26 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
 
+tooltips_action: replace
+tooltips:
+- type: aws
+  style: plain
+  foreground: '#FF9900'
+  tips:
+  - aws
+  - terraform
+  template: " {{.Profile}}{{if ne .Region \"\"}} ({{.Region}}){{end}}"
+- type: kubectl
+  style: plain
+  foreground: '#55EEFF'
+  tips:
+  - kubectl
+  - helm
+  - flux
+  template: ' {{.Context}}{{if .Namespace}} ({{.Namespace}}){{end}}'
 transient_prompt:
   newline: false
   background: transparent
-  foreground: '#FFFFFF'
+  foreground: '#00FF00'
   template: '❯ '
 blocks:
 - type: prompt
