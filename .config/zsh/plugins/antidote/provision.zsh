@@ -1,5 +1,7 @@
 unset _style
 
+VI_MODE_SET_CURSOR=true
+
 zsh_plugins=(
   "zsh-users/zsh-autosuggestions"
   "zsh-users/zsh-completions"
