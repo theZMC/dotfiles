@@ -43,9 +43,9 @@ for plugin in "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/{applications,co
   source "$plugin"
 done
 
-source <(oh-my-posh init zsh --config "$HOME/.config/oh-my-posh/config.yaml")
-
 test -f ~/.zshrc.local \
   && source ~/.zshrc.local
+
+source <(oh-my-posh init zsh --config "$HOME/.config/oh-my-posh/config.yaml")
 
 unsetopt BEEP
