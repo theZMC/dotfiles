@@ -46,6 +46,6 @@ done
 test -f ~/.zshrc.local \
   && source ~/.zshrc.local
 
-source <(oh-my-posh init zsh --config "$HOME/.config/oh-my-posh/config.yaml")
+eval "$(oh-my-posh init zsh --config "$HOME/.config/oh-my-posh/config.yaml")"
 
 unsetopt BEEP
