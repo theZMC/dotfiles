@@ -34,7 +34,7 @@ zsh_plugins=(
 )
 
 if [ -d /opt/homebrew/bin ]; then
-  source <(/opt/homebrew/bin/brew shellenv)
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 if command -v tmux >/dev/null 2>&1; then

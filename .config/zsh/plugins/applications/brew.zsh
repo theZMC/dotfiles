@@ -1,5 +1,5 @@
 if (( $+commands[brew] )); then
-  source <(brew shellenv)
+  eval "$(brew shellenv)"
   if [[ -d /opt/homebrew/opt/grep/libexec/gnubin ]]; then
     PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
   fi

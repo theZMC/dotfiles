@@ -1,5 +1,5 @@
 if (( $+commands[fzf] )); then
-  if ! source <(fzf --zsh); then
+  if ! eval "$(fzf --zsh)"; then
     if ! source /usr/share/doc/fzf/examples/key-bindings.zsh
       echo "Failed to source fzf key bindings"
       exit

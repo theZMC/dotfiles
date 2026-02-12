@@ -1,4 +1,4 @@
 if (( $+commands[crush] )); then
-  source <(crush completion zsh)
+  eval "$(crush completion zsh)"
 fi
 

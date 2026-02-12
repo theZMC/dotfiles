@@ -1,3 +1,3 @@
 if (( $+commands[pyenv] )); then
-  source <(pyenv init --path)
+  eval "$(pyenv init --path)"
 fi
