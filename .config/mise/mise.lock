@@ -106,6 +106,10 @@ backend = "core:go"
 "platforms.macos-x64" = { checksum = "sha256:bf5050a2152f4053837b886e8d9640c829dbacbc3370f913351eb0904cb706f5", url = "https://dl.google.com/go/go1.25.7.darwin-amd64.tar.gz"}
 "platforms.windows-x64" = { checksum = "sha256:c75e5f4ff62d085cc0017be3ad19d5536f46825fa05db06ec468941f847e3228", url = "https://dl.google.com/go/go1.25.7.windows-amd64.zip"}
 
+[[tools."go:github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer"]]
+version = "0.7.4"
+backend = "go:github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer"
+
 [[tools."go:github.com/charmbracelet/crush"]]
 version = "0.39.3"
 backend = "go:github.com/charmbracelet/crush"
