@@ -1,8 +1,19 @@
 {
   "$schema": "https://charm.land/crush.json",
   "options": {
-    "debug": true,
-    "debug_lsp": true
+    "disabled_tools": [
+      "sourcegraph"
+    ],
+    "auto_lsp": true
+  },
+  "tools": {
+    "ls": {
+      "max_depth": 10,
+      "max_items": 1000
+    },
+    "grep": {
+      "timeout": 5000
+    }
   },
   "mcp": {
     "terraform": {
@@ -20,6 +31,7 @@
     "shadcn": {
       "type": "stdio",
       "command": "pnpm",
+      "disabled": true,
       "args": [
         "dlx",
         "shadcn@latest",
@@ -35,6 +47,21 @@
     }
   },
   "lsp": {
+    "astro": {
+      "command": "astro-ls",
+      "args": [
+        "--stdio"
+      ],
+      "filetypes": [
+        "astro"
+      ],
+      "root_markers": [
+        "package.json",
+        "astro.config.mjs",
+        "astro.config.js",
+        "astro.config.cjs"
+      ]
+    },
     "go": {
       "command": "gopls",
       "filetypes": [
