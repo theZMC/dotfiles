@@ -37,7 +37,7 @@ if [ -d /opt/homebrew/bin ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-if command -v tmux >/dev/null 2>&1; then
+if (( $+commands[tmux] )); then
   export ZSH_TMUX_AUTOSTART=true
   zsh_plugins+=("ohmyzsh/ohmyzsh path:plugins/tmux")
 fi
