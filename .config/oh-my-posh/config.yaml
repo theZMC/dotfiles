@@ -42,6 +42,8 @@ blocks:
     style: plain
     template: '  {{ .Path }}'
   - options:
+      branch_gone_icon: ''
+      git_icon: ''
       fetch_upstream_icon: true
       fetch_status: true
       fetch_push_status: true
@@ -67,7 +69,7 @@ blocks:
     - "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#FFCC80{{ end }}"
     - "{{ if gt .Ahead 0 }}#B388FF{{ end }}"
     - "{{ if gt .Behind 0 }}#B388FB{{ end }}"
-    template: " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }}"
+    template: " {{ .UpstreamIcon }} {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }}"
     type: git
     min_width: 0
     style: plain
