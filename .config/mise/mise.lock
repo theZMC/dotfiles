@@ -2,6 +2,7 @@
 version = "2.33.21"
 backend = "aqua:aws/aws-cli"
 "platforms.linux-x64" = { checksum = "blake3:8bfa844e45676a91578d7e14d4a118813c4ce2038110f419d9746df1b3fe26a6", url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.33.21.zip"}
+"platforms.macos-arm64" = { checksum = "blake3:1ac9f06e6ca7623223832c52e2bc0bd9a1fe604d49a1e55b0aa42d17b31aebec", url = "https://awscli.amazonaws.com/AWSCLIV2-2.33.21.pkg"}
 
 [[tools.bat]]
 version = "0.26.1"
@@ -105,6 +106,7 @@ backend = "go:golang.org/x/tools/gopls"
 version = "3.20.0"
 backend = "aqua:helm/helm"
 "platforms.linux-x64" = { checksum = "sha256:dbb4c8fc8e19d159d1a63dda8db655f9ffa4aac1b9a6b188b34a40957119b286", url = "https://get.helm.sh/helm-v3.20.0-linux-amd64.tar.gz"}
+"platforms.macos-arm64" = { checksum = "sha256:1cb8022ef9c88026adf236cbdf02a80bf7678632d1c39d3d8045e815959ab20e", url = "https://get.helm.sh/helm-v3.20.0-darwin-arm64.tar.gz"}
 
 [[tools.helm-ls]]
 version = "0.5.4"
@@ -119,6 +121,7 @@ backend = "aqua:mrjosh/helm-ls"
 version = "25.0.2"
 backend = "core:java"
 "platforms.linux-x64" = { checksum = "sha256:555ce0821e4fe175ea50d54518cd6fbece9663c1998de529bc6ce429534457df", url = "https://download.java.net/java/GA/jdk25.0.2/b1e0dfa218384cb9959bdcb897162d4e/10/GPL/openjdk-25.0.2_linux-x64_bin.tar.gz"}
+"platforms.macos-arm64" = { checksum = "sha256:7581b0d1752cd5acbf39e286c03f07b6cd6c205b562eb2fe753ff0253cf4c1bf", url = "https://download.java.net/java/GA/jdk25.0.2/b1e0dfa218384cb9959bdcb897162d4e/10/GPL/openjdk-25.0.2_macos-aarch64_bin.tar.gz"}
 
 [[tools.k9s]]
 version = "0.50.18"
