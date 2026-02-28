@@ -1,8 +1,10 @@
 [[tools.aws-cli]]
-version = "2.33.21"
+version = "2.34.0"
 backend = "aqua:aws/aws-cli"
-"platforms.linux-x64" = { checksum = "blake3:8bfa844e45676a91578d7e14d4a118813c4ce2038110f419d9746df1b3fe26a6", url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.33.21.zip"}
-"platforms.macos-arm64" = { checksum = "blake3:1ac9f06e6ca7623223832c52e2bc0bd9a1fe604d49a1e55b0aa42d17b31aebec", url = "https://awscli.amazonaws.com/AWSCLIV2-2.33.21.pkg"}
+
+[[tools.awscli]]
+version = "2.34.0"
+backend = "aqua:aws/aws-cli"
 
 [[tools.bat]]
 version = "0.26.1"
@@ -91,7 +93,7 @@ version = "0.7.4"
 backend = "go:github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer"
 
 [[tools."go:github.com/charmbracelet/crush"]]
-version = "0.42.0"
+version = "0.44.0"
 backend = "go:github.com/charmbracelet/crush"
 
 [[tools."go:github.com/hashicorp/terraform-mcp-server/cmd/terraform-mcp-server"]]
@@ -136,6 +138,14 @@ backend = "aqua:derailed/k9s"
 version = "1.35.1"
 backend = "aqua:kubernetes/kubernetes/kubectl"
 "platforms.linux-x64" = { checksum = "sha256:36e2f4ac66259232341dd7866952d64a958846470f6a9a6a813b9117bd965207", url = "https://dl.k8s.io/v1.35.1/bin/linux/amd64/kubectl"}
+
+[[tools.lazygit]]
+version = "0.59.0"
+backend = "aqua:jesseduffield/lazygit"
+
+[[tools.mkcert]]
+version = "1.4.4"
+backend = "aqua:FiloSottile/mkcert"
 
 [[tools.neovim]]
 version = "0.11.6"
@@ -271,6 +281,10 @@ backend = "aqua:trufflesecurity/trufflehog"
 version = "0.10.2"
 backend = "aqua:astral-sh/uv"
 "platforms.linux-x64" = { checksum = "sha256:c162182ba7dd692794362d76dd183990d6e51553217954106da19bdb6ced211b", url = "https://github.com/astral-sh/uv/releases/download/0.10.2/uv-x86_64-unknown-linux-musl.tar.gz"}
+
+[[tools.yarn]]
+version = "4.12.0"
+backend = "vfox:mise-plugins/vfox-yarn"
 
 [[tools.yq]]
 version = "4.52.2"
