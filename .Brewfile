@@ -1,3 +1,5 @@
+tap "deskflow/tap"
+
 brew "atmos"
 brew "awscli"
 brew "bash"
@@ -36,6 +38,7 @@ brew "viu"
 brew "zoxide"
 
 cask "claude"
+cask "deskflow/tap/deskflow"
 cask "discord"
 cask "font-recursive-mono-nerd-font"
 cask "ghostty"
