@@ -1,10 +1,8 @@
 [[tools.aws-cli]]
-version = "2.34.0"
+version = "2.33.21"
 backend = "aqua:aws/aws-cli"
-
-[[tools.awscli]]
-version = "2.34.0"
-backend = "aqua:aws/aws-cli"
+"platforms.linux-x64" = { checksum = "blake3:8bfa844e45676a91578d7e14d4a118813c4ce2038110f419d9746df1b3fe26a6", url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.33.21.zip"}
+"platforms.macos-arm64" = { checksum = "blake3:1ac9f06e6ca7623223832c52e2bc0bd9a1fe604d49a1e55b0aa42d17b31aebec", url = "https://awscli.amazonaws.com/AWSCLIV2-2.33.21.pkg"}
 
 [[tools.bat]]
 version = "0.26.1"
@@ -19,6 +17,16 @@ backend = "aqua:sharkdp/bat"
 version = "1.3.9"
 backend = "core:bun"
 "platforms.linux-x64" = { checksum = "blake3:b1ef93f3692471e33b5b5ee7052299328b07bd0be8e6d24479978bd33beb9f26"}
+
+[[tools.claude]]
+version = "2.1.50"
+backend = "aqua:anthropics/claude-code"
+"platforms.linux-x64" = { checksum = "blake3:1e608dfb46259d191fd5fef3d776a42d5036a48e05756e9d101c8be6411a3b7e", url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.50/linux-x64/claude"}
+
+[[tools.crush]]
+version = "0.43.0"
+backend = "aqua:charmbracelet/crush"
+"platforms.linux-x64" = { checksum = "sha256:b7d95c2f176745d7681271587741cf86d19cc78e46ef20514ff0d3815ca85a9a", url = "https://github.com/charmbracelet/crush/releases/download/v0.43.0/crush_0.43.0_Linux_x86_64.tar.gz"}
 
 [[tools.deno]]
 version = "2.6.9"
@@ -83,6 +91,11 @@ backend = "aqua:cli/cli"
 "platforms.macos-x64" = { checksum = "sha256:ced7094d05702eb54a63542abd8a1dc570b7e5ae94951844eb1626ba74bc2c60", url = "https://github.com/cli/cli/releases/download/v2.86.0/gh_2.86.0_macOS_amd64.zip"}
 "platforms.windows-x64" = { checksum = "sha256:983c74a8c594366b198485187cd6d4d07638f0bf9a9948d51a2a81a5164d8bfd", url = "https://github.com/cli/cli/releases/download/v2.86.0/gh_2.86.0_windows_amd64.zip"}
 
+[[tools."github:oraios/serena"]]
+version = "0.1.4"
+backend = "github:oraios/serena"
+"platforms.linux-x64" = { checksum = "sha256:8bb79a964a4bd09d5e5b86115d5436d9229dc80e6a3e0f176415e34294531a84", url = "https://github.com/oraios/serena/releases/download/v0.1.4/serena_agent-0.1.4.tar.gz", url_api = "https://api.github.com/repos/oraios/serena/releases/assets/282821045"}
+
 [[tools.go]]
 version = "1.26.0"
 backend = "core:go"
@@ -139,14 +152,6 @@ version = "1.35.1"
 backend = "aqua:kubernetes/kubernetes/kubectl"
 "platforms.linux-x64" = { checksum = "sha256:36e2f4ac66259232341dd7866952d64a958846470f6a9a6a813b9117bd965207", url = "https://dl.k8s.io/v1.35.1/bin/linux/amd64/kubectl"}
 
-[[tools.lazygit]]
-version = "0.59.0"
-backend = "aqua:jesseduffield/lazygit"
-
-[[tools.mkcert]]
-version = "1.4.4"
-backend = "aqua:FiloSottile/mkcert"
-
 [[tools.neovim]]
 version = "0.11.6"
 backend = "vfox:mise-plugins/vfox-neovim"
@@ -164,6 +169,10 @@ backend = "core:node"
 [[tools.npm]]
 version = "11.10.0"
 backend = "npm:npm"
+
+[[tools."npm:@anthropic-ai/claude-code"]]
+version = "2.1.56"
+backend = "npm:@anthropic-ai/claude-code"
 
 [[tools."npm:@astrojs/language-server"]]
 version = "2.16.3"
@@ -189,6 +198,10 @@ backend = "npm:@vtsls/language-server"
 version = "5.6.0"
 backend = "npm:bash-language-server"
 
+[[tools."npm:eslint_d"]]
+version = "14.3.0"
+backend = "npm:eslint_d"
+
 [[tools."npm:svelte-language-server"]]
 version = "0.17.25"
 backend = "npm:svelte-language-server"
@@ -199,9 +212,9 @@ backend = "aqua:JanDeDobbeleer/oh-my-posh"
 "platforms.linux-x64" = { checksum = "sha256:96ae52f4987cd79ee2782f420512591603301b2b681ebc9f078e0a427900ff47", url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.3.0/posh-linux-amd64"}
 
 [[tools.pnpm]]
-version = "10.29.3"
+version = "10.30.0"
 backend = "aqua:pnpm/pnpm"
-"platforms.linux-x64" = { checksum = "sha256:2fc98db127c611be0c110af11b5b72759f7d736893dddc81df73b7b59b30f15a", url = "https://github.com/pnpm/pnpm/releases/download/v10.29.3/pnpm-linux-x64"}
+"platforms.linux-x64" = { checksum = "sha256:78d83aa009dc7e8d18faf5ea87e8cafed9601245f23757f00c3582284f54f793", url = "https://github.com/pnpm/pnpm/releases/download/v10.30.0/pnpm-linux-x64"}
 
 [[tools.pulumi]]
 version = "3.220.0"
@@ -281,10 +294,6 @@ backend = "aqua:trufflesecurity/trufflehog"
 version = "0.10.2"
 backend = "aqua:astral-sh/uv"
 "platforms.linux-x64" = { checksum = "sha256:c162182ba7dd692794362d76dd183990d6e51553217954106da19bdb6ced211b", url = "https://github.com/astral-sh/uv/releases/download/0.10.2/uv-x86_64-unknown-linux-musl.tar.gz"}
-
-[[tools.yarn]]
-version = "4.12.0"
-backend = "vfox:mise-plugins/vfox-yarn"
 
 [[tools.yq]]
 version = "4.52.2"
