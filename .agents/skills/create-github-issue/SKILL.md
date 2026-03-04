@@ -53,6 +53,10 @@ Structure the issue body exactly as follows:
   markdown checkbox (`- [ ]`). Use nested checkboxes for sub-criteria.
 - The **References** section is optional. Omit it entirely (including the
   heading) if there are no references.
+- Any repository file/doc references **must** use full GitHub URLs pinned to a
+  ref (for example,
+  `https://github.com/<owner>/<repo>/blob/<branch-or-sha>/path/to/file.ts`). Do
+  not use relative paths like `../docs/...` or `plugins/...`.
 
 ## Title generation
 
