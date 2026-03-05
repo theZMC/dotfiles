@@ -1,6 +1,7 @@
 config-file = ?config.local
 
 font-family = RecMonoCasual Nerd Font Mono
+font-family-italic = Monaspace Radon NF
 font-size = 12
 
 background = #1A1D23
