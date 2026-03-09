@@ -364,7 +364,7 @@ version = "14.3.0"
 backend = "npm:eslint_d"
 
 [[tools."npm:opencode-ai"]]
-version = "1.2.17"
+version = "1.2.20"
 backend = "npm:opencode-ai"
 
 [[tools."npm:prettier"]]
@@ -573,6 +573,11 @@ backend = "aqua:trufflesecurity/trufflehog"
 "platforms.macos-x64-baseline" = { checksum = "sha256:d17746e793f6d88895b1e00ddac3b8b7ac8a05c88908f1fa5e9afccb3015ed2a", url = "https://github.com/trufflesecurity/trufflehog/releases/download/v3.93.3/trufflehog_3.93.3_darwin_amd64.tar.gz"}
 "platforms.windows-x64" = { checksum = "sha256:53c72ff38a1028341c507e76fd476aac3da4a95b58135a93d945c92849e70ff5", url = "https://github.com/trufflesecurity/trufflehog/releases/download/v3.93.3/trufflehog_3.93.3_windows_amd64.tar.gz"}
 "platforms.windows-x64-baseline" = { checksum = "sha256:53c72ff38a1028341c507e76fd476aac3da4a95b58135a93d945c92849e70ff5", url = "https://github.com/trufflesecurity/trufflehog/releases/download/v3.93.3/trufflehog_3.93.3_windows_amd64.tar.gz"}
+
+[[tools.usage]]
+version = "2.18.2"
+backend = "aqua:jdx/usage"
+"platforms.linux-x64" = { checksum = "sha256:0aee30563efbca157ec6cd8ae2c6f33c5caee6b51e0ddbf66b3b0c3fb9e4c17b", url = "https://github.com/jdx/usage/releases/download/v2.18.2/usage-x86_64-unknown-linux-musl.tar.gz"}
 
 [[tools.uv]]
 version = "0.10.2"
