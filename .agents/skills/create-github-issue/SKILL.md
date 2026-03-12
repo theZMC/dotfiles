@@ -3,7 +3,7 @@ name: create-github-issue
 description: Creates a well-structured GitHub issue with Motivation, Acceptance Criteria, and optional References sections using the GitHub CLI (`gh`). Use when the user asks to create, file, or open a GitHub issue.
 metadata:
   author: Zach Callahan
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Create GitHub Issue (gh CLI)
@@ -23,6 +23,11 @@ context:
 3. **Acceptance Criteria**: Specific conditions that must be met for the issue
    to be considered resolved.
 4. **References** (optional): Relevant links, documents, or resources.
+5. **Project target** (optional): A GitHub Project name/number when the user
+   asks to add issues to a project.
+6. **Dependencies** (for multiple issues): If creating multiple issues with
+   clear sequencing, identify which issues are blocked by others and create the
+   dependency graph.
 
 If the user has not provided enough detail for the Motivation or Acceptance
 Criteria sections, ask before proceeding.
@@ -105,6 +110,57 @@ Generate the issue title from the Motivation content. The title should be:
    `--assignee`.
 
 6. Report the created issue number and URL back to the user.
+
+## Creating multiple related issues
+
+When creating multiple issues in one request:
+
+1. Create all issues first and capture each issue number + node ID.
+
+   - You can fetch node IDs with:
+
+     ```bash
+     gh issue view <number> --repo <owner>/<repo> --json id,number,title,url
+     ```
+
+2. Build a dependency graph for clearly dependent issues.
+
+   - If issue B cannot be completed without issue A, set **B blocked by A**.
+   - Use GraphQL `addBlockedBy` mutation:
+
+     ```bash
+     gh api graphql -f query='mutation($issueId:ID!, $blockingIssueId:ID!){ addBlockedBy(input:{issueId:$issueId, blockingIssueId:$blockingIssueId}) { clientMutationId } }' -f issueId='<blocked-issue-node-id>' -f blockingIssueId='<blocking-issue-node-id>'
+     ```
+
+3. Verify dependency links for each issue when practical:
+
+   ```bash
+   gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner,name:$repo){ issue(number:$number){ number blockedBy(first:20){ nodes { number title url } } } } }' -f owner='<owner>' -f repo='<repo>' -F number=<issue-number>
+   ```
+
+## Project assignment
+
+If the user specifies a project in the initial "create these issues" request,
+add every created issue to that project before finishing.
+
+1. Add issue to project by name:
+
+   ```bash
+   gh issue edit <number> --repo <owner>/<repo> --add-project "<Project Name>"
+   ```
+
+2. If project lookup fails, verify project access and available projects:
+
+   ```bash
+   gh project list --owner <owner> --format json
+   ```
+
+3. If project scopes are missing, ask the user to refresh auth scopes and then
+   continue:
+
+   ```bash
+   gh auth refresh -s read:project -s project
+   ```
 
 ## Labels and assignees
 
