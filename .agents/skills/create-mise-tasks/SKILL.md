@@ -9,7 +9,7 @@ description: >
   "mise run", task dependencies, or task caching with sources/outputs.
 metadata:
   author: Zach Callahan
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Create Mise Tasks
@@ -81,6 +81,27 @@ set -euo pipefail
 - `tools` installs and activates tool versions for this task only (not passed to
   dependencies).
 
+### 2.1 Task argument conventions (`[USAGE]`)
+
+- Prefer `# [USAGE]` definitions for task inputs over ad-hoc positional parsing.
+- Prefer named flags (for example `--version <version>`) over positional args for
+  CI-facing tasks and workflows.
+- Use positional args only for very simple local tasks with 1 required input.
+- In scripts, read parsed values from `usage_*` variables (for example
+  `usage_version`) and fail with clear messages when missing.
+- Prefer invoking tasks as `mise run task --flag value` (no extra `--` separator)
+  unless a specific mise behavior requires it.
+
+Example:
+
+```sh
+#!/usr/bin/env bash
+# [USAGE] flag "--version <version>" help="Release version"
+set -euo pipefail
+
+version="${usage_version?missing --version}"
+```
+
 ### 3. Configuration locations
 
 | Scope   | Location        |
@@ -123,8 +144,10 @@ Do not use alternate locations unless the user explicitly requires it.
 
 ### 6. Tools must be declared in mise config
 
-Any tool a task uses must be declared in the relevant `mise.toml` (or
-`.mise.toml`). Before assuming a tool is unavailable, check these mise backends:
+Any tool a task uses must be declared in the relevant mise config (`.mise/config.toml`
+preferred in this environment; otherwise `mise.toml` / `.mise.toml` if that is what
+the project already uses). Before assuming a tool is unavailable, check these mise
+backends:
 
 | Backend | Example                        | Use for                       |
 | ------- | ------------------------------ | ----------------------------- |
