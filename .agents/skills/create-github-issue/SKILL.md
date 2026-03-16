@@ -3,7 +3,7 @@ name: create-github-issue
 description: Creates a well-structured GitHub issue with Motivation, Acceptance Criteria, and optional References sections using the GitHub CLI (`gh`). Use when the user asks to create, file, or open a GitHub issue.
 metadata:
   author: Zach Callahan
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Create GitHub Issue (gh CLI)
@@ -26,8 +26,8 @@ context:
 5. **Project target** (optional): A GitHub Project name/number when the user
    asks to add issues to a project.
 6. **Dependencies** (for multiple issues): If creating multiple issues with
-   clear sequencing, identify which issues are blocked by others and create the
-   dependency graph.
+   clear sequencing, identify which issues are blocked by others and always
+   create the dependency graph.
 
 If the user has not provided enough detail for the Motivation or Acceptance
 Criteria sections, ask before proceeding.
@@ -109,7 +109,11 @@ Generate the issue title from the Motivation content. The title should be:
    If labels or assignees are requested, include them with `--label` and
    `--assignee`.
 
-6. Report the created issue number and URL back to the user.
+6. If multiple related issues were created, automatically apply dependency
+   links before finishing.
+7. If a project target is specified, add each issue to the project and move
+   non-blocked issues to `Ready`.
+8. Report the created issue number and URL back to the user.
 
 ## Creating multiple related issues
 
@@ -138,6 +142,9 @@ When creating multiple issues in one request:
    gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner,name:$repo){ issue(number:$number){ number blockedBy(first:20){ nodes { number title url } } } } }' -f owner='<owner>' -f repo='<repo>' -F number=<issue-number>
    ```
 
+4. Do this dependency-linking step automatically when dependencies are known;
+   do not leave dependency graph creation as an optional manual follow-up.
+
 ## Project assignment
 
 If the user specifies a project in the initial "create these issues" request,
@@ -161,6 +168,30 @@ add every created issue to that project before finishing.
    ```bash
    gh auth refresh -s read:project -s project
    ```
+
+4. After adding issues to the project, move all non-blocked issues to `Ready`.
+   Keep blocked issues in `Backlog`.
+
+   - Get the project id, `Status` field id, and option ids:
+
+     ```bash
+     gh api graphql -f query='query($owner:String!, $number:Int!) { organization(login:$owner) { projectV2(number:$number) { id title fields(first:50) { nodes { ... on ProjectV2FieldCommon { id name } ... on ProjectV2SingleSelectField { id name options { id name } } } } } } }' -f owner='<owner>' -F number=<project-number>
+     ```
+
+   - Get each issue's project item id and whether it is blocked:
+
+     ```bash
+     gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner,name:$repo){ issue(number:$number){ number blockedBy(first:20){ nodes { number } } projectItems(first:20){ nodes { id project { ... on ProjectV2 { id title number } } } } } } }' -f owner='<owner>' -f repo='<repo>' -F number=<issue-number>
+     ```
+
+   - Move non-blocked issues to `Ready`:
+
+     ```bash
+     gh project item-edit --project-id <project-id> --id <project-item-id> --field-id <status-field-id> --single-select-option-id <ready-option-id>
+     ```
+
+   - Rule: if `blockedBy.nodes` is empty, set status to `Ready`; otherwise
+     leave status unchanged (typically `Backlog`).
 
 ## Labels and assignees
 
