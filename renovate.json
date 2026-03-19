@@ -6,5 +6,13 @@
     "config:recommended",
     "group:allNonMajor",
     "schedule:weekly"
+  ],
+  "packageRules": [
+    {
+      "description": "Keep mise java updates installable by dropping LTS/build suffixes",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["java"],
+      "extractVersion": "^(?<version>\\d+\\.\\d+\\.\\d+)"
+    }
   ]
 }
