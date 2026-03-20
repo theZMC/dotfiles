@@ -87,7 +87,7 @@ Closes #<issue-number>
 1. Resolve repo and issue context.
 
    - `gh repo view`
-   - Use `--repo <owner>/<repo>` consistently when needed.
+   - Use `<owner>/<repo>` consistently when needed.
 
 2. Read issue details.
 
@@ -95,7 +95,7 @@ Closes #<issue-number>
    - If issue is closed or inaccessible, stop and report the reason.
 
 3. Determine base branch and ensure local sync.
-   - `gh repo view --repo <owner>/<repo> --json defaultBranchRef`
+   - `gh repo view <owner>/<repo> --json defaultBranchRef`
    - Fetch remotes and ensure local base is up to date before branching.
 
 4. Create and check out the issue branch.
@@ -239,7 +239,7 @@ helper; do not duplicate it elsewhere):
 ```bash
 gh repo view
 gh issue view <issue-number> --repo <owner>/<repo> --json number,title,body,url,state
-gh repo view --repo <owner>/<repo> --json defaultBranchRef
+gh repo view <owner>/<repo> --json defaultBranchRef
 git fetch origin
 git checkout <base-branch>
 git pull --ff-only origin <base-branch>
