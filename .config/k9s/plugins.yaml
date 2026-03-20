@@ -20,7 +20,7 @@ plugins:
   # crossplane-watch requires 'crossplane' cli and 'viddy' binaries installed
   # 'viddy' is a modern implementation of 'watch' command written in rust. Read more on https://github.com/sachaos/viddy.
   crossplane-watch:
-    shortCut: w
+    shortCut: W
     confirm: false
     description: "Crossplane Watch"
     scopes:
