@@ -112,6 +112,44 @@ backend = "aqua:anthropics/claude-code"
 checksum = "blake3:1e608dfb46259d191fd5fef3d776a42d5036a48e05756e9d101c8be6411a3b7e"
 url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.50/linux-x64/claude"
 
+[[tools.crossplane-cli]]
+version = "2.2.0"
+backend = "aqua:crossplane/crossplane"
+
+[tools.crossplane-cli."platforms.linux-arm64"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/linux_arm64/crank"
+
+[tools.crossplane-cli."platforms.linux-arm64-musl"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/linux_arm64/crank"
+
+[tools.crossplane-cli."platforms.linux-x64"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/linux_amd64/crank"
+
+[tools.crossplane-cli."platforms.linux-x64-baseline"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/linux_amd64/crank"
+
+[tools.crossplane-cli."platforms.linux-x64-musl"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/linux_amd64/crank"
+
+[tools.crossplane-cli."platforms.linux-x64-musl-baseline"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/linux_amd64/crank"
+
+[tools.crossplane-cli."platforms.macos-arm64"]
+checksum = "blake3:456dfb00eab5d637204efb1e3be7de267e14f3caf32682bc02eac7821b43afe5"
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/darwin_arm64/crank"
+
+[tools.crossplane-cli."platforms.macos-x64"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/darwin_amd64/crank"
+
+[tools.crossplane-cli."platforms.macos-x64-baseline"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/darwin_amd64/crank"
+
+[tools.crossplane-cli."platforms.windows-x64"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/windows_amd64/crank.exe"
+
+[tools.crossplane-cli."platforms.windows-x64-baseline"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/windows_amd64/crank.exe"
+
 [[tools.crush]]
 version = "0.43.0"
 backend = "aqua:charmbracelet/crush"
@@ -1066,6 +1104,54 @@ url = "https://github.com/jdx/usage/releases/download/v3.0.0/usage-x86_64-pc-win
 [[tools.uv]]
 version = "0.10.11"
 backend = "aqua:astral-sh/uv"
+
+[[tools.viddy]]
+version = "1.3.0"
+backend = "aqua:sachaos/viddy"
+
+[tools.viddy."platforms.linux-arm64"]
+checksum = "sha256:88654024e8de21b41aee6f4b6beca1c786eadb4614b2e89e16d3823ea6040755"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-arm64.tar.gz"
+
+[tools.viddy."platforms.linux-arm64-musl"]
+checksum = "sha256:88654024e8de21b41aee6f4b6beca1c786eadb4614b2e89e16d3823ea6040755"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-arm64.tar.gz"
+
+[tools.viddy."platforms.linux-x64"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
+[tools.viddy."platforms.linux-x64-baseline"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
+[tools.viddy."platforms.linux-x64-musl"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
+[tools.viddy."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
+[tools.viddy."platforms.macos-arm64"]
+checksum = "sha256:4b06276180ae713970e1d729f0aa2e9c0c1f4818074d14f76a26df69283582f5"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-macos-arm64.tar.gz"
+
+[tools.viddy."platforms.macos-x64"]
+checksum = "sha256:375049b30e5211d43a410acf8a160d0c14038c8c3ed08d044bfe181ed770b62a"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-macos-x86_64.tar.gz"
+
+[tools.viddy."platforms.macos-x64-baseline"]
+checksum = "sha256:375049b30e5211d43a410acf8a160d0c14038c8c3ed08d044bfe181ed770b62a"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-macos-x86_64.tar.gz"
+
+[tools.viddy."platforms.windows-x64"]
+checksum = "sha256:5111869984d0cb12c2f0764bafa83159b2b011fc00efc32024e21b8ad1c0f7f0"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-windows-x86_64.tar.gz"
+
+[tools.viddy."platforms.windows-x64-baseline"]
+checksum = "sha256:5111869984d0cb12c2f0764bafa83159b2b011fc00efc32024e21b8ad1c0f7f0"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-windows-x86_64.tar.gz"
 
 [[tools.yazi]]
 version = "26.1.4"
