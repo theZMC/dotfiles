@@ -119,70 +119,22 @@ Closes #<issue-number>
    - Use required body format (`Closes #<issue-number>` + `## Summary` bullets).
    - Prefer heredoc-safe body creation.
 
-9. Request Copilot review.
-   - Use exactly:
-     `gh pr edit <pr-number> --repo <owner>/<repo> --add-reviewer @copilot`
-   - **Critical:** reviewer must be `@copilot` with leading `@`; `copilot`
-     without `@` is not equivalent.
-   - If this fails because Copilot review is unavailable, report clearly and ask
-     user whether to continue without Copilot.
+9. Request Copilot review and wait via mise task.
+   - Run exactly:
+     `mise run github:pr:copilot:request-and-wait --owner <owner> --repo <repo> --pr <pr-number>`
+   - If this task fails because Copilot review is unavailable, report clearly
+     and ask user whether to continue without Copilot.
 
 10. Review triage loop.
 
-    - After requesting `@copilot`, wait for Copilot-authored feedback using a
-      bounded sleep loop (total wait cap: 15 minutes).
-
-      Use these sleep intervals (seconds):
-
-      ```text
-      30 60 120 180 240 270
-      ```
-
-      Detection rule:
-
-      - Parse latest Copilot review summary from `/pulls/<pr>/reviews`.
-      - If summary says `generated no comments`, treat feedback as arrived.
-      - If summary says `generated N comment` or `generated N comments`, wait
-        until visible Copilot review comments in `/pulls/<pr>/comments` are
-        `>= N`.
-
-      Reference polling snippet:
-
-      ```bash
-      owner=<owner>
-      repo=<repo>
-      pr=<pr-number>
-      is_copilot_user='(.user.login|ascii_downcase) as $u | $u=="copilot" or $u=="copilot-pull-request-reviewer[bot]"'
-      copilot_expected_comments() {
-        gh api "repos/$owner/$repo/pulls/$pr/reviews" --jq \
-          "([.[] | select($is_copilot_user)] | last | .body // \"\") as \$b
-          | if (\$b|test(\"generated no comments\";\"i\")) then 0
-            elif (\$b|test(\"generated [0-9]+ comment(s)?\";\"i\")) then (\$b|capture(\"generated (?<n>[0-9]+) comment(s)?\";\"i\").n|tonumber)
-            else -1 end"
-      }
-      copilot_visible_comments() {
-        gh api "repos/$owner/$repo/pulls/$pr/comments" --jq \
-          "[.[] | select($is_copilot_user)] | length"
-      }
-
-      for s in 30 60 120 180 240 270; do
-        expected=$(copilot_expected_comments)
-        if [ "$expected" -eq 0 ]; then
-          break
-        elif [ "$expected" -gt 0 ]; then
-          visible=$(copilot_visible_comments)
-          [ "$visible" -ge "$expected" ] && break
-        fi
-        sleep "$s"
-      done
-      ```
-
-      Quick verification commands:
-
-      ```bash
-      owner=BridgePhase repo=ccm pr=142 # no Copilot review yet -> expected=-1
-      owner=BridgePhase repo=ccm pr=266 # Copilot says 2 comments -> expected=2, visible=2
-      ```
+    - Task semantics:
+      - Returns success when Copilot summary says `generated no comments`.
+      - Returns success when Copilot summary says `generated N comments` and
+        visible Copilot comments are `>= N`.
+      - Returns non-zero on timeout (`result=timeout-no-feedback` or
+        `result=timeout-partial-comments`).
+    - If the Step 9 task times out, ask user whether to continue with human
+      review.
 
     - Poll/re-read review state and comments:
 
@@ -233,9 +185,6 @@ Closes #<issue-number>
 
 ## Suggested command sequence
 
-Use this as a compact checklist (Step 10 contains the canonical Copilot wait
-helper; do not duplicate it elsewhere):
-
 ```bash
 gh repo view
 gh issue view <issue-number> --repo <owner>/<repo> --json number,title,body,url,state
@@ -249,9 +198,8 @@ git add <files>
 git commit -S -m "<conventional-commit-subject>"
 git push -u origin <issue-branch>
 gh pr create --repo <owner>/<repo> --base <base-branch> --head <issue-branch> --title "<conventional-commit-subject>" --body "<required-pr-body>"
-# critical: reviewer must be exactly @copilot (include '@')
-gh pr edit <pr-number> --repo <owner>/<repo> --add-reviewer @copilot
-# run Step 10 Copilot wait helper
+# mise tasks are expected to already be defined and available in the system for Copilot review handling
+mise run github:pr:copilot:request-and-wait --owner <owner> --repo <repo> --pr <pr-number>
 gh pr view <pr-number> --repo <owner>/<repo> --json reviewDecision,reviews,comments,latestReviews
 gh api repos/<owner>/<repo>/pulls/<pr-number>/comments
 git commit --amend -S --no-edit

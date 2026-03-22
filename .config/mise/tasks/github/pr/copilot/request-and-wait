@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# [MISE] description="Request Copilot review and wait for feedback"
+# [USAGE] flag "--owner <owner>" help="Repository owner"
+# [USAGE] flag "--repo <repo>" help="Repository name"
+# [USAGE] flag "--pr <number>" help="Pull request number"
+set -euo pipefail
+
+owner="${usage_owner?missing --owner}"
+repo="${usage_repo?missing --repo}"
+pr="${usage_pr?missing --pr}"
+
+mise run github:pr:copilot:request-review --owner "$owner" --repo "$repo" --pr "$pr"
+mise run github:pr:copilot:wait-feedback --owner "$owner" --repo "$repo" --pr "$pr"

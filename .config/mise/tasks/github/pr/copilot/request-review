@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# [MISE] description="Request @copilot review on a pull request"
+# [USAGE] flag "--owner <owner>" help="Repository owner"
+# [USAGE] flag "--repo <repo>" help="Repository name"
+# [USAGE] flag "--pr <number>" help="Pull request number"
+set -euo pipefail
+
+owner="${usage_owner?missing --owner}"
+repo="${usage_repo?missing --repo}"
+pr="${usage_pr?missing --pr}"
+
+if ! gh pr edit "$pr" --repo "$owner/$repo" --add-reviewer @copilot; then
+  cat <<EOF
+Failed to request @copilot review.
+Copilot review may be unavailable for this repository.
+EOF
+  exit 2
+fi
+
+printf 'Requested @copilot review for %s/%s PR #%s\n' "$owner" "$repo" "$pr"
