@@ -7,7 +7,7 @@ description: |
   and performs final ff-only merge after user approval.
 metadata:
   author: Zach Callahan
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Work GitHub Issue (gh CLI)
@@ -44,6 +44,7 @@ If the working tree is dirty, stop and ask the user how to proceed.
   implementation and all post-review fixes); maintain via amend.
 - Use `--force-with-lease` (never `--force`) after amend.
 - Do not merge until the user gives final approval.
+- Do not merge until all non-skipped PR checks are complete and passing.
 
 ## Branch naming
 
@@ -168,11 +169,32 @@ Closes #<issue-number>
       gh api graphql -f query='mutation($threadId:ID!){ resolveReviewThread(input:{threadId:$threadId}) { thread { isResolved } } }' -f threadId='<thread-id>'
       ```
 
-    - Continue until there are no unresolved must-fix items.
+     - Continue until there are no unresolved must-fix items.
 
-11. Final user approval and ff-only merge.
+11. Validate PR checks (all checks gate).
 
-    - Ask the user for final review/approval once Copilot feedback is triaged.
+    - Checks must be complete and passing before merge (except `skipping`).
+    - Use `gh pr checks` to wait and inspect all checks:
+
+      ```bash
+      gh pr checks <pr-number> --repo <owner>/<repo> --watch --fail-fast
+      gh pr checks <pr-number> --repo <owner>/<repo> --json name,state,bucket,link
+      ```
+
+    - Interpret results as:
+      - **pass**: proceed
+      - **skipping**: acceptable; proceed
+      - **pending**: continue bounded waiting; if still pending after bounded wait,
+        ask user whether to continue waiting
+      - **fail/cancel**: block merge, report failing checks, and return to triage
+        loop for fixes
+
+    - Re-run this gate after each amend/push cycle.
+
+12. Final user approval and ff-only merge.
+
+    - Ask the user for final review/approval only after Copilot feedback is
+      triaged and all non-skipped checks are green.
     - After approval, perform strict fast-forward-only merge into target base:
 
       1. `git fetch origin`
@@ -202,8 +224,13 @@ gh pr create --repo <owner>/<repo> --base <base-branch> --head <issue-branch> --
 mise run github:pr:copilot:request-and-wait --owner <owner> --repo <repo> --pr <pr-number>
 gh pr view <pr-number> --repo <owner>/<repo> --json reviewDecision,reviews,comments,latestReviews
 gh api repos/<owner>/<repo>/pulls/<pr-number>/comments
+# if triage requires changes:
 git commit --amend -S --no-edit
 git push --force-with-lease
+# validate all non-skipped checks before asking for final merge approval
+gh pr checks <pr-number> --repo <owner>/<repo> --watch --fail-fast
+gh pr checks <pr-number> --repo <owner>/<repo> --json name,state,bucket,link
+# repeat triage + amend/push + checks gate until clean
 ```
 
 ## Output expected to user
@@ -215,11 +242,16 @@ Report progress at key checkpoints:
 3. Validation results and single signed commit SHA.
 4. PR URL and Copilot review request status.
 5. Review triage outcomes and any decisions required.
-6. Final merge result (or exact blocker).
+6. Check status for all non-skipped checks (pass/pending/fail/cancel, including failing check names/links).
+7. Final merge result (or exact blocker).
 
 ## Failure handling
 
 - If any CLI command fails, report the command, key error, and next action.
 - If Copilot review does not arrive in a reasonable time, ask user whether to
   proceed with human review after completing the 15-minute bounded wait loop.
+- If checks are pending after bounded waiting, ask user whether to
+  continue waiting and report which checks are still running.
+- If checks fail or are canceled, do not merge; report failing check
+  names/links and return to fix-and-amend loop.
 - If merge is blocked, do not force bypass. Escalate with exact policy blocker.
