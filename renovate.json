@@ -7,11 +7,17 @@
     "group:allNonMajor",
     "schedule:weekly"
   ],
+  "minimumReleaseAge": "14 days",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
   "packageRules": [
     {
       "description": "Keep mise java updates installable by dropping LTS/build suffixes",
-      "matchManagers": ["mise"],
-      "matchDepNames": ["java"],
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "java"
+      ],
       "extractVersion": "^(?<version>\\d+\\.\\d+\\.\\d+)"
     }
   ]
