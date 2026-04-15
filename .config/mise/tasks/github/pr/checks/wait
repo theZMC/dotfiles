@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# [MISE] description="Wait quietly for PR checks to pass or fail"
+# [USAGE] flag "--owner <owner>" help="Repository owner"
+# [USAGE] flag "--repo <repo>" help="Repository name"
+# [USAGE] flag "--pr <number>" help="Pull request number"
+# [USAGE] flag "--timeout <seconds>" help="Max seconds to wait (default: 900)"
+# [USAGE] flag "--interval <seconds>" help="Polling interval in seconds (default: 15)"
+set -euo pipefail
+
+owner="${usage_owner?missing --owner}"
+repo="${usage_repo?missing --repo}"
+pr="${usage_pr?missing --pr}"
+timeout="${usage_timeout:-900}"
+interval="${usage_interval:-15}"
+
+if ! [[ "$timeout" =~ ^[0-9]+$ ]] || [ "$timeout" -le 0 ]; then
+  echo "Invalid --timeout: $timeout (must be a positive integer)" >&2
+  exit 64
+fi
+
+if ! [[ "$interval" =~ ^[0-9]+$ ]] || [ "$interval" -le 0 ]; then
+  echo "Invalid --interval: $interval (must be a positive integer)" >&2
+  exit 64
+fi
+
+elapsed=0
+settled_polls=0
+
+while [ "$elapsed" -lt "$timeout" ]; do
+  failing_count="$(gh pr checks "$pr" --repo "$owner/$repo" --json bucket --jq '[.[] | select(.bucket=="fail" or .bucket=="cancel")] | length')"
+  pending_count="$(gh pr checks "$pr" --repo "$owner/$repo" --json bucket --jq '[.[] | select(.bucket=="pending")] | length')"
+
+  if [ "$failing_count" -gt 0 ]; then
+    echo "PR checks failed or were canceled."
+    gh pr checks "$pr" --repo "$owner/$repo" --json name,bucket,link --jq '.[] | select(.bucket=="fail" or .bucket=="cancel") | "- \(.name) [\(.bucket)] \(.link // \"\")"'
+    echo "result=fail-or-cancel"
+    exit 2
+  fi
+
+  if [ "$pending_count" -eq 0 ]; then
+    settled_polls=$((settled_polls + 1))
+    if [ "$settled_polls" -ge 2 ]; then
+      echo "PR checks are complete (pass/skipping)."
+      echo "result=pass"
+      exit 0
+    fi
+  else
+    settled_polls=0
+  fi
+
+  sleep "$interval"
+  elapsed=$((elapsed + interval))
+done
+
+echo "Timed out waiting for PR checks to settle."
+echo "result=timeout-pending"
+exit 3

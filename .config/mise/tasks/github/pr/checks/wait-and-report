@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# [MISE] description="Wait quietly for PR checks then print final snapshot"
+# [USAGE] flag "--owner <owner>" help="Repository owner"
+# [USAGE] flag "--repo <repo>" help="Repository name"
+# [USAGE] flag "--pr <number>" help="Pull request number"
+# [USAGE] flag "--timeout <seconds>" help="Max seconds to wait (default: 900)"
+# [USAGE] flag "--interval <seconds>" help="Polling interval in seconds (default: 15)"
+set -euo pipefail
+
+owner="${usage_owner?missing --owner}"
+repo="${usage_repo?missing --repo}"
+pr="${usage_pr?missing --pr}"
+
+args=(--owner "$owner" --repo "$repo" --pr "$pr")
+if [ -n "${usage_timeout:-}" ]; then
+  args+=(--timeout "$usage_timeout")
+fi
+if [ -n "${usage_interval:-}" ]; then
+  args+=(--interval "$usage_interval")
+fi
+
+mise run github:pr:checks:wait "${args[@]}"
+gh pr checks "$pr" --repo "$owner/$repo" --json name,state,bucket,link
