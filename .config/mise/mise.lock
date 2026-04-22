@@ -133,6 +133,10 @@ url = "https://github.com/ClementTsang/bottom/releases/download/0.12.3/bottom_x8
 version = "1.3.11"
 backend = "core:bun"
 
+[[tools."cargo:taws"]]
+version = "1.2.1"
+backend = "cargo:taws"
+
 [[tools.claude]]
 version = "2.1.50"
 backend = "aqua:anthropics/claude-code"
@@ -966,7 +970,7 @@ version = "14.3.0"
 backend = "npm:eslint_d"
 
 [[tools."npm:opencode-ai"]]
-version = "1.4.6"
+version = "1.14.19"
 backend = "npm:opencode-ai"
 
 [[tools."npm:prettier"]]
