@@ -11,6 +11,7 @@ aws-cli = { version = "2.34.20", symlink_bins = "true" }
 bat = "0.26.1"
 bottom = "0.12.3"
 bun = "1.3.11"
+"cargo:taws" = "1.2.1"
 crossplane-cli = "2.2.0"
 deno = "2.7.9"
 docker-cli = "29.3.0"
