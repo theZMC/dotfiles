@@ -4,35 +4,6 @@
 version = "2.34.20"
 backend = "aqua:aws/aws-cli"
 
-[tools.aws-cli."platforms.linux-arm64"]
-url = "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.34.20.zip"
-
-[tools.aws-cli."platforms.linux-arm64-musl"]
-url = "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.34.20.zip"
-
-[tools.aws-cli."platforms.linux-x64"]
-checksum = "blake3:0bb86523140c51335331d11433a47e37aa2a09bd773d18960a6e2f01c1688163"
-url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.20.zip"
-
-[tools.aws-cli."platforms.linux-x64-baseline"]
-url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.20.zip"
-
-[tools.aws-cli."platforms.linux-x64-musl"]
-url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.20.zip"
-
-[tools.aws-cli."platforms.linux-x64-musl-baseline"]
-url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.20.zip"
-
-[tools.aws-cli."platforms.macos-arm64"]
-checksum = "blake3:7bdcf120de3d44ddbf2579caa9bc3f14cdb6ffd081e4217f3776a1f2b0aeb07e"
-url = "https://awscli.amazonaws.com/AWSCLIV2-2.34.20.pkg"
-
-[tools.aws-cli."platforms.macos-x64"]
-url = "https://awscli.amazonaws.com/AWSCLIV2-2.34.20.pkg"
-
-[tools.aws-cli."platforms.macos-x64-baseline"]
-url = "https://awscli.amazonaws.com/AWSCLIV2-2.34.20.pkg"
-
 [[tools.bat]]
 version = "0.26.1"
 backend = "aqua:sharkdp/bat"
@@ -170,6 +141,18 @@ url = "https://releases.crossplane.io/stable/v2.2.0/bin/linux_amd64/crank"
 
 [tools.crossplane-cli."platforms.macos-arm64"]
 url = "https://releases.crossplane.io/stable/v2.2.0/bin/darwin_arm64/crank"
+
+[tools.crossplane-cli."platforms.macos-x64"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/darwin_amd64/crank"
+
+[tools.crossplane-cli."platforms.macos-x64-baseline"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/darwin_amd64/crank"
+
+[tools.crossplane-cli."platforms.windows-x64"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/windows_amd64/crank.exe"
+
+[tools.crossplane-cli."platforms.windows-x64-baseline"]
+url = "https://releases.crossplane.io/stable/v2.2.0/bin/windows_amd64/crank.exe"
 
 [[tools.crush]]
 version = "0.43.0"
@@ -358,63 +341,6 @@ url = "https://github.com/sharkdp/fd/releases/download/v10.4.2/fd-v10.4.2-x86_64
 version = "2.8.4"
 backend = "aqua:fluxcd/flux2"
 
-[tools.flux2."platforms.linux-arm64"]
-checksum = "sha256:5295c10cebc7ca7d2c9a543eda80d425a37bd9a058693dc7f2fd0418525b2264"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_linux_arm64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.linux-arm64-musl"]
-checksum = "sha256:5295c10cebc7ca7d2c9a543eda80d425a37bd9a058693dc7f2fd0418525b2264"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_linux_arm64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.linux-x64"]
-checksum = "sha256:9fc331d8f02bf292fad8060e94109f4608226f20f3b750b2f704251a4bbdfde9"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_linux_amd64.tar.gz"
-
-[tools.flux2."platforms.linux-x64".provenance.slsa]
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/provenance.intoto.jsonl"
-
-[tools.flux2."platforms.linux-x64-baseline"]
-checksum = "sha256:9fc331d8f02bf292fad8060e94109f4608226f20f3b750b2f704251a4bbdfde9"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_linux_amd64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.linux-x64-musl"]
-checksum = "sha256:9fc331d8f02bf292fad8060e94109f4608226f20f3b750b2f704251a4bbdfde9"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_linux_amd64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:9fc331d8f02bf292fad8060e94109f4608226f20f3b750b2f704251a4bbdfde9"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_linux_amd64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.macos-arm64"]
-checksum = "sha256:297f37c5a483e5868f56dd85747727a313c4ced6b926d5beb00de40aac5bacc8"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_darwin_arm64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.macos-x64"]
-checksum = "sha256:43495e02bdbc2e887cacb37da67cf6c75e44d2fd977d04a659e46b416b37696b"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_darwin_amd64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.macos-x64-baseline"]
-checksum = "sha256:43495e02bdbc2e887cacb37da67cf6c75e44d2fd977d04a659e46b416b37696b"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_darwin_amd64.tar.gz"
-provenance = "slsa"
-
-[tools.flux2."platforms.windows-x64"]
-checksum = "sha256:eb463c825bf677a074193cebd95fdadc487625c91e30c2f5e61e5b28f7704a14"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_windows_amd64.zip"
-provenance = "slsa"
-
-[tools.flux2."platforms.windows-x64-baseline"]
-checksum = "sha256:eb463c825bf677a074193cebd95fdadc487625c91e30c2f5e61e5b28f7704a14"
-url = "https://github.com/fluxcd/flux2/releases/download/v2.8.4/flux_2.8.4_windows_amd64.zip"
-provenance = "slsa"
-
 [[tools.fzf]]
 version = "0.70.0"
 backend = "aqua:junegunn/fzf"
@@ -478,6 +404,7 @@ url = "https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_linux_arm6
 [tools.gh."platforms.linux-x64"]
 checksum = "sha256:d0422caade520530e76c1c558da47daebaa8e1203d6b7ff10ad7d6faba3490d8"
 url = "https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_linux_amd64.tar.gz"
+provenance = "github-attestations"
 
 [tools.gh."platforms.linux-x64-baseline"]
 checksum = "sha256:d0422caade520530e76c1c558da47daebaa8e1203d6b7ff10ad7d6faba3490d8"
@@ -494,7 +421,6 @@ url = "https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_linux_amd6
 [tools.gh."platforms.macos-arm64"]
 checksum = "sha256:2423d02ec0a2094898c378703a1b28a5846c08700f87461363857cb8cb3fda94"
 url = "https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_macOS_arm64.zip"
-provenance = "github-attestations"
 
 [tools.gh."platforms.macos-x64"]
 checksum = "sha256:862e21cac6a71f81e7cd6e5127e3cd344f8537441ad2db94cd208319dd17b6e9"
@@ -511,65 +437,6 @@ url = "https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_windows_am
 [tools.gh."platforms.windows-x64-baseline"]
 checksum = "sha256:f3326f6406c98c99701b257d77e2b040eedf83d0176c2c2e9809aa339ceb467e"
 url = "https://github.com/cli/cli/releases/download/v2.89.0/gh_2.89.0_windows_amd64.zip"
-
-[[tools."github:jdx/mise"]]
-version = "2026.3.12"
-backend = "github:jdx/mise"
-
-[tools."github:jdx/mise"."platforms.linux-arm64"]
-checksum = "sha256:39ecab43dce06089f930ad6c49c97bfbce995c43d58a60c3f9a432743d4b0f4d"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308430"
-
-[tools."github:jdx/mise"."platforms.linux-arm64-musl"]
-checksum = "sha256:c27dd6a06053f6884c3f46763b64ef9c5e95fac7a9af89edea087b13cc68c521"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-linux-arm64-musl.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308422"
-
-[tools."github:jdx/mise"."platforms.linux-x64"]
-checksum = "sha256:634be49841a243832ca253bf4ab28feb8ff5ff6517f0dc32707122448e8e6f02"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308480"
-
-[tools."github:jdx/mise"."platforms.linux-x64-baseline"]
-checksum = "sha256:634be49841a243832ca253bf4ab28feb8ff5ff6517f0dc32707122448e8e6f02"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308480"
-
-[tools."github:jdx/mise"."platforms.linux-x64-musl"]
-checksum = "sha256:b6bdc23b08bccfcc77b61d35b286e20de1e0192447e8fda64b2bf60c5328b452"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-linux-x64-musl.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308474"
-
-[tools."github:jdx/mise"."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:634be49841a243832ca253bf4ab28feb8ff5ff6517f0dc32707122448e8e6f02"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308480"
-
-[tools."github:jdx/mise"."platforms.macos-arm64"]
-checksum = "sha256:c9622be7ea2badc7bf3501cd9b5600e0bf993bf33c162844a4a6d79a2209e1f8"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-macos-arm64.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308506"
-
-[tools."github:jdx/mise"."platforms.macos-x64"]
-checksum = "sha256:4f65f7f72c14641ad78670ec2c403d3eb9a4681e2fa064385e80a22a109bfe2c"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-macos-x64.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308525"
-
-[tools."github:jdx/mise"."platforms.macos-x64-baseline"]
-checksum = "sha256:4f65f7f72c14641ad78670ec2c403d3eb9a4681e2fa064385e80a22a109bfe2c"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-macos-x64.tar.gz"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308525"
-
-[tools."github:jdx/mise"."platforms.windows-x64"]
-checksum = "sha256:528d5f9bfabb8eae06964c0e112f9711a4af4315bfed96f6f50b6c4b67ec6f37"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-windows-x64.zip"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308532"
-
-[tools."github:jdx/mise"."platforms.windows-x64-baseline"]
-checksum = "sha256:528d5f9bfabb8eae06964c0e112f9711a4af4315bfed96f6f50b6c4b67ec6f37"
-url = "https://github.com/jdx/mise/releases/download/v2026.3.12/mise-v2026.3.12-windows-x64.zip"
-url_api = "https://api.github.com/repos/jdx/mise/releases/assets/379308532"
 
 [[tools."github:oraios/serena"]]
 version = "0.1.4"
@@ -595,6 +462,10 @@ backend = "go:github.com/charmbracelet/crush"
 [[tools."go:github.com/hashicorp/terraform-mcp-server/cmd/terraform-mcp-server"]]
 version = "0.4.0"
 backend = "go:github.com/hashicorp/terraform-mcp-server/cmd/terraform-mcp-server"
+
+[[tools."go:github.com/ramonvermeulen/whosthere"]]
+version = "0.7.0"
+backend = "go:github.com/ramonvermeulen/whosthere"
 
 [[tools."go:golang.org/x/tools/gopls"]]
 version = "0.21.1"
@@ -885,50 +756,6 @@ url = "https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-win64.zip
 version = "25.9.0"
 backend = "core:node"
 
-[tools.node."platforms.linux-arm64"]
-checksum = "sha256:8fb4283301b8c720fc9f18bffff0f659e72cc14d0cf207a3bb411808aaa73a57"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-linux-arm64.tar.gz"
-
-[tools.node."platforms.linux-arm64-musl"]
-checksum = "sha256:8fb4283301b8c720fc9f18bffff0f659e72cc14d0cf207a3bb411808aaa73a57"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-linux-arm64.tar.gz"
-
-[tools.node."platforms.linux-x64"]
-checksum = "sha256:134e55b2408448a219760fe04dc44d6851f9de8a79549021ffd870e9082d9e7b"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-linux-x64.tar.gz"
-
-[tools.node."platforms.linux-x64-baseline"]
-checksum = "sha256:134e55b2408448a219760fe04dc44d6851f9de8a79549021ffd870e9082d9e7b"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-linux-x64.tar.gz"
-
-[tools.node."platforms.linux-x64-musl"]
-checksum = "sha256:134e55b2408448a219760fe04dc44d6851f9de8a79549021ffd870e9082d9e7b"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-linux-x64.tar.gz"
-
-[tools.node."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:134e55b2408448a219760fe04dc44d6851f9de8a79549021ffd870e9082d9e7b"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-linux-x64.tar.gz"
-
-[tools.node."platforms.macos-arm64"]
-checksum = "sha256:e479f3c469d3d9303a44f00a8ea37a3788395d171bb8059c48a4bbbd2e371b59"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-darwin-arm64.tar.gz"
-
-[tools.node."platforms.macos-x64"]
-checksum = "sha256:7d737b53ce191142bfa1c17cfa5b070d96e84eebf76b8dd06d84981cbdc3f7e3"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-darwin-x64.tar.gz"
-
-[tools.node."platforms.macos-x64-baseline"]
-checksum = "sha256:7d737b53ce191142bfa1c17cfa5b070d96e84eebf76b8dd06d84981cbdc3f7e3"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-darwin-x64.tar.gz"
-
-[tools.node."platforms.windows-x64"]
-checksum = "sha256:929552b8305effac843ba7b4270c437aefb702fc3fbd73fcd1bffd35d4ac284e"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-win-x64.zip"
-
-[tools.node."platforms.windows-x64-baseline"]
-checksum = "sha256:929552b8305effac843ba7b4270c437aefb702fc3fbd73fcd1bffd35d4ac284e"
-url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-win-x64.zip"
-
 [[tools.npm]]
 version = "11.12.1"
 backend = "npm:npm"
@@ -976,6 +803,10 @@ backend = "npm:opencode-ai"
 [[tools."npm:prettier"]]
 version = "3.8.1"
 backend = "npm:prettier"
+
+[[tools."npm:skills"]]
+version = "1.5.1"
+backend = "npm:skills"
 
 [[tools."npm:svelte-language-server"]]
 version = "0.17.30"
@@ -1028,6 +859,58 @@ url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.7.0/po
 [tools.oh-my-posh."platforms.windows-x64-baseline"]
 checksum = "sha256:33e3240df43c196284d0e6f1bb2a9cb7eb931fc1c42bc7f49fa4094664e028be"
 url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.7.0/posh-windows-amd64.exe"
+
+[[tools.ollama]]
+version = "0.20.0"
+backend = "aqua:ollama/ollama"
+
+[tools.ollama."platforms.linux-arm64"]
+checksum = "sha256:7d08fe253b98e9e9b722b390e3e3660337f2522158fc13977fba42978fa7be35"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-linux-arm64.tar.zst"
+
+[tools.ollama."platforms.linux-arm64-musl"]
+checksum = "sha256:7d08fe253b98e9e9b722b390e3e3660337f2522158fc13977fba42978fa7be35"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-linux-arm64.tar.zst"
+
+[tools.ollama."platforms.linux-x64"]
+checksum = "sha256:60865e897ebd0f1fd481df2428fbbaf708e776b7926a3a24a1bb5bd0dd83d546"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-linux-amd64.tar.zst"
+
+[tools.ollama."platforms.linux-x64-baseline"]
+checksum = "sha256:60865e897ebd0f1fd481df2428fbbaf708e776b7926a3a24a1bb5bd0dd83d546"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-linux-amd64.tar.zst"
+
+[tools.ollama."platforms.linux-x64-musl"]
+checksum = "sha256:60865e897ebd0f1fd481df2428fbbaf708e776b7926a3a24a1bb5bd0dd83d546"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-linux-amd64.tar.zst"
+
+[tools.ollama."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:60865e897ebd0f1fd481df2428fbbaf708e776b7926a3a24a1bb5bd0dd83d546"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-linux-amd64.tar.zst"
+
+[tools.ollama."platforms.macos-arm64"]
+checksum = "sha256:00c05b2b93802277f5925dd8bb63dd0d3090758e297c1f8b9a7944b2856dc884"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-darwin.tgz"
+
+[tools.ollama."platforms.macos-x64"]
+checksum = "sha256:00c05b2b93802277f5925dd8bb63dd0d3090758e297c1f8b9a7944b2856dc884"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-darwin.tgz"
+
+[tools.ollama."platforms.macos-x64-baseline"]
+checksum = "sha256:00c05b2b93802277f5925dd8bb63dd0d3090758e297c1f8b9a7944b2856dc884"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-darwin.tgz"
+
+[tools.ollama."platforms.windows-x64"]
+checksum = "sha256:be4d7c50c9798c123da6062c502fb0ce671ad522292e41c8ff1d5679eca3014f"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-windows-amd64.zip"
+
+[tools.ollama."platforms.windows-x64-baseline"]
+checksum = "sha256:be4d7c50c9798c123da6062c502fb0ce671ad522292e41c8ff1d5679eca3014f"
+url = "https://github.com/ollama/ollama/releases/download/v0.20.0/ollama-windows-amd64.zip"
+
+[[tools.packer]]
+version = "1.15.1"
+backend = "aqua:hashicorp/packer"
 
 [[tools.pnpm]]
 version = "10.33.0"
@@ -1247,6 +1130,7 @@ url = "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-aarch64-u
 [tools.ruff."platforms.linux-x64"]
 checksum = "sha256:d541beae99d550ed4abb3a1d026b907886c7cdf44a533b24624871e3d8c81330"
 url = "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-x86_64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.ruff."platforms.linux-x64-baseline"]
 checksum = "sha256:d541beae99d550ed4abb3a1d026b907886c7cdf44a533b24624871e3d8c81330"
@@ -1263,7 +1147,6 @@ url = "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-x86_64-un
 [tools.ruff."platforms.macos-arm64"]
 checksum = "sha256:94fc061f928c8f2b04c4b3a98aad2b1b04f38b4c808839bc5b33a2f0a63a47a3"
 url = "https://github.com/astral-sh/ruff/releases/download/0.15.8/ruff-aarch64-apple-darwin.tar.gz"
-provenance = "github-attestations"
 
 [tools.ruff."platforms.macos-x64"]
 checksum = "sha256:153d1801068df606290e832058ce2e5601584ac302788a055d0390adf6c772ce"
@@ -1651,6 +1534,7 @@ url = "https://github.com/astral-sh/uv/releases/download/0.11.2/uv-aarch64-unkno
 [tools.uv."platforms.linux-x64"]
 checksum = "sha256:4700d9fc75734247587deb3e25dd2c6c24f4ac69e8fe91d6acad4a6013115c06"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.2/uv-x86_64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.linux-x64-baseline"]
 checksum = "sha256:4700d9fc75734247587deb3e25dd2c6c24f4ac69e8fe91d6acad4a6013115c06"
@@ -1667,7 +1551,6 @@ url = "https://github.com/astral-sh/uv/releases/download/0.11.2/uv-x86_64-unknow
 [tools.uv."platforms.macos-arm64"]
 checksum = "sha256:4beaa9550f93ef7f0fc02f7c28c9c48cd61fe30db00f5ac8947e0a425c3fb282"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.2/uv-aarch64-apple-darwin.tar.gz"
-provenance = "github-attestations"
 
 [tools.uv."platforms.macos-x64"]
 checksum = "sha256:a9c3653245031304c50dd60ac0301bf6c112e12c38c32302a71d4fa6a63ba2cb"
@@ -1689,9 +1572,49 @@ url = "https://github.com/astral-sh/uv/releases/download/0.11.2/uv-x86_64-pc-win
 version = "1.3.0"
 backend = "aqua:sachaos/viddy"
 
+[tools.viddy."platforms.linux-arm64"]
+checksum = "sha256:88654024e8de21b41aee6f4b6beca1c786eadb4614b2e89e16d3823ea6040755"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-arm64.tar.gz"
+
+[tools.viddy."platforms.linux-arm64-musl"]
+checksum = "sha256:88654024e8de21b41aee6f4b6beca1c786eadb4614b2e89e16d3823ea6040755"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-arm64.tar.gz"
+
+[tools.viddy."platforms.linux-x64"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
+[tools.viddy."platforms.linux-x64-baseline"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
+[tools.viddy."platforms.linux-x64-musl"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
+[tools.viddy."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:f5500a69d7299358b537d5d01ef7d30831f2801299d29c23601fa506a2a7061b"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-linux-x86_64.tar.gz"
+
 [tools.viddy."platforms.macos-arm64"]
 checksum = "sha256:4b06276180ae713970e1d729f0aa2e9c0c1f4818074d14f76a26df69283582f5"
 url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-macos-arm64.tar.gz"
+
+[tools.viddy."platforms.macos-x64"]
+checksum = "sha256:375049b30e5211d43a410acf8a160d0c14038c8c3ed08d044bfe181ed770b62a"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-macos-x86_64.tar.gz"
+
+[tools.viddy."platforms.macos-x64-baseline"]
+checksum = "sha256:375049b30e5211d43a410acf8a160d0c14038c8c3ed08d044bfe181ed770b62a"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-macos-x86_64.tar.gz"
+
+[tools.viddy."platforms.windows-x64"]
+checksum = "sha256:5111869984d0cb12c2f0764bafa83159b2b011fc00efc32024e21b8ad1c0f7f0"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-windows-x86_64.tar.gz"
+
+[tools.viddy."platforms.windows-x64-baseline"]
+checksum = "sha256:5111869984d0cb12c2f0764bafa83159b2b011fc00efc32024e21b8ad1c0f7f0"
+url = "https://github.com/sachaos/viddy/releases/download/v1.3.0/viddy-v1.3.0-windows-x86_64.tar.gz"
 
 [[tools.yazi]]
 version = "26.1.22"
