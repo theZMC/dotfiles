@@ -792,6 +792,10 @@ backend = "npm:agent-browser"
 version = "5.6.0"
 backend = "npm:bash-language-server"
 
+[[tools."npm:ctx7"]]
+version = "0.4.0"
+backend = "npm:ctx7"
+
 [[tools."npm:eslint_d"]]
 version = "14.3.0"
 backend = "npm:eslint_d"
