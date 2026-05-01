@@ -1,20 +1,7 @@
 {
   "version": 1,
   "skills": {
-    "ce-brainstorm": {
-      "source": "everyinc/compound-engineering-plugin",
       "sourceType": "github",
-      "computedHash": "ac1d3de34759832445a9ed8c360f938a4a5428ba910adcb9b8843c41357ad3fb"
-    },
-    "ce-ideate": {
-      "source": "everyinc/compound-engineering-plugin",
-      "sourceType": "github",
-      "computedHash": "4b1f8d48cff9e1f3b5dcf3fd8704cdfe14f15e68beea5e7826ac91712c1e993d"
-    },
-    "ce-plan": {
-      "source": "everyinc/compound-engineering-plugin",
-      "sourceType": "github",
-      "computedHash": "dabd6d4369f491b947bb050fd874cf3f0bf993c7cacc9c9efc3ae27a860093f3"
     }
   }
 }
