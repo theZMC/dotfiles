@@ -768,6 +768,10 @@ backend = "npm:@anthropic-ai/claude-code"
 version = "2.16.6"
 backend = "npm:@astrojs/language-server"
 
+[[tools."npm:@playwright/cli"]]
+version = "0.1.10"
+backend = "npm:@playwright/cli"
+
 [[tools."npm:@slidev/cli"]]
 version = "52.14.1"
 backend = "npm:@slidev/cli"
