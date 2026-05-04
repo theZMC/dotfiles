@@ -34,6 +34,7 @@ for seconds in 30 60 120 180 240 270 0; do
   expected="$(copilot_expected_comments)"
   if [ "$expected" -eq 0 ]; then
     echo "Copilot review arrived: generated no comments."
+    mise run github:pr:copilot:report-feedback --owner "$owner" --repo "$repo" --pr "$pr" --since "$since"
     echo "result=arrived-no-comments"
     exit 0
   fi
@@ -42,6 +43,7 @@ for seconds in 30 60 120 180 240 270 0; do
     visible="$(copilot_visible_comments)"
     if [ "$visible" -ge "$expected" ]; then
       printf 'Copilot review arrived: expected=%s visible=%s\n' "$expected" "$visible"
+      mise run github:pr:copilot:report-feedback --owner "$owner" --repo "$repo" --pr "$pr" --since "$since"
       echo "result=arrived-with-comments"
       exit 0
     fi
