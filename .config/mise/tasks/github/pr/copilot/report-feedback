@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# [MISE] description="Render Copilot PR feedback as markdown"
+# [MISE] quiet=true
+# [USAGE] flag "--owner <owner>" help="Repository owner"
+# [USAGE] flag "--repo <repo>" help="Repository name"
+# [USAGE] flag "--pr <number>" help="Pull request number"
+# [USAGE] flag "--since <timestamp>" help="Optional UTC RFC3339 timestamp; only consider Copilot feedback posted at or after it"
+set -euo pipefail
+
+owner="${usage_owner?missing --owner}"
+repo="${usage_repo?missing --repo}"
+pr="${usage_pr?missing --pr}"
+since="${usage_since:-}"
+
+# shellcheck disable=SC2016 # (this is a jq filter, not a bash variable; no expansion)
+is_copilot_user='(.user.login|ascii_downcase) as $u | $u=="copilot" or $u=="copilot-pull-request-reviewer[bot]"'
+
+review_filter="[.[] | select($is_copilot_user)"
+if [ -n "$since" ]; then
+  review_filter+=" | select((.submitted_at // .created_at // \"\") >= \"$since\")"
+fi
+review_filter+="] | last"
+
+review_json="$(gh api "repos/$owner/$repo/pulls/$pr/reviews" --jq "$review_filter")"
+if [ -z "$review_json" ] || [ "$review_json" = "null" ]; then
+  if [ -n "$since" ]; then
+    printf 'No Copilot review found for %s/%s PR #%s since %s\n' "$owner" "$repo" "$pr" "$since" >&2
+  else
+    printf 'No Copilot review found for %s/%s PR #%s\n' "$owner" "$repo" "$pr" >&2
+  fi
+  exit 3
+fi
+
+review_id="$(printf '%s' "$review_json" | yq -p=json -r '.id')"
+review_state="$(printf '%s' "$review_json" | yq -p=json -r '.state // "COMMENTED"')"
+review_url="$(printf '%s' "$review_json" | yq -p=json -r '.html_url // ""')"
+review_submitted_at="$(printf '%s' "$review_json" | yq -p=json -r '.submitted_at // .created_at // ""')"
+review_body="$(printf '%s' "$review_json" | yq -p=json -r '(.body // "") | split("\n---\n")[0] | sub("\n+$"; "")')"
+
+comments_json="$(gh api "repos/$owner/$repo/pulls/$pr/comments" --jq "[.[] | select($is_copilot_user) | select(.pull_request_review_id == $review_id)]")"
+comment_count="$(printf '%s' "$comments_json" | yq -p=json -r 'length')"
+
+printf '## Copilot Review\n\n'
+printf -- '- Repository: `%s/%s`\n' "$owner" "$repo"
+printf -- '- Pull request: `#%s`\n' "$pr"
+printf -- '- State: `%s`\n' "$review_state"
+if [ -n "$review_submitted_at" ]; then
+  printf -- '- Submitted: `%s`\n' "$review_submitted_at"
+fi
+if [ -n "$review_url" ]; then
+  printf -- '- URL: %s\n' "$review_url"
+fi
+printf -- '- Inline comments: `%s`\n\n' "$comment_count"
+
+if [ -n "$review_body" ]; then
+  printf '%s\n\n' "$review_body"
+fi
+
+if [ "$comment_count" -eq 0 ]; then
+  exit 0
+fi
+
+printf '## Copilot Inline Comments\n\n'
+while IFS= read -r comment_b64; do
+  comment_json="$(printf '%s' "$comment_b64" | base64 -d)"
+  path="$(printf '%s' "$comment_json" | yq -p=json -r '.path // "unknown"')"
+  line="$(printf '%s' "$comment_json" | yq -p=json -r '.line // .original_line // ""')"
+  url="$(printf '%s' "$comment_json" | yq -p=json -r '.html_url // ""')"
+  created_at="$(printf '%s' "$comment_json" | yq -p=json -r '.created_at // ""')"
+  body="$(printf '%s' "$comment_json" | yq -p=json -r '.body // ""')"
+
+  location="$path"
+  if [ -n "$line" ] && [ "$line" != "null" ]; then
+    location="$location:$line"
+  fi
+
+  printf '### `%s`\n\n' "$location"
+  if [ -n "$created_at" ]; then
+    printf -- '- Created: `%s`\n' "$created_at"
+  fi
+  if [ -n "$url" ]; then
+    printf -- '- URL: %s\n' "$url"
+  fi
+  printf '\n'
+
+  if [ -n "$body" ]; then
+    while IFS= read -r body_line; do
+      printf '> %s\n' "$body_line"
+    done <<< "$body"
+  else
+    printf '> (no body)\n'
+  fi
+  printf '\n'
+done < <(printf '%s' "$comments_json" | yq -p=json -r '.[] | @json | @base64')
