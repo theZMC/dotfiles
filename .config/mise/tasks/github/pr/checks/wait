@@ -1,17 +1,66 @@
 #!/usr/bin/env bash
 # [MISE] description="Wait quietly for PR checks to pass or fail"
-# [USAGE] flag "--owner <owner>" help="Repository owner"
-# [USAGE] flag "--repo <repo>" help="Repository name"
-# [USAGE] flag "--pr <number>" help="Pull request number"
+# [MISE] dir="{{cwd}}"
+# [USAGE] flag "--owner <owner>" help="Repository owner (optional; inferred from origin if omitted)"
+# [USAGE] flag "--repo <repo>" help="Repository name (optional; inferred from origin if omitted)"
+# [USAGE] flag "--pr <number>" help="Pull request number (optional; inferred from current branch if omitted)"
 # [USAGE] flag "--timeout <seconds>" help="Max seconds to wait (default: 900)"
 # [USAGE] flag "--interval <seconds>" help="Polling interval in seconds (default: 15)"
 set -euo pipefail
 
-owner="${usage_owner?missing --owner}"
-repo="${usage_repo?missing --repo}"
-pr="${usage_pr?missing --pr}"
+owner="${usage_owner:-}"
+repo="${usage_repo:-}"
+pr="${usage_pr:-}"
 timeout="${usage_timeout:-900}"
 interval="${usage_interval:-15}"
+
+if [ -z "$owner" ] || [ -z "$repo" ]; then
+  remote_url="$(git remote get-url origin 2>/dev/null || true)"
+  if [ -z "$remote_url" ]; then
+    echo "Could not infer repository: no origin remote found. Pass --owner and --repo explicitly." >&2
+    exit 64
+  fi
+
+  if [[ "$remote_url" =~ ^git@github\.com:([^/]+)/([^/]+)(\.git)?$ ]]; then
+    owner="${BASH_REMATCH[1]}"
+    repo="${BASH_REMATCH[2]%.git}"
+  elif [[ "$remote_url" =~ ^https://github\.com/([^/]+)/([^/]+)(\.git)?$ ]]; then
+    owner="${BASH_REMATCH[1]}"
+    repo="${BASH_REMATCH[2]%.git}"
+  elif [[ "$remote_url" =~ ^ssh://git@github\.com/([^/]+)/([^/]+)(\.git)?$ ]]; then
+    owner="${BASH_REMATCH[1]}"
+    repo="${BASH_REMATCH[2]%.git}"
+  else
+    echo "Could not infer repository from origin URL '$remote_url'. Pass --owner and --repo explicitly." >&2
+    exit 64
+  fi
+
+  echo "Inferred repository $owner/$repo from origin remote."
+fi
+
+if [ -z "$pr" ]; then
+  head_branch="$(git branch --show-current)"
+  if [ -z "$head_branch" ]; then
+    echo "Could not infer PR: current HEAD is detached. Pass --pr explicitly." >&2
+    exit 64
+  fi
+
+  mapfile -t matching_prs < <(gh pr list --repo "$owner/$repo" --head "$head_branch" --state open --json number --jq '.[].number')
+
+  if [ "${#matching_prs[@]}" -eq 0 ]; then
+    echo "Could not infer PR: no open PR found for branch '$head_branch'. Pass --pr explicitly." >&2
+    exit 64
+  fi
+
+  if [ "${#matching_prs[@]}" -gt 1 ]; then
+    echo "Could not infer PR: multiple open PRs found for branch '$head_branch'. Pass --pr explicitly." >&2
+    printf '%s\n' "${matching_prs[@]}" | sed 's/^/- #/' >&2
+    exit 64
+  fi
+
+  pr="${matching_prs[0]}"
+  echo "Inferred PR #$pr from branch '$head_branch'."
+fi
 
 if ! [[ "$timeout" =~ ^[0-9]+$ ]] || [ "$timeout" -le 0 ]; then
   echo "Invalid --timeout: $timeout (must be a positive integer)" >&2
