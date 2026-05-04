@@ -19,6 +19,16 @@
         "java"
       ],
       "extractVersion": "^(?<version>\\d+\\.\\d+\\.\\d+)"
+    },
+    {
+      "description": "Limit mise neovim updates to 0.11.x",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "neovim"
+      ],
+      "allowedVersions": "<0.12"
     }
   ]
 }
