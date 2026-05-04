@@ -3,18 +3,20 @@
 # [USAGE] flag "--owner <owner>" help="Repository owner"
 # [USAGE] flag "--repo <repo>" help="Repository name"
 # [USAGE] flag "--pr <number>" help="Pull request number"
+# [USAGE] flag "--since <timestamp>" help="Optional UTC RFC3339 timestamp; only consider Copilot feedback posted at or after it (defaults to task start time)"
 set -euo pipefail
 
 owner="${usage_owner?missing --owner}"
 repo="${usage_repo?missing --repo}"
 pr="${usage_pr?missing --pr}"
+since="${usage_since:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
 
 # shellcheck disable=SC2016 # (this is a jq filter, not a bash variable; no expansion)
 is_copilot_user='(.user.login|ascii_downcase) as $u | $u=="copilot" or $u=="copilot-pull-request-reviewer[bot]"'
 
 copilot_expected_comments() {
   gh api "repos/$owner/$repo/pulls/$pr/reviews" --jq \
-    "([.[] | select($is_copilot_user)] | last | .body // \"\") as \$b
+    "([.[] | select($is_copilot_user) | select((.submitted_at // .created_at // \"\") >= \"$since\")] | last | .body // \"\") as \$b
     | if (\$b|test(\"generated no comments\";\"i\")) then 0
       elif (\$b|test(\"generated [0-9]+ comment(s)?\";\"i\")) then (\$b|capture(\"generated (?<n>[0-9]+) comment(s)?\";\"i\").n|tonumber)
       else -1 end"
@@ -22,7 +24,7 @@ copilot_expected_comments() {
 
 copilot_visible_comments() {
   gh api "repos/$owner/$repo/pulls/$pr/comments" --jq \
-    "[.[] | select($is_copilot_user)] | length"
+    "[.[] | select($is_copilot_user) | select((.created_at // \"\") >= \"$since\")] | length"
 }
 
 expected=-1
@@ -45,7 +47,7 @@ for seconds in 30 60 120 180 240 270 0; do
     fi
     printf 'Waiting for Copilot comments: expected=%s visible=%s sleep=%ss\n' "$expected" "$visible" "$seconds"
   else
-    printf 'Waiting for Copilot review summary: expected=%s sleep=%ss\n' "$expected" "$seconds"
+    printf 'Waiting for Copilot review summary since %s: expected=%s sleep=%ss\n' "$since" "$expected" "$seconds"
   fi
 
   sleep "$seconds"

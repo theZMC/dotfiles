@@ -3,11 +3,13 @@
 # [USAGE] flag "--owner <owner>" help="Repository owner"
 # [USAGE] flag "--repo <repo>" help="Repository name"
 # [USAGE] flag "--pr <number>" help="Pull request number"
+# [USAGE] flag "--since <timestamp>" help="Optional UTC RFC3339 timestamp forwarded to wait-feedback; defaults to request-and-wait start time"
 set -euo pipefail
 
 owner="${usage_owner?missing --owner}"
 repo="${usage_repo?missing --repo}"
 pr="${usage_pr?missing --pr}"
+since="${usage_since:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
 
 mise run github:pr:copilot:request-review --owner "$owner" --repo "$repo" --pr "$pr"
-mise run github:pr:copilot:wait-feedback --owner "$owner" --repo "$repo" --pr "$pr"
+mise run github:pr:copilot:wait-feedback --owner "$owner" --repo "$repo" --pr "$pr" --since "$since"
