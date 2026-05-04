@@ -7,7 +7,7 @@ description: |
   ff-only merge after user approval.
 metadata:
   author: Zach Callahan
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Work GitHub Issue (gh CLI)
@@ -91,9 +91,18 @@ Closes #<issue-number>
    `gh pr create --repo <owner>/<repo> --base <base> --head <branch> --fill-verbose`.
 9. Request/wait for Copilot via mise:
    `mise run github:pr:copilot:request-and-wait --owner <owner> --repo <repo> --pr <pr-number>`.
-   If unavailable, report and ask whether to continue without Copilot.
-10. Triage review comments (`gh pr view ... --json ...` +
-    `gh api repos/.../pulls/.../comments`):
+   This prints a Markdown Copilot review summary, including inline comments when
+   present. If you need a stable review window, capture a UTC RFC3339 timestamp
+   before requesting review and pass it through as:
+   `mise run github:pr:copilot:request-and-wait --owner <owner> --repo <repo> --pr <pr-number> --since <rfc3339-timestamp>`.
+   If you need to re-render the latest Copilot feedback later during triage,
+   use:
+   `mise run github:pr:copilot:report-feedback --owner <owner> --repo <repo> --pr <pr-number> --since <same-rfc3339-timestamp>`.
+   Reuse the same RFC3339 `--since` value so follow-up renders stay scoped to
+   the same Copilot review cycle. If unavailable, report and ask whether to
+   continue without Copilot.
+10. Triage Copilot feedback from the mise-rendered Markdown summary and classify
+    items as:
     - must-fix: correctness/test/security/defects
     - optional: style/preference
     - needs-decision: behavior tradeoffs requiring user input For accepted
