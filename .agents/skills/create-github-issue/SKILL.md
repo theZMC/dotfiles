@@ -3,7 +3,7 @@ name: create-github-issue
 description: Creates a well-structured GitHub issue with Motivation, Acceptance Criteria, and optional References sections using the GitHub CLI (`gh`). Use when the user asks to create, file, or open a GitHub issue.
 metadata:
   author: Zach Callahan
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Create GitHub Issue (gh CLI)
@@ -43,9 +43,9 @@ Structure the issue body exactly as follows:
 
 ## Acceptance Criteria
 
-- [ ] Criterion 1: Description of the first acceptance criterion.
-- [ ] Criterion 2: Description of the second acceptance criterion.
-  - [ ] Criterion 2a: Description of a sub-criterion.
+- [ ] Description of the first acceptance criterion.
+- [ ] Description of the second acceptance criterion.
+  - [ ] Description of a sub-criterion of the second criterion.
 
 ## References
 
@@ -109,8 +109,8 @@ Generate the issue title from the Motivation content. The title should be:
    If labels or assignees are requested, include them with `--label` and
    `--assignee`.
 
-6. If multiple related issues were created, automatically apply dependency
-   links before finishing.
+6. If multiple related issues were created, automatically apply dependency links
+   before finishing.
 7. If a project target is specified, add each issue to the project and move
    non-blocked issues to `Ready`.
 8. Report the created issue number and URL back to the user.
@@ -142,8 +142,8 @@ When creating multiple issues in one request:
    gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner,name:$repo){ issue(number:$number){ number blockedBy(first:20){ nodes { number title url } } } } }' -f owner='<owner>' -f repo='<repo>' -F number=<issue-number>
    ```
 
-4. Do this dependency-linking step automatically when dependencies are known;
-   do not leave dependency graph creation as an optional manual follow-up.
+4. Do this dependency-linking step automatically when dependencies are known; do
+   not leave dependency graph creation as an optional manual follow-up.
 
 ## Project assignment
 
@@ -190,11 +190,11 @@ add every created issue to that project before finishing.
      gh project item-edit --project-id <project-id> --id <project-item-id> --field-id <status-field-id> --single-select-option-id <ready-option-id>
      ```
 
-   - Rule: if `blockedBy.nodes` is empty, set status to `Ready`; otherwise
-     leave status unchanged (typically `Backlog`).
+   - Rule: if `blockedBy.nodes` is empty, set status to `Ready`; otherwise leave
+     status unchanged (typically `Backlog`).
 
 ## Labels and assignees
 
-If the user specifies labels or assignees, include them in the
-`gh issue create` command with `--label` and `--assignee`. Do not add labels or
-assignees unless requested.
+If the user specifies labels or assignees, include them in the `gh issue create`
+command with `--label` and `--assignee`. Do not add labels or assignees unless
+requested.
