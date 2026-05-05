@@ -606,7 +606,7 @@ version = "14.3.0"
 backend = "npm:eslint_d"
 
 [[tools."npm:opencode-ai"]]
-version = "1.14.29"
+version = "1.14.39"
 backend = "npm:opencode-ai"
 
 [[tools."npm:prettier"]]
