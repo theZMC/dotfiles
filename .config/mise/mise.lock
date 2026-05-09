@@ -573,6 +573,10 @@ backend = "npm:@astrojs/language-server"
 version = "0.1.10"
 backend = "npm:@playwright/cli"
 
+[[tools."npm:@playwright/mcp"]]
+version = "0.0.73"
+backend = "npm:@playwright/mcp"
+
 [[tools."npm:@slidev/cli"]]
 version = "52.14.2"
 backend = "npm:@slidev/cli"
