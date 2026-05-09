@@ -84,6 +84,12 @@ blocks:
     foreground_templates:
     - '{{ if eq .Code 0 }}#00FF00{{ else }}#FF4444{{ end }}'
     template: '{{ if eq .Code 0 }}✔{{ else }}✘{{ end }} {{ .String }}'
+  - type: executiontime
+    style: plain
+    foreground: '#FF9900'
+    options:
+      style: round
+    template: '⏱  {{ .FormattedMs }}'
 - type: prompt
   alignment: left
   newline: true
