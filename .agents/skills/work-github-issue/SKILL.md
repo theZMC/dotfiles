@@ -7,7 +7,7 @@ description: |
   ff-only merge after user approval.
 metadata:
   author: Zach Callahan
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Work GitHub Issue (gh CLI)
@@ -40,6 +40,16 @@ If working tree is dirty, stop and ask user how to proceed.
 - Keep exactly one commit for the issue across the full lifecycle; maintain via
   amend.
 - Use `--force-with-lease` after amend (never `--force`).
+- Keep Copilot review loops conservative and bounded.
+- Default to one Copilot review round.
+- Request another Copilot round only when the prior round found substantive
+  must-fix issues, or when the implemented work / follow-up fixes were broad
+  enough that another architectural pass is justified.
+- Do not request another Copilot review just to chase nits, style comments, or
+  newly-generated low-signal feedback.
+- Cap Copilot review requests at 3 total rounds. Prefer stopping earlier when
+  the first round is already low-signal and the change set is not
+  architecturally risky.
 - Do not paste issue body content into commit/PR text.
 - Do not merge before user approval.
 - Do not merge unless all non-skipped checks pass.
@@ -89,7 +99,7 @@ Closes #<issue-number>
 7. Push branch: `git push -u origin <branch>`.
 8. Open PR with fill:
    `gh pr create --repo <owner>/<repo> --base <base> --head <branch> --fill-verbose`.
-9. Request/wait for Copilot via mise:
+9. Request/wait for the initial Copilot review via mise:
    `mise run github:pr:copilot:request-and-wait --owner <owner> --repo <repo> --pr <pr-number>`.
    This prints a Markdown Copilot review summary, including inline comments when
    present. If you need a stable review window, capture a UTC RFC3339 timestamp
@@ -105,18 +115,28 @@ Closes #<issue-number>
     items as:
     - must-fix: correctness/test/security/defects
     - optional: style/preference
-    - needs-decision: behavior tradeoffs requiring user input For accepted
-      changes: modify code, re-run checks, amend + force-with-lease.
+    - needs-decision: behavior tradeoffs requiring user input
+    For accepted changes: modify code, re-run checks, amend + force-with-lease.
     - **I am explicitly requesting you amend commits**
     - If commit message unchanged: `git commit --amend -S --no-edit`
     - If summary/body changed: `git commit --amend -S` and keep required body
       format.
-11. Validate checks gate:
+11. Decide whether another Copilot round is warranted.
+    Default answer: no.
+    Request a follow-up Copilot review only when one or more of these are true:
+    - the previous round found real must-fix issues
+    - the fixes materially changed behavior, control flow, or architecture
+    - the original implementation was risky enough that a second pass is worth
+      the noise
+    Do not re-request review after only minor wording, formatting, or small
+    localized fixes. Stop after 3 total review rounds even if Copilot keeps
+    producing fresh nits.
+12. Validate checks gate:
     - Quiet wait + final snapshot via mise task:
       `mise run github:pr:checks:wait-and-report --owner <owner> --repo <repo> --pr <pr-number>`
       Proceed only when checks are pass/skipping. On fail/cancel, return to
       triage.
-12. After user approval, ff-only merge:
+13. After user approval, ff-only merge:
     `git fetch origin && git checkout <base> && git merge --ff-only <branch> && git push origin <base>`.
     If ff-only merge blocked, stop and report blocker.
 
@@ -137,6 +157,8 @@ Report at these checkpoints:
 - On command failure: report command, key error, next action.
 - If Copilot feedback times out (15-minute bounded wait), ask whether to
   continue with human review.
+- If Copilot has already been requested 3 times, stop the Copilot loop and move
+  forward with human judgment, remaining checks, and user approval.
 - If checks remain pending after bounded wait, ask whether to continue waiting
   and list pending checks.
 - If checks fail/cancel, do not merge; report failing checks and return to
