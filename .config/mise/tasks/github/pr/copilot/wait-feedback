@@ -15,23 +15,41 @@ since="${usage_since:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
 is_copilot_user='(.user.login|ascii_downcase) as $u | $u=="copilot" or $u=="copilot-pull-request-reviewer[bot]"'
 
 copilot_expected_comments() {
-  gh api "repos/$owner/$repo/pulls/$pr/reviews" --jq \
-    "([.[] | select($is_copilot_user) | select((.submitted_at // .created_at // \"\") >= \"$since\")] | last | .body // \"\") as \$b
-    | if (\$b|test(\"generated no comments\";\"i\")) then 0
-      elif (\$b|test(\"generated [0-9]+ comment(s)?\";\"i\")) then (\$b|capture(\"generated (?<n>[0-9]+) comment(s)?\";\"i\").n|tonumber)
-      else -1 end"
+  local output=''
+
+  if output="$(mise run github:gh:api:retry -- "repos/$owner/$repo/pulls/$pr/reviews" --jq "([.[] | select($is_copilot_user) | select((.submitted_at // .created_at // \"\") >= \"$since\")] | last | .body // \"\") as \$b | if (\$b|test(\"generated no comments\";\"i\")) then 0 elif (\$b|test(\"generated [0-9]+ comment(s)?\";\"i\")) then (\$b|capture(\"generated (?<n>[0-9]+) comment(s)?\";\"i\").n|tonumber) else -1 end")"; then
+    printf '%s' "$output"
+  else
+    return $?
+  fi
 }
 
 copilot_visible_comments() {
-  gh api "repos/$owner/$repo/pulls/$pr/comments" --jq \
-    "[.[] | select($is_copilot_user) | select((.created_at // \"\") >= \"$since\")] | length"
+  local output=''
+
+  if output="$(mise run github:gh:api:retry -- "repos/$owner/$repo/pulls/$pr/comments" --jq "[.[] | select($is_copilot_user) | select((.created_at // \"\") >= \"$since\")] | length")"; then
+    printf '%s' "$output"
+  else
+    return $?
+  fi
 }
 
 expected=-1
 visible=0
 
 for seconds in 30 60 120 180 240 270 0; do
-  expected="$(copilot_expected_comments)"
+  if expected="$(copilot_expected_comments)"; then
+    :
+  else
+    rc=$?
+    if [ "$rc" -eq 75 ]; then
+      echo "Transient GitHub API failure while checking Copilot review summary. Continuing poll loop." >&2
+      sleep "$seconds"
+      continue
+    fi
+    exit "$rc"
+  fi
+
   if [ "$expected" -eq 0 ]; then
     echo "Copilot review arrived: generated no comments."
     mise run github:pr:copilot:report-feedback --owner "$owner" --repo "$repo" --pr "$pr" --since "$since"
@@ -40,7 +58,18 @@ for seconds in 30 60 120 180 240 270 0; do
   fi
 
   if [ "$expected" -gt 0 ]; then
-    visible="$(copilot_visible_comments)"
+    if visible="$(copilot_visible_comments)"; then
+      :
+    else
+      rc=$?
+      if [ "$rc" -eq 75 ]; then
+        echo "Transient GitHub API failure while checking Copilot inline comments. Continuing poll loop." >&2
+        sleep "$seconds"
+        continue
+      fi
+      exit "$rc"
+    fi
+
     if [ "$visible" -ge "$expected" ]; then
       printf 'Copilot review arrived: expected=%s visible=%s\n' "$expected" "$visible"
       mise run github:pr:copilot:report-feedback --owner "$owner" --repo "$repo" --pr "$pr" --since "$since"

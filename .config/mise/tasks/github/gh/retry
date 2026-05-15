@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+# [MISE] description="Run gh with retry/backoff for transient GitHub failures"
+# [MISE] hide=true
+# [MISE] quiet=true
+set -euo pipefail
+
+if [ "$#" -eq 0 ]; then
+  echo "Usage: mise run github:gh:retry -- <gh arguments...>" >&2
+  exit 64
+fi
+
+max_attempts="${GH_RETRY_MAX_ATTEMPTS:-5}"
+max_sleep_seconds="${GH_RETRY_MAX_SLEEP_SECONDS:-120}"
+
+if ! [[ "$max_attempts" =~ ^[1-9][0-9]*$ ]]; then
+  echo "Invalid GH_RETRY_MAX_ATTEMPTS: $max_attempts" >&2
+  exit 64
+fi
+
+if ! [[ "$max_sleep_seconds" =~ ^[1-9][0-9]*$ ]]; then
+  echo "Invalid GH_RETRY_MAX_SLEEP_SECONDS: $max_sleep_seconds" >&2
+  exit 64
+fi
+
+gh_retry_reason=''
+gh_retry_delay=0
+
+print_captured_output() {
+  local stdout="$1"
+  local stderr="$2"
+
+  if [ -n "$stdout" ]; then
+    printf '%s' "$stdout"
+    case "$stdout" in
+      *$'\n') ;;
+      *) printf '\n' ;;
+    esac
+  fi
+
+  if [ -n "$stderr" ]; then
+    printf '%s' "$stderr" >&2
+    case "$stderr" in
+      *$'\n') ;;
+      *) printf '\n' >&2 ;;
+    esac
+  fi
+}
+
+response_header() {
+  local response="$1"
+  local header_name="${2,,}"
+  local line value
+
+  while IFS= read -r line; do
+    line="${line%$'\r'}"
+    [ -z "$line" ] && break
+
+    case "${line,,}" in
+      "$header_name:"*)
+        value="${line#*:}"
+        value="${value#"${value%%[![:space:]]*}"}"
+        printf '%s' "$value"
+        return 0
+        ;;
+    esac
+  done <<< "$response"
+
+  return 1
+}
+
+default_backoff_seconds() {
+  local attempt="$1"
+  local delay=$((1 << (attempt - 1)))
+
+  if [ "$delay" -gt 30 ]; then
+    delay=30
+  fi
+
+  printf '%s' "$delay"
+}
+
+rate_limit_delay_seconds() {
+  local attempt="$1"
+  local retry_after="$2"
+  local remaining="$3"
+  local reset_at="$4"
+  local delay
+
+  if [[ "$retry_after" =~ ^[0-9]+$ ]]; then
+    printf '%s' "$retry_after"
+    return 0
+  fi
+
+  if [ "$remaining" = '0' ] && [[ "$reset_at" =~ ^[0-9]+$ ]]; then
+    delay=$((reset_at - $(date +%s)))
+    if [ "$delay" -lt 1 ]; then
+      delay=1
+    fi
+    printf '%s' "$delay"
+    return 0
+  fi
+
+  delay="$(default_backoff_seconds "$attempt")"
+  if [ "$delay" -lt 60 ]; then
+    delay=60
+  fi
+  printf '%s' "$delay"
+}
+
+classify_retryable_failure() {
+  local stdout="$1"
+  local stderr="$2"
+  local rc="$3"
+  local attempt="$4"
+  local combined lower retry_after remaining reset_at
+
+  gh_retry_reason=''
+  gh_retry_delay=0
+
+  if [ "$rc" -eq 4 ]; then
+    return 1
+  fi
+
+  retry_after="$(response_header "$stdout" 'retry-after' || true)"
+  remaining="$(response_header "$stdout" 'x-ratelimit-remaining' || true)"
+  reset_at="$(response_header "$stdout" 'x-ratelimit-reset' || true)"
+
+  combined="$stdout"
+  if [ -n "$combined" ] && [ -n "$stderr" ]; then
+    combined+=$'\n'
+  fi
+  combined+="$stderr"
+  lower="${combined,,}"
+
+  if [ -n "$retry_after" ] || { [ "$remaining" = '0' ] && [[ "$reset_at" =~ ^[0-9]+$ ]]; }; then
+    gh_retry_reason='GitHub API rate limit'
+    gh_retry_delay="$(rate_limit_delay_seconds "$attempt" "$retry_after" "$remaining" "$reset_at")"
+    return 0
+  fi
+
+  case "$lower" in
+    *secondary\ rate\ limit*|*rate\ limit\ exceeded*|*too\ many\ requests*|*http\ 429*|*status\ code\ 429*|*abuse\ detection*)
+      gh_retry_reason='GitHub API rate limit'
+      gh_retry_delay="$(rate_limit_delay_seconds "$attempt" "$retry_after" "$remaining" "$reset_at")"
+      return 0
+      ;;
+  esac
+
+  case "$lower" in
+    *http\ 502*|*http\ 503*|*http\ 504*|*502\ bad\ gateway*|*503\ service\ unavailable*|*504\ gateway\ timeout*|*bad\ gateway*|*service\ unavailable*|*gateway\ timeout*)
+      gh_retry_reason='GitHub API unavailable'
+      gh_retry_delay="$(default_backoff_seconds "$attempt")"
+      return 0
+      ;;
+  esac
+
+  case "$lower" in
+    *timed\ out*|*timeout*|*context\ deadline\ exceeded*|*connection\ reset\ by\ peer*|*connection\ refused*|*temporary\ failure\ in\ name\ resolution*|*no\ such\ host*|*network\ is\ unreachable*|*unexpected\ eof*|*stream\ error*)
+      gh_retry_reason='GitHub network error'
+      gh_retry_delay="$(default_backoff_seconds "$attempt")"
+      return 0
+      ;;
+  esac
+
+  return 1
+}
+
+stdout_file="$(mktemp)"
+stderr_file="$(mktemp)"
+attempt=1
+
+cleanup() {
+  rm -f "$stdout_file" "$stderr_file"
+}
+
+while :; do
+  : >"$stdout_file"
+  : >"$stderr_file"
+
+  if gh "$@" >"$stdout_file" 2>"$stderr_file"; then
+    stdout="$(<"$stdout_file")"
+    stderr="$(<"$stderr_file")"
+    cleanup
+    print_captured_output "$stdout" "$stderr"
+    exit 0
+  fi
+
+  rc=$?
+  stdout="$(<"$stdout_file")"
+  stderr="$(<"$stderr_file")"
+
+  if ! classify_retryable_failure "$stdout" "$stderr" "$rc" "$attempt"; then
+    cleanup
+    print_captured_output "$stdout" "$stderr"
+    exit "$rc"
+  fi
+
+  if [ "$gh_retry_delay" -gt "$max_sleep_seconds" ]; then
+    printf 'Transient GitHub CLI failure requires waiting %ss, which exceeds GH_RETRY_MAX_SLEEP_SECONDS=%s.\n' "$gh_retry_delay" "$max_sleep_seconds" >&2
+    cleanup
+    print_captured_output "$stdout" "$stderr"
+    exit 75
+  fi
+
+  if [ "$attempt" -ge "$max_attempts" ]; then
+    printf 'Transient GitHub CLI failure persisted after %s attempts: %s\n' "$attempt" "$gh_retry_reason" >&2
+    cleanup
+    print_captured_output "$stdout" "$stderr"
+    exit 75
+  fi
+
+  printf 'Transient GitHub CLI failure (%s). Retrying in %ss (%s/%s).\n' "$gh_retry_reason" "$gh_retry_delay" "$attempt" "$max_attempts" >&2
+  sleep "$gh_retry_delay"
+  attempt=$((attempt + 1))
+done

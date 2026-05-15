@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# [MISE] description="Run gh api with retry/backoff and strip response headers"
+# [MISE] hide=true
+# [MISE] quiet=true
+set -euo pipefail
+
+if [ "$#" -eq 0 ]; then
+  echo "Usage: mise run github:gh:api:retry -- <endpoint> [gh api flags...]" >&2
+  exit 64
+fi
+
+strip_response_headers() {
+  local response="$1"
+
+  while :; do
+    if [[ "$response" == HTTP/*$'\r\n\r\n'* ]]; then
+      response="${response#*$'\r\n\r\n'}"
+      continue
+    fi
+
+    if [[ "$response" == HTTP/*$'\n\n'* ]]; then
+      response="${response#*$'\n\n'}"
+      continue
+    fi
+
+    break
+  done
+
+  printf '%s' "$response"
+}
+
+raw_response=''
+if raw_response="$(mise run github:gh:retry -- api --include "$@")"; then
+  strip_response_headers "$raw_response"
+else
+  rc=$?
+  if [ -n "$raw_response" ]; then
+    printf '%s' "$raw_response"
+  fi
+  exit "$rc"
+fi
