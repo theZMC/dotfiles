@@ -6,7 +6,7 @@
     "group:allNonMajor",
     "schedule:weekly"
   ],
-  "minimumReleaseAge": "14 days",
+  "minimumReleaseAge": "7 days",
   "minimumReleaseAgeBehaviour": "timestamp-required",
   "packageRules": [
     {
