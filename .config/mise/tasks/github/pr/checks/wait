@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# [MISE] description="Wait quietly for PR checks to pass or fail"
+# [MISE] description="Wait for PR checks to pass or fail"
 # [MISE] dir="{{cwd}}"
 # [USAGE] flag "--owner <owner>" help="Repository owner (optional; inferred from origin if omitted)"
 # [USAGE] flag "--repo <repo>" help="Repository name (optional; inferred from origin if omitted)"
@@ -75,6 +75,7 @@ fi
 
 elapsed=0
 settled_polls=0
+waiting_for_checks_to_register=0
 
 while [ "$elapsed" -lt "$timeout" ]; do
   if checks_json="$(mise run github:gh:retry -- pr checks "$pr" --repo "$owner/$repo" --json name,bucket,link)"; then
@@ -90,8 +91,26 @@ while [ "$elapsed" -lt "$timeout" ]; do
     exit "$rc"
   fi
 
+  check_count="$(printf '%s' "$checks_json" | yq -p=json -r 'length')"
   failing_count="$(printf '%s' "$checks_json" | yq -p=json -r '[.[] | select(.bucket=="fail" or .bucket=="cancel")] | length')"
   pending_count="$(printf '%s' "$checks_json" | yq -p=json -r '[.[] | select(.bucket=="pending")] | length')"
+
+  if [ "$check_count" -eq 0 ]; then
+    settled_polls=0
+    if [ "$waiting_for_checks_to_register" -eq 0 ]; then
+      echo "PR checks have not populated yet. Continuing to poll GitHub until the first check appears." >&2
+      waiting_for_checks_to_register=1
+    fi
+
+    sleep "$interval"
+    elapsed=$((elapsed + interval))
+    continue
+  fi
+
+  if [ "$waiting_for_checks_to_register" -eq 1 ]; then
+    printf 'PR checks are now registered (%s reported). Waiting for them to settle.\n' "$check_count" >&2
+    waiting_for_checks_to_register=0
+  fi
 
   if [ "$failing_count" -gt 0 ]; then
     echo "PR checks failed or were canceled."

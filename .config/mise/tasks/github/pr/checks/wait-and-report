@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# [MISE] description="Wait quietly for PR checks then print final snapshot"
+# [MISE] description="Wait for PR checks then print final snapshot"
 # [MISE] dir="{{cwd}}"
 # [USAGE] flag "--owner <owner>" help="Repository owner (optional; inferred from origin if omitted)"
 # [USAGE] flag "--repo <repo>" help="Repository name (optional; inferred from origin if omitted)"

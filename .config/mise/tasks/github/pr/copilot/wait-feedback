@@ -17,7 +17,7 @@ is_copilot_user='(.user.login|ascii_downcase) as $u | $u=="copilot" or $u=="copi
 copilot_expected_comments() {
   local output=''
 
-  if output="$(mise run github:gh:api:retry -- "repos/$owner/$repo/pulls/$pr/reviews" --jq "([.[] | select($is_copilot_user) | select((.submitted_at // .created_at // \"\") >= \"$since\")] | last | .body // \"\") as \$b | if (\$b|test(\"generated no comments\";\"i\")) then 0 elif (\$b|test(\"generated [0-9]+ comment(s)?\";\"i\")) then (\$b|capture(\"generated (?<n>[0-9]+) comment(s)?\";\"i\").n|tonumber) else -1 end")"; then
+  if output="$(mise run github:gh:api:retry -- "repos/$owner/$repo/pulls/$pr/reviews" --jq "([.[] | select($is_copilot_user) | select((.submitted_at // .created_at // \"\") >= \"$since\")] | last | .body // \"\") as \$b | if (\$b|test(\"(generated )?(no|0) (new )?comment(s)?\";\"i\")) then 0 elif (\$b|test(\"(generated )?[0-9]+ (new )?comment(s)?\";\"i\")) then (\$b|capture(\"(generated )?(?<n>[0-9]+) (new )?comment(s)?\";\"i\").n|tonumber) else -1 end")"; then
     printf '%s' "$output"
   else
     return $?
