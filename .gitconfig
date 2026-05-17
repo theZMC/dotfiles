@@ -3,6 +3,9 @@
 	email = zach@zmc.dev
 	name = Zach Callahan
 
+[tag]
+	gpgsign = true
+
 [alias]
 	trueblame = blame -w -C -C -C
 	steal = "!f() {\n  url=\"$1\"\n\n  clean=\"${url#http://}\"\n  clean=\"${clean#https://}\"\n  clean=\"${clean#ssh://}\"\n  clean=\"${clean#git@}\"\n\n  clean=\"${clean/:/\\/}\"\n\n  clean=\"${clean%.git}\"\n\n  host=\"$(echo \"$clean\" | cut -d/ -f1)\"\n  user=\"$(echo \"$clean\" | cut -d/ -f2)\"\n  repo=\"$(echo \"$clean\" | cut -d/ -f3)\"\n\n  dest=\"${CODE_HOME:-${HOME}/code}/$host/$user/$repo\"\n\n  mkdir -p \"$dest\"\n\n  git clone \"$url\" \"$dest\"\n  set +x\n}; f"

@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+# Generate ~/.ssh/config.local from tailscale state.
+# Idempotent: regenerates the managed block, preserves anything outside it.
+
+set -eu
+
+CONFIG="${HOME}/.ssh/config.local"
+MARKER_START="# >>> tailscale-managed >>>"
+MARKER_END="# <<< tailscale-managed <<<"
+
+if ! command -v tailscale >/dev/null 2>&1; then
+  echo "tailscale CLI not found" >&2
+  exit 1
+fi
+
+# MagicDNSSuffix comes back without a trailing dot
+suffix="$(tailscale status --json | jq -r '.MagicDNSSuffix')"
+
+if [ -z "$suffix" ] || [ "$suffix" = "null" ]; then
+  echo "no MagicDNSSuffix — is tailscale up and MagicDNS enabled?" >&2
+  exit 1
+fi
+
+mkdir -p "${HOME}/.ssh"
+touch "$CONFIG"
+chmod 600 "$CONFIG"
+
+# Strip any existing managed block
+tmp="$(mktemp)"
+awk -v s="$MARKER_START" -v e="$MARKER_END" '
+  $0 == s { skip=1; next }
+  $0 == e { skip=0; next }
+  !skip
+' "$CONFIG" >"$tmp"
+
+# Append fresh managed block
+{
+  cat "$tmp"
+  cat <<EOF
+$MARKER_START
+# Generated $(date -u +%Y-%m-%dT%H:%M:%SZ) from \`tailscale status\`
+CanonicalizeHostname yes
+CanonicalDomains $suffix
+CanonicalizeFallbackLocal yes
+CanonicalizeMaxDots 0
+
+Host *.$suffix
+    RemoteForward /run/user/1000/gnupg/S.gpg-agent     %d/.gnupg/S.gpg-agent.extra
+    RemoteForward /run/user/1000/gnupg/S.gpg-agent.ssh %d/.gnupg/S.gpg-agent.ssh
+    ForwardAgent no
+$MARKER_END
+EOF
+} >"$CONFIG"
+
+rm -f "$tmp"
+echo "wrote tailscale-managed block to $CONFIG (suffix: $suffix)"

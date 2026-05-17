@@ -20,7 +20,6 @@ zsh_plugins=(
   "ohmyzsh/ohmyzsh path:plugins/github"
   "ohmyzsh/ohmyzsh path:plugins/gnu-utils"
   "ohmyzsh/ohmyzsh path:plugins/golang"
-  "ohmyzsh/ohmyzsh path:plugins/gpg-agent"
   "ohmyzsh/ohmyzsh path:plugins/istioctl"
   "ohmyzsh/ohmyzsh path:plugins/kubectl"
   "ohmyzsh/ohmyzsh path:plugins/kubectx"
