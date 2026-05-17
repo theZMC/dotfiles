@@ -11,7 +11,3 @@
   mkdir -p "${marker:h}"
   touch "$marker"
 }
-
-if [[ -n "$SSH_CONNECTION" ]] && [[ -S "$SSH_AUTH_SOCK" ]]; then
-  gpg-connect-agent "scd serialno" "learn --force" /bye 2>/dev/null || true
-fi
