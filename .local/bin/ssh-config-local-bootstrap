@@ -13,6 +13,9 @@ if ! command -v tailscale >/dev/null 2>&1; then
   exit 1
 fi
 
+gpg_extra_socket="$(gpgconf --list-dirs agent-extra-socket)"
+gpg_ssh_socket="$(gpgconf --list-dirs agent-ssh-socket)"
+
 # MagicDNSSuffix comes back without a trailing dot
 suffix="$(tailscale status --json | jq -r '.MagicDNSSuffix')"
 
@@ -45,8 +48,8 @@ CanonicalizeFallbackLocal yes
 CanonicalizeMaxDots 0
 
 Host *.$suffix
-    RemoteForward /run/user/1000/gnupg/S.gpg-agent     %d/.gnupg/S.gpg-agent.extra
-    RemoteForward /run/user/1000/gnupg/S.gpg-agent.ssh %d/.gnupg/S.gpg-agent.ssh
+    RemoteForward /run/user/1000/gnupg/S.gpg-agent     $gpg_extra_socket
+    RemoteForward /run/user/1000/gnupg/S.gpg-agent.ssh $gpg_ssh_socket
     ForwardAgent no
 $MARKER_END
 EOF
