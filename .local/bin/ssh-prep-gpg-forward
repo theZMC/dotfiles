@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 host="$1"
-ssh -t "$host" 'sudo tee /etc/ssh/sshd_config.d/10-gpg-forward.conf <<<"StreamLocalBindUnlink yes" && sudo systemctl reload ssh'
+ssh -t "$host" 'sudo tee /etc/ssh/sshd_config.d/10-gpg-forward.conf <<<"StreamLocalBindUnlink yes" && (sudo systemctl reload ssh || sudo systemctl reload sshd)'
