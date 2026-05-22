@@ -1,0 +1,190 @@
+#!/usr/bin/env bash
+# [MISE] description="Merge a kubeconfig into ~/.kube/config"
+# [MISE] raw=true
+# [USAGE] arg "<kubeconfig>" help="Path to the kubeconfig file to ingest"
+# [USAGE] flag "--no-confirm" help="Skip interactive confirmation; abort if entry names conflict"
+set -euo pipefail
+
+umask 077
+
+source_path="${usage_kubeconfig?missing kubeconfig}"
+no_confirm="${usage_no_confirm:-false}"
+target_dir="${HOME}/.kube"
+target_path="${target_dir}/config"
+merge_winner='existing'
+merged_path=''
+source_json=''
+target_json=''
+
+expand_home() {
+  case "$1" in
+    \~)
+      printf '%s\n' "$HOME"
+      ;;
+    \~/*)
+      printf '%s/%s\n' "$HOME" "${1#~/}"
+      ;;
+    *)
+      printf '%s\n' "$1"
+      ;;
+  esac
+}
+
+cleanup() {
+  if [ -n "$source_json" ]; then
+    rm -f "$source_json"
+  fi
+
+  if [ -n "$target_json" ]; then
+    rm -f "$target_json"
+  fi
+
+  if [ -n "$merged_path" ]; then
+    rm -f "$merged_path"
+  fi
+}
+
+print_conflicts() {
+  local label="$1"
+  shift
+
+  if [ "$#" -eq 0 ]; then
+    return 0
+  fi
+
+  printf '%s:\n' "$label"
+  local name
+  for name in "$@"; do
+    printf '  - %s\n' "$name"
+  done
+}
+
+collect_conflicts() {
+  local incoming_json="$1"
+  local existing_json="$2"
+  local query="$3"
+  local -A existing_names=()
+  local name
+
+  while IFS= read -r name; do
+    if [ -n "$name" ]; then
+      existing_names["$name"]=1
+    fi
+  done < <(yq -p=json -r "$query" <"$existing_json")
+
+  while IFS= read -r name; do
+    if [ -n "${existing_names[$name]+x}" ]; then
+      printf '%s\n' "$name"
+    fi
+  done < <(yq -p=json -r "$query" <"$incoming_json")
+}
+
+render_context() {
+  if [ -n "$1" ]; then
+    printf '%s\n' "$1"
+  else
+    printf '<empty>\n'
+  fi
+}
+
+trap cleanup EXIT
+
+source_path="$(expand_home "$source_path")"
+
+if [ ! -f "$source_path" ]; then
+  printf 'Kubeconfig not found: %s\n' "$source_path" >&2
+  exit 66
+fi
+
+mkdir -p "$target_dir"
+
+source_json="$(mktemp)"
+target_json="$(mktemp)"
+
+kubectl config view --kubeconfig "$source_path" -o json >"$source_json"
+
+if [ -f "$target_path" ]; then
+  kubectl config view --kubeconfig "$target_path" -o json >"$target_json"
+else
+  printf '{"clusters":[],"users":[],"contexts":[],"current-context":""}\n' >"$target_json"
+fi
+
+mapfile -t cluster_conflicts < <(collect_conflicts "$source_json" "$target_json" '.clusters[].name')
+mapfile -t user_conflicts < <(collect_conflicts "$source_json" "$target_json" '.users[].name')
+mapfile -t context_conflicts < <(collect_conflicts "$source_json" "$target_json" '.contexts[].name')
+
+has_conflicts='false'
+if [ "${#cluster_conflicts[@]}" -gt 0 ] || [ "${#user_conflicts[@]}" -gt 0 ] || [ "${#context_conflicts[@]}" -gt 0 ]; then
+  has_conflicts='true'
+fi
+
+current_target="$(yq -p=json -r '."current-context" // ""' <"$target_json")"
+
+if [ "$has_conflicts" = 'true' ]; then
+  printf 'Conflicting kubeconfig entry names were found between %s and %s.\n' "$source_path" "$target_path"
+  print_conflicts 'Clusters' "${cluster_conflicts[@]}"
+  print_conflicts 'Users' "${user_conflicts[@]}"
+  print_conflicts 'Contexts' "${context_conflicts[@]}"
+
+  if [ "$no_confirm" = 'true' ]; then
+    printf 'Refusing to merge with --no-confirm because duplicate cluster, user, or context names need a decision.\n' >&2
+    exit 2
+  fi
+
+  printf 'The selected winner also controls which current-context is preserved when both files set one.\n'
+  if ! merge_winner="$(gum choose --header 'Which kubeconfig should win for duplicate names?' incoming existing abort)"; then
+    printf 'Aborted.\n' >&2
+    exit 1
+  fi
+
+  case "$merge_winner" in
+    incoming|existing)
+      ;;
+    *)
+      printf 'Aborted.\n' >&2
+      exit 1
+      ;;
+  esac
+fi
+
+# KUBECONFIG merging is first-file-wins, so the order decides which file keeps
+# duplicate names and the resulting current-context.
+if [ ! -f "$target_path" ]; then
+  merge_input="$source_path"
+elif [ "$merge_winner" = 'incoming' ]; then
+  merge_input="$source_path:$target_path"
+else
+  merge_input="$target_path:$source_path"
+fi
+
+merged_path="$(mktemp "${target_dir}/config.merged.XXXXXX")"
+KUBECONFIG="$merge_input" kubectl config view --raw --flatten >"$merged_path"
+
+if [ -f "$target_path" ] && cmp -s "$merged_path" "$target_path"; then
+  printf '%s is already up to date after merging %s.\n' "$target_path" "$source_path"
+  exit 0
+fi
+
+current_merged="$(yq -r '."current-context" // ""' <"$merged_path")"
+
+printf 'Source kubeconfig: %s\n' "$source_path"
+printf 'Target kubeconfig: %s\n' "$target_path"
+if [ "$has_conflicts" = 'true' ] && [ "$merge_winner" = 'incoming' ]; then
+  printf 'Duplicate names: incoming entries will win.\n'
+elif [ "$has_conflicts" = 'true' ]; then
+  printf 'Duplicate names: existing entries will win.\n'
+fi
+printf 'Current context: %s -> %s\n' "$(render_context "$current_target")" "$(render_context "$current_merged")"
+
+if [ "$no_confirm" != 'true' ]; then
+  if ! gum confirm "Write merged kubeconfig to ${target_path}?" --default=false; then
+    printf 'Aborted.\n' >&2
+    exit 1
+  fi
+fi
+
+chmod 600 "$merged_path"
+mv "$merged_path" "$target_path"
+merged_path=''
+
+printf 'Merged %s into %s.\n' "$source_path" "$target_path"
