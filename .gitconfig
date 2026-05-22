@@ -33,7 +33,7 @@
 
 [diff]
 	compactionheuristic = true
-	mnemonicprefix = true 
+	mnemonicprefix = true
 
 [fetch]
 	prune = true

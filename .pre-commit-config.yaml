@@ -1,0 +1,35 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+  - id: check-yaml
+    args:
+    - --allow-multiple-documents
+    - --unsafe
+  - id: check-toml
+  - id: check-json
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: check-added-large-files
+    args:
+    - --maxkb=500
+- repo: https://github.com/google/yamlfmt
+  rev: v0.21.0
+  hooks:
+  - id: yamlfmt
+    files: \.(yaml|yml)$
+    exclude: templates/.*\.(yaml|yml)$ # Exclude templated YAML files
+    args:
+    - -formatter
+    - indentless_arrays=true,retain_line_breaks=true,scan_folded_as_literal=true
+- repo: local
+  hooks:
+  - id: update-mise-lock
+    name: Update mise.lock
+    language: system
+    entry: bash
+    files: ^\.config/mise/(config\.toml|mise\.lock)$
+    args:
+    - -c
+    - |
+      GITHUB_TOKEN=$(gh auth token || true) mise lock

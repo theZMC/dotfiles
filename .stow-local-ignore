@@ -22,3 +22,4 @@ _darcs
 
 ^renovate\.json
 ^skills-lock\.json
+^\.pre-commit-config\.yaml
