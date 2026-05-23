@@ -9,6 +9,11 @@ opt.signcolumn = "yes"
 opt.spell = false
 opt.wrap = false
 
+opt.shiftwidth = 2
+opt.tabstop = 2
+opt.softtabstop = 2
+opt.expandtab = true
+
 opt.termguicolors = true
 opt.clipboard:append "unnamedplus"
 opt.completeopt = { "menu", "menuone", "popup", "noinsert" }

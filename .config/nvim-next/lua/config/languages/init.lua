@@ -35,7 +35,7 @@ vim.lsp.config("*", {
   },
 })
 
-for _, language in ipairs(languages) do
+for _, language in pairs(languages) do
   for _, server in ipairs(language.lsp or {}) do
     if server.config then vim.lsp.config(server.name, server.config) end
   end
@@ -87,7 +87,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-for _, language in ipairs(languages) do
+for _, language in pairs(languages) do
   for _, server in ipairs(language.lsp or {}) do
     if executable(server.cmd) then pcall(vim.lsp.enable, server.name) end
   end

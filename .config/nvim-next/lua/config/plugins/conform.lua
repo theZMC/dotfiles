@@ -8,7 +8,7 @@ local formatters_by_ft = {}
 local formatters = {}
 local format_on_save = {}
 
-for _, language in ipairs(languages) do
+for _, language in pairs(languages) do
   for filetype, names in pairs(language.formatters_by_ft or {}) do
     formatters_by_ft[filetype] = names
   end
