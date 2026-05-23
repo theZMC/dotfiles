@@ -6,6 +6,9 @@ lockfile = true
 [settings.npm]
 package_manager = "bun"
 
+[tool_alias]
+nvim12 = "neovim@0.12"
+
 [tools]
 aws-cli = { version = "2.34.37", symlink_bins = "true" }
 bat = "0.26.1"
@@ -33,6 +36,7 @@ java = "26.0.0"
 k9s = "0.50.18"
 kubectl = "1.36.0"
 lazygit = "0.61.1"
+lua-language-server = "3.18.2"
 neovim = "0.11.7"
 node = "25.9.0"
 npm = "11.13.0"
@@ -63,9 +67,11 @@ rust = "1.95.0"
 rust-analyzer = "2026-03-23"
 shellcheck = "0.11.0"
 sops = "3.12.2"
+stylua = "2.5.2"
 terraform = "1.14.9"
 terraform-ls = "0.38.6"
 tmux = "3.6a"
+tree-sitter = "0.26.9"
 trufflehog = "3.95.2"
 usage = "3.2.1"
 uv = "0.11.8"

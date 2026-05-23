@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+  "runtime.version": "LuaJIT",
+  "runtime.path": [
+    "lua/?.lua",
+    "lua/?/init.lua",
+    "?.lua",
+    "?/init.lua"
+  ],
+  "diagnostics.globals": [
+    "vim"
+  ],
+  "completion.callSnippet": "Replace",
+  "telemetry.enable": false,
+  "workspace.checkThirdParty": false,
+  "workspace.library": [
+    "lua",
+    "${3rd}/luv/library",
+    "~/.local/share/mise/installs/neovim/0.12/share/nvim/runtime",
+    "~/.local/share/mise/installs/neovim/0.12/lib/nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/nvim-lspconfig",
+    "~/.local/share/nvim-next/site/pack/core/opt/nvim-treesitter",
+    "~/.local/share/nvim-next/site/pack/core/opt/conform.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/one_monokai.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/copilot.lua",
+    "~/.local/share/nvim-next/site/pack/core/opt/plenary.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/nvim-web-devicons",
+    "~/.local/share/nvim-next/site/pack/core/opt/nui.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/nvim-notify",
+    "~/.local/share/nvim-next/site/pack/core/opt/noice.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/neo-tree.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/telescope.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/CopilotChat.nvim",
+    "~/.local/share/nvim-next/site/pack/core/opt/render-markdown.nvim"
+  ]
+}
