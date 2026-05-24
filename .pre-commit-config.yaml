@@ -22,8 +22,13 @@ repos:
     args:
     - -formatter
     - indentless_arrays=true,retain_line_breaks=true,scan_folded_as_literal=true
+
 - repo: local
   hooks:
+  - id: trufflehog
+    name: TruffleHog
+    language: system
+    entry: trufflehog filesystem --no-update
   - id: update-mise-lock
     name: Update mise.lock
     language: system
