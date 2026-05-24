@@ -27,15 +27,6 @@ return {
     -- passed to `vim.filetype.add`
     filetypes = {
       -- see `:h vim.filetype.add` for usage
-      extension = {
-        foo = "fooscript",
-      },
-      filename = {
-        [".foorc"] = "fooscript",
-      },
-      pattern = {
-        [".*/etc/foo/.*"] = "fooscript",
-      },
     },
     -- vim options can be configured here
     options = {
