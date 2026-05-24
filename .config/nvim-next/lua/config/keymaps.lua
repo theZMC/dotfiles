@@ -1,6 +1,16 @@
 local buffers = require "config.buffers"
+local pick = require "config.pick"
 
 local map = vim.keymap.set
+
+local function diagnostic_jump(count, severity)
+  return function()
+    vim.diagnostic.jump {
+      count = count,
+      severity = severity,
+    }
+  end
+end
 
 local function focus_neotree()
   if vim.bo.filetype == "neo-tree" then
@@ -27,42 +37,52 @@ local function focus_neotree()
   }
 end
 
-map("n", "]b", function() buffers.cycle(1, vim.v.count1) end, { desc = "Next buffer" })
+map("n", "]b", function() buffers.cycle(1, vim.v.count1) end, { desc = "󰒭 Next Buffer" })
 
-map("n", "[b", function() buffers.cycle(-1, vim.v.count1) end, { desc = "Previous buffer" })
+map("n", "[b", function() buffers.cycle(-1, vim.v.count1) end, { desc = "󰒮 Previous Buffer" })
 
-map("n", "<leader>c", buffers.close_current, { desc = "Close current buffer" })
-map("n", "<leader>bd", buffers.pick_to_close, { desc = "Close buffer" })
-map("n", "<leader>cf", "<cmd>Format<cr>", { desc = "Format buffer" })
-map("n", "<leader>q", "<cmd>confirm qall<cr>", { desc = "Quit Neovim" })
-map("n", "<leader>tt", function() require("config.terminal").toggle() end, { desc = "Toggle terminal" })
-map("n", "<leader>gg", function() require("config.terminal").lazygit() end, { desc = "LazyGit" })
-map("n", "<leader>ac", "<cmd>CopilotChatToggle<cr>", { desc = "Copilot Chat" })
-map("n", "<leader>e", "<cmd>Neotree toggle filesystem left<cr>", { desc = "Toggle Neo-tree" })
-map("n", "<leader>o", focus_neotree, { desc = "Focus Neo-tree" })
+map("n", "<leader>c", buffers.close_current, { desc = "󰅖 Close Current Buffer" })
+map("n", "<leader>bd", buffers.pick_to_close, { desc = "󰆴 Close Buffer" })
+map("n", "<leader>q", "<cmd>confirm qall<cr>", { desc = "󰗼 Quit Neovim" })
+map("n", "<F7>", function() require("config.terminal").toggle() end, { desc = " Toggle Terminal" })
+map("n", "<leader>tt", function() require("config.terminal").toggle() end, { desc = " Toggle Terminal" })
+map("t", "<F7>", [[<C-\><C-n><cmd>lua require('config.terminal').toggle()<CR>]], { desc = " Toggle Terminal" })
+map("n", "<leader>gg", function() require("config.terminal").lazygit() end, { desc = "󰊢 LazyGit" })
+map("n", "<leader>ac", "<cmd>CopilotChatToggle<cr>", { desc = "󰚩 Copilot Chat" })
+map("n", "<leader>e", "<cmd>Neotree toggle filesystem left<cr>", { desc = "󰙅 Toggle Explorer" })
+map("n", "<leader>o", focus_neotree, { desc = "󰙅 Focus Explorer" })
 
-map("n", "-", "<cmd>Neotree toggle filesystem left<cr>", { desc = "Toggle file explorer" })
-map("n", "<leader>ff", function() require("telescope.builtin").find_files() end, { desc = "Find files" })
+map("n", "-", "<cmd>Neotree toggle filesystem left<cr>", { desc = "󰙅 Toggle File Explorer" })
+map("n", "<leader>ff", pick.find_files, { desc = "󰈞 Find Files" })
 map(
   "n",
   "<leader>fF",
-  function() require("telescope.builtin").find_files { hidden = true } end,
-  { desc = "Find hidden files" }
+  function() pick.find_files { hidden = true } end,
+  { desc = "󰈞 Find Hidden Files" }
 )
-map("n", "<leader>fw", function() require("telescope.builtin").live_grep() end, { desc = "Find text" })
+map("n", "<leader>fw", pick.live_grep, { desc = "󰍉 Find Text" })
 map(
   "n",
   "<leader>fW",
-  function() require("telescope.builtin").live_grep { hidden = true } end,
-  { desc = "Find hidden text" }
+  function() pick.live_grep { hidden = true } end,
+  { desc = "󰍉 Find Hidden Text" }
 )
 
-map("n", "[d", function() vim.diagnostic.jump { count = -1, float = true } end, { desc = "Previous diagnostic" })
-
-map("n", "]d", function() vim.diagnostic.jump { count = 1, float = true } end, { desc = "Next diagnostic" })
-
-map("n", "<leader>de", vim.diagnostic.open_float, { desc = "Line diagnostics" })
-map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
+map("n", "gl", vim.diagnostic.open_float, { desc = " Line Diagnostics" })
+map("n", "<leader>ld", vim.diagnostic.open_float, { desc = " Line Diagnostics" })
+map("n", "<C-w>d", vim.diagnostic.open_float, { desc = " Line Diagnostics" })
+map("n", "<leader>lI", "<cmd>ConformInfo<cr>", { desc = " Conform Info" })
+map("n", "<leader>lD", function() pick.diagnostics "current" end, { desc = "󰒡 All Diagnostics" })
+map("n", "<leader>lw", function() pick.diagnostics "all" end, { desc = "󰒡 Workspace Diagnostics" })
+map("n", "[d", diagnostic_jump(-1), { desc = " Diagnostic Previous" })
+map("n", "]d", diagnostic_jump(1), { desc = " Diagnostic Next" })
+map("n", "[e", diagnostic_jump(-1, vim.diagnostic.severity.ERROR), { desc = " Error Previous" })
+map("n", "]e", diagnostic_jump(1, vim.diagnostic.severity.ERROR), { desc = " Error Next" })
+map("n", "[w", diagnostic_jump(-1, vim.diagnostic.severity.WARN), { desc = " Warning Previous" })
+map("n", "]w", diagnostic_jump(1, vim.diagnostic.severity.WARN), { desc = " Warning Next" })
+map("n", "<leader>uH", function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = "󰞋 Toggle LSP Inlay Hints" })
 
 map("n", "<leader>gy", function()
   local file = vim.api.nvim_buf_get_name(0)

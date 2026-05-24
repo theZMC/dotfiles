@@ -22,10 +22,11 @@ These stay because core still does not replace them cleanly yet:
 - `stevearc/conform.nvim`: external formatter orchestration
 - `cpea2506/one_monokai.nvim`: colorscheme parity with your current setup
 - `zbirenbaum/copilot.lua`
+- `nvim-mini/mini.pick`: fuzzy finding plus `vim.ui.select()` integration
+- `nvim-mini/mini.extra`: diagnostics and LSP pickers for `mini.pick`
 - `rcarriga/nvim-notify`: top-right notification popups
 - `folke/noice.nvim`: message UI and centered command line popup
 - `nvim-neo-tree/neo-tree.nvim`: file explorer sidebar
-- `nvim-telescope/telescope.nvim`: fuzzy finding for files and text search
 - `CopilotC-Nvim/CopilotChat.nvim`
 - `MeanderingProgrammer/render-markdown.nvim`
 
@@ -40,7 +41,7 @@ These stay because core still does not replace them cleanly yet:
   `bash-language-server`, `gopls`, `clangd`, `basedpyright`, `ruff`, `marksman`,
   `yaml-language-server`, `terraform-ls`
 - Formatters matching your old config: `deno`, `yamlfmt`, `hclfmt`
-- Search tooling for Telescope live grep: `ripgrep`
+- Search tooling for `mini.pick` file search and live grep: `ripgrep`
 - Treesitter prerequisites if you want parser auto-install: `tree-sitter`,
   `curl`, `tar`, and a C compiler
 
@@ -57,6 +58,7 @@ These stay because core still does not replace them cleanly yet:
 ## Useful commands
 
 - `:PackUpdate` updates plugins managed by `vim.pack`
+- `:Pick` opens the `mini.pick` picker registry
 - `:LazyGit` opens `lazygit` in a floating terminal
 - `:Format` formats the current buffer
 
@@ -77,7 +79,7 @@ These stay because core still does not replace them cleanly yet:
 - `<leader>fF`: fuzzy find hidden files too
 - `<leader>fw`: live grep file contents
 - `<leader>fW`: live grep hidden file contents too
-- `<leader>lR`: Telescope picker for symbol references
+- `<leader>lR`: picker for symbol references
 - `<leader>de`: line diagnostics
 - `<leader>dq`: diagnostics to loclist
 - `<leader>gy`: copy current-file git diff as fenced markdown

@@ -69,6 +69,10 @@ return {
           },
         },
       },
+      {
+        name = "golangci_lint_ls",
+        cmd = "golangci-lint-langserver",
+      },
     },
   },
   helm = {
@@ -144,7 +148,7 @@ return {
       },
     },
     formatters_by_ft = {
-      python = { "ruff-fmt" },
+      python = { "ruff_format" },
     },
   },
   rust = {

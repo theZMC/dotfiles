@@ -25,6 +25,7 @@ local languages = {
   "proto",
   "python",
   "query",
+  "regex",
   "rust",
   "svelte",
   "terraform",
@@ -40,6 +41,9 @@ local languages = {
 treesitter.setup {
   install_dir = vim.fn.stdpath "data" .. "/site",
 }
+
+pcall(vim.treesitter.language.register, "terraform", "terraform-vars")
+pcall(vim.treesitter.language.register, "yaml", "yaml.helm-values")
 
 local available = {}
 for _, lang in ipairs(treesitter.get_available()) do

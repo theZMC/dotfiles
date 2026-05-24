@@ -25,11 +25,12 @@
     "~/.local/share/nvim-next/site/pack/core/opt/copilot.lua",
     "~/.local/share/nvim-next/site/pack/core/opt/plenary.nvim",
     "~/.local/share/nvim-next/site/pack/core/opt/nvim-web-devicons",
+    "~/.local/share/nvim-next/site/pack/core/opt/mini.pick",
+    "~/.local/share/nvim-next/site/pack/core/opt/mini.extra",
     "~/.local/share/nvim-next/site/pack/core/opt/nui.nvim",
     "~/.local/share/nvim-next/site/pack/core/opt/nvim-notify",
     "~/.local/share/nvim-next/site/pack/core/opt/noice.nvim",
     "~/.local/share/nvim-next/site/pack/core/opt/neo-tree.nvim",
-    "~/.local/share/nvim-next/site/pack/core/opt/telescope.nvim",
     "~/.local/share/nvim-next/site/pack/core/opt/CopilotChat.nvim",
     "~/.local/share/nvim-next/site/pack/core/opt/render-markdown.nvim"
   ]

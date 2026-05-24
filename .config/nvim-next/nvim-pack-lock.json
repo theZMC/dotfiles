@@ -12,6 +12,18 @@
       "rev": "7b89909d0647c89298de880255b287b01b7e5d34",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
+    "mini.clue": {
+      "rev": "0e37cddd6307eb40248e4226be65304e85df1d18",
+      "src": "https://github.com/nvim-mini/mini.clue"
+    },
+    "mini.extra": {
+      "rev": "5b0acf09d7f7958946973367c66bf5aafe4209dd",
+      "src": "https://github.com/nvim-mini/mini.extra"
+    },
+    "mini.pick": {
+      "rev": "4522d9ab65224675df2cf1ede8c12f0410aae2be",
+      "src": "https://github.com/nvim-mini/mini.pick"
+    },
     "mini.tabline": {
       "rev": "7d4a8a79f37361ad287d27bda0f37fc53f924a50",
       "src": "https://github.com/nvim-mini/mini.tabline"
@@ -57,6 +69,10 @@
       "rev": "629eb9533ec989d9d5c6cab8f3ad5372422c24e0",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
+    "telescope-ui-select.nvim": {
+      "rev": "6e51d7da30bd139a6950adf2a47fda6df9fa06d2",
+      "src": "https://github.com/nvim-telescope/telescope-ui-select.nvim"
+    },
     "telescope.nvim": {
       "rev": "7d324792b7943e4aa16ad007212e6acc6f9fe335",
       "src": "https://github.com/nvim-telescope/telescope.nvim"
@@ -64,6 +80,10 @@
     "tmux.nvim": {
       "rev": "32ceaf2793582955ef9576809730878c4d2d9426",
       "src": "https://github.com/aserowy/tmux.nvim"
+    },
+    "toggleterm.nvim": {
+      "rev": "9a88eae817ef395952e08650b3283726786fb5fb",
+      "src": "https://github.com/akinsho/toggleterm.nvim"
     }
   }
 }

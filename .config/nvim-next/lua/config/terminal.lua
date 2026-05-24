@@ -1,36 +1,55 @@
 local M = {}
 
-local shell_state = {
-  buf = nil,
-  win = nil,
-}
+local shell_terminal
+local lazygit_terminal
 
-local lazygit_state = {
-  buf = nil,
-  job = nil,
-  win = nil,
-}
+local function float_dimensions()
+  local width = math.floor(vim.o.columns * 0.9)
+  local height = math.floor(vim.o.lines * 0.85)
 
-local function is_valid_buf(buf) return buf and vim.api.nvim_buf_is_valid(buf) end
+  return width, height
+end
 
-local function is_valid_win(win) return win and vim.api.nvim_win_is_valid(win) end
-
-local function float_opts(width_ratio, height_ratio)
-  local width = math.floor(vim.o.columns * (width_ratio or 0.9))
-  local height = math.floor(vim.o.lines * (height_ratio or 0.85))
-
+local function float_opts()
   return {
-    relative = "editor",
-    width = width,
-    height = height,
-    col = math.floor((vim.o.columns - width) / 2),
-    row = math.floor((vim.o.lines - height) / 2 - 1),
-    style = "minimal",
     border = "rounded",
+    col = function()
+      local width = float_dimensions()
+
+      return math.floor((vim.o.columns - width) / 2)
+    end,
+    height = function()
+      local _, height = float_dimensions()
+
+      return height
+    end,
+    row = function()
+      local _, height = float_dimensions()
+
+      return math.floor((vim.o.lines - height) / 2 - 1)
+    end,
+    width = function()
+      local width = float_dimensions()
+
+      return width
+    end,
   }
 end
 
-local function set_terminal_keymaps(bufnr, close)
+local function terminal_class()
+  local ok, terminal = pcall(require, "toggleterm.terminal")
+
+  if not ok then
+    vim.notify("toggleterm.nvim is not available", vim.log.levels.ERROR)
+    return
+  end
+
+  return terminal.Terminal
+end
+
+local function set_terminal_keymaps(term, close)
+  local bufnr = term.bufnr
+
   if vim.b[bufnr].user_terminal_keymaps then return end
 
   vim.keymap.set("t", "<Esc><Esc>", [[<C-\\><C-n>]], {
@@ -46,10 +65,9 @@ local function set_terminal_keymaps(bufnr, close)
   vim.b[bufnr].user_terminal_keymaps = true
 end
 
-local function close_shell_window()
-  if is_valid_win(shell_state.win) then vim.api.nvim_win_close(shell_state.win, true) end
-
-  shell_state.win = nil
+local function configure_terminal(term, close)
+  set_terminal_keymaps(term, close)
+  vim.cmd.startinsert()
 end
 
 local function lazygit_cwd()
@@ -78,45 +96,56 @@ local function lazygit_cwd()
   return cwd
 end
 
-local function job_running(job) return job and vim.fn.jobwait({ job }, 0)[1] == -1 end
+local function get_shell_terminal()
+  if shell_terminal then return shell_terminal end
 
-local function close_lazygit(stop_job)
-  local buf = lazygit_state.buf
-  local job = lazygit_state.job
-  local win = lazygit_state.win
+  local Terminal = terminal_class()
 
-  lazygit_state.buf = nil
-  lazygit_state.job = nil
-  lazygit_state.win = nil
+  if not Terminal then return end
 
-  if stop_job and job_running(job) then pcall(vim.fn.jobstop, job) end
+  shell_terminal = Terminal:new {
+    direction = "float",
+    float_opts = float_opts(),
+    hidden = true,
+    on_open = function(term)
+      configure_terminal(term, function() term:close() end)
+    end,
+  }
 
-  if is_valid_win(win) then pcall(vim.api.nvim_win_close, win, true) end
+  return shell_terminal
+end
 
-  if is_valid_buf(buf) then pcall(vim.api.nvim_buf_delete, buf, { force = true }) end
+local function get_lazygit_terminal()
+  if lazygit_terminal then return lazygit_terminal end
+
+  local Terminal = terminal_class()
+
+  if not Terminal then return end
+
+  lazygit_terminal = Terminal:new {
+    close_on_exit = true,
+    cmd = "lazygit",
+    direction = "float",
+    dir = lazygit_cwd(),
+    float_opts = float_opts(),
+    hidden = true,
+    on_close = function()
+      lazygit_terminal = nil
+    end,
+    on_open = function(term)
+      configure_terminal(term, function() term:shutdown() end)
+    end,
+  }
+
+  return lazygit_terminal
 end
 
 function M.toggle()
-  if is_valid_win(shell_state.win) then
-    close_shell_window()
-    return
-  end
+  local term = get_shell_terminal()
 
-  if not is_valid_buf(shell_state.buf) then
-    shell_state.buf = vim.api.nvim_create_buf(false, true)
-    vim.bo[shell_state.buf].bufhidden = "hide"
-  end
+  if not term then return end
 
-  shell_state.win = vim.api.nvim_open_win(shell_state.buf, true, float_opts())
-
-  if vim.bo[shell_state.buf].buftype ~= "terminal" then
-    vim.cmd.terminal()
-    shell_state.buf = vim.api.nvim_get_current_buf()
-    vim.bo[shell_state.buf].bufhidden = "hide"
-    set_terminal_keymaps(shell_state.buf, close_shell_window)
-  end
-
-  vim.cmd.startinsert()
+  term:toggle()
 end
 
 function M.lazygit()
@@ -125,26 +154,16 @@ function M.lazygit()
     return
   end
 
-  if is_valid_win(lazygit_state.win) or is_valid_buf(lazygit_state.buf) then
-    close_lazygit(true)
+  local term = get_lazygit_terminal()
+
+  if not term then return end
+
+  if term:is_open() then
+    term:shutdown()
     return
   end
 
-  lazygit_state.buf = vim.api.nvim_create_buf(false, true)
-  vim.bo[lazygit_state.buf].bufhidden = "wipe"
-
-  lazygit_state.win = vim.api.nvim_open_win(lazygit_state.buf, true, float_opts())
-  set_terminal_keymaps(lazygit_state.buf, function() close_lazygit(true) end)
-
-  lazygit_state.job = vim.fn.jobstart({ "lazygit" }, {
-    term = true,
-    cwd = lazygit_cwd(),
-    on_exit = function()
-      vim.schedule(function() close_lazygit(false) end)
-    end,
-  })
-
-  vim.cmd.startinsert()
+  term:open()
 end
 
 return M
