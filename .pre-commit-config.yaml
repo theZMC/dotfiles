@@ -13,18 +13,16 @@ repos:
   - id: check-added-large-files
     args:
     - --maxkb=500
-- repo: https://github.com/google/yamlfmt
-  rev: v0.21.0
+- repo: local
   hooks:
   - id: yamlfmt
-    files: \.(yaml|yml)$
-    exclude: templates/.*\.(yaml|yml)$ # Exclude templated YAML files
+    name: yamlfmt
+    files: \.ya?ml$
+    language: system
+    entry: yamlfmt
     args:
     - -formatter
     - indentless_arrays=true,retain_line_breaks=true,scan_folded_as_literal=true
-
-- repo: local
-  hooks:
   - id: trufflehog
     name: TruffleHog
     language: system
