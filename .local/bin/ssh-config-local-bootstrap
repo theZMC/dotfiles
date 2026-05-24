@@ -1,6 +1,4 @@
 #!/usr/bin/env sh
-# Generate ~/.ssh/config.local from tailscale state.
-# Idempotent: regenerates the managed block, preserves anything outside it.
 
 set -eu
 

@@ -1,4 +1,6 @@
-if (( $+commands[nvim] )); then
+#!/usr/bin/env zsh
+
+if (($+commands[nvim])); then
   export EDITOR=nvim
   export VISUAL=nvim
   export MANPAGER="nvim +Man!"
@@ -10,6 +12,6 @@ if (( $+commands[nvim] )); then
 
   # Clear the Neovim LSP log file if it exists
   if [[ -f ~/.local/state/nvim/lsp.log ]]; then
-    echo '' > ~/.local/state/nvim/lsp.log
+    echo '' >~/.local/state/nvim/lsp.log
   fi
 fi

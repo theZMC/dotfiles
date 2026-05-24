@@ -1,10 +1,12 @@
-(( $+commands[gpgconf] )) || return
+#!/usr/bin/env zsh
+
+(($+commands[gpgconf])) || return
 
 export GPG_TTY="$(tty)"
 
 if [[ -n "$SSH_CONNECTION" ]]; then
   case "$SSH_AUTH_SOCK" in
-    /tmp/ssh-*|*/gnupg/S.gpg-agent.ssh) return ;;
+    /tmp/ssh-* | */gnupg/S.gpg-agent.ssh) return ;;
   esac
 fi
 

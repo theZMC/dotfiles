@@ -4,79 +4,79 @@ cmd="$1"
 path="$2"
 
 if ! declare -A _test &>/dev/null; then
-    echo "󰉋"
-    exit 0
+  echo "󰉋"
+  exit 0
 fi
 
 declare -A cmd_icons
 
 cmd_icons=(
-    [nvim]=""
-    [vim]=""
-    [ssh]="󰣀"
-    [python]=""
-    [bash]=""
-    [node]=""
-    [go]=""
-    [rust]=""
-    [rustc]=""
-    [java]=""
-    [javac]=""
-    [javadoc]=""
-    [ruby]=""
-    [rails]=""
-    [docker]=""
-    [git]=""
-    [k9s]=""
+  [nvim]=""
+  [vim]=""
+  [ssh]="󰣀"
+  [python]=""
+  [bash]=""
+  [node]=""
+  [go]=""
+  [rust]=""
+  [rustc]=""
+  [java]=""
+  [javac]=""
+  [javadoc]=""
+  [ruby]=""
+  [rails]=""
+  [docker]=""
+  [git]=""
+  [k9s]=""
 )
 
 declare -A dir_prefix_icons
 
 dir_prefix_icons=(
-    ["$HOME/Sync/code"]="󰈮"
-    ["$HOME/Sync"]="󱈖"
-    ["$HOME/dotfiles"]=""
-    ["$HOME/code"]="󰈮"
-    ["$HOME/Downloads"]="󰥥"
-    ["$HOME/Documents"]="󰈙"
-    ["$HOME/Pictures"]="󰈟"
-    ["$HOME/Music"]="󰈣"
-    ["$HOME/Videos"]="󰈫"
-    ["$HOME/.config"]="󱁻"
-    ["$HOME/.cache"]=""
-    ["$HOME"]=""
+  ["$HOME/Sync/code"]="󰈮"
+  ["$HOME/Sync"]="󱈖"
+  ["$HOME/dotfiles"]=""
+  ["$HOME/code"]="󰈮"
+  ["$HOME/Downloads"]="󰥥"
+  ["$HOME/Documents"]="󰈙"
+  ["$HOME/Pictures"]="󰈟"
+  ["$HOME/Music"]="󰈣"
+  ["$HOME/Videos"]="󰈫"
+  ["$HOME/.config"]="󱁻"
+  ["$HOME/.cache"]=""
+  ["$HOME"]=""
 )
 
 mapfile -t sorted_prefixes < <(printf '%s\n' "${!dir_prefix_icons[@]}" | awk '{ print length, $0 }' | sort -rn | cut -d" " -f2-)
 
 get_icon_for_cmd() {
-    local cmd="$1"
-    if [[ -n "${cmd_icons[$cmd]}" ]]; then
-        echo "${cmd_icons[$cmd]}"
-    else
-        echo ""
-    fi
+  local cmd="$1"
+  if [[ -n "${cmd_icons[$cmd]}" ]]; then
+    echo "${cmd_icons[$cmd]}"
+  else
+    echo ""
+  fi
 }
 
 get_icon_for_path() {
-    local path="$1"
-    for prefix in "${sorted_prefixes[@]}"; do
-        if [[ "$path" == "$prefix"* ]]; then
-            echo "${dir_prefix_icons[$prefix]}"
-            return
-        fi
-    done
-    echo "󰉋"
+  local path="$1"
+  for prefix in "${sorted_prefixes[@]}"; do
+    if [[ "$path" == "$prefix"* ]]; then
+      echo "${dir_prefix_icons[$prefix]}"
+      return
+    fi
+  done
+  echo "󰉋"
 }
 
 cmd_icon=$(get_icon_for_cmd "$cmd")
 path_icon=$(get_icon_for_path "$path")
 
 if git -C "$path" rev-parse --show-toplevel >/dev/null 2>&1; then
-    path_icon="${path_icon} "
-    if [[ -n "$cmd_icon" ]]; then
-        cmd_icon="${cmd_icon} "
-    fi
+  path_icon="${path_icon} "
+  if [[ -n "$cmd_icon" ]]; then
+    cmd_icon="${cmd_icon} "
+  fi
 fi
 
 echo "${cmd_icon:-$path_icon}"

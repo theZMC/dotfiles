@@ -1,4 +1,6 @@
-if (( ! $+commands[ghostty] )); then
+#!/usr/bin/env zsh
+
+if ((!$+commands[ghostty])); then
   return
 fi
 

@@ -36,7 +36,7 @@ if [ -d /opt/homebrew/bin ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-if (( $+commands[tmux] )); then
+if (($+commands[tmux])); then
   export ZSH_TMUX_AUTOSTART=true
   zsh_plugins+=("ohmyzsh/ohmyzsh path:plugins/tmux")
 fi
@@ -66,7 +66,7 @@ if [ ! -f "${zsh_plugins_root}.zsh" ]; then
 fi
 
 if ! cmp -s <(printf '%s\n' "${zsh_plugins[@]}") "${zsh_plugins_root}.txt" || ! test -d ~/.cache/antidote; then
-  printf '%s\n' "${zsh_plugins[@]}" > "${zsh_plugins_root}.txt"
+  printf '%s\n' "${zsh_plugins[@]}" >"${zsh_plugins_root}.txt"
   antidote bundle <"${zsh_plugins_root}.txt" >|"${zsh_plugins_root}.zsh"
 fi
 

@@ -63,7 +63,7 @@ response_header() {
         return 0
         ;;
     esac
-  done <<< "$response"
+  done <<<"$response"
 
   return 1
 }
@@ -139,7 +139,7 @@ classify_retryable_failure() {
   fi
 
   case "$lower" in
-    *secondary\ rate\ limit*|*rate\ limit\ exceeded*|*too\ many\ requests*|*http\ 429*|*status\ code\ 429*|*abuse\ detection*)
+    *secondary\ rate\ limit* | *rate\ limit\ exceeded* | *too\ many\ requests* | *http\ 429* | *status\ code\ 429* | *abuse\ detection*)
       gh_retry_reason='GitHub API rate limit'
       gh_retry_delay="$(rate_limit_delay_seconds "$attempt" "$retry_after" "$remaining" "$reset_at")"
       return 0
@@ -147,7 +147,7 @@ classify_retryable_failure() {
   esac
 
   case "$lower" in
-    *http\ 502*|*http\ 503*|*http\ 504*|*502\ bad\ gateway*|*503\ service\ unavailable*|*504\ gateway\ timeout*|*bad\ gateway*|*service\ unavailable*|*gateway\ timeout*)
+    *http\ 502* | *http\ 503* | *http\ 504* | *502\ bad\ gateway* | *503\ service\ unavailable* | *504\ gateway\ timeout* | *bad\ gateway* | *service\ unavailable* | *gateway\ timeout*)
       gh_retry_reason='GitHub API unavailable'
       gh_retry_delay="$(default_backoff_seconds "$attempt")"
       return 0
@@ -155,7 +155,7 @@ classify_retryable_failure() {
   esac
 
   case "$lower" in
-    *timed\ out*|*timeout*|*context\ deadline\ exceeded*|*connection\ reset\ by\ peer*|*connection\ refused*|*temporary\ failure\ in\ name\ resolution*|*no\ such\ host*|*network\ is\ unreachable*|*unexpected\ eof*|*stream\ error*)
+    *timed\ out* | *timeout* | *context\ deadline\ exceeded* | *connection\ reset\ by\ peer* | *connection\ refused* | *temporary\ failure\ in\ name\ resolution* | *no\ such\ host* | *network\ is\ unreachable* | *unexpected\ eof* | *stream\ error*)
       gh_retry_reason='GitHub network error'
       gh_retry_delay="$(default_backoff_seconds "$attempt")"
       return 0

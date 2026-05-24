@@ -138,7 +138,7 @@ if [ "$has_conflicts" = 'true' ]; then
   fi
 
   case "$merge_winner" in
-    incoming|existing)
+    incoming | existing)
       ;;
     *)
       printf 'Aborted.\n' >&2

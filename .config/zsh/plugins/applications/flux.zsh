@@ -1,3 +1,5 @@
-if (( $+commands[flux] )); then
+#!/usr/bin/env zsh
+
+if (($+commands[flux])); then
   eval "$(flux completion zsh)"
 fi

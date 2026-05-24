@@ -17,7 +17,7 @@ is_copilot_user='(.user.login|ascii_downcase) as $u | $u=="copilot" or $u=="copi
 
 review_filter="[.[] | select($is_copilot_user)"
 if [ -n "$since" ]; then
-review_filter+=" | select((.submitted_at // .created_at // \"\") >= \"$since\")"
+  review_filter+=" | select((.submitted_at // .created_at // \"\") >= \"$since\")"
 fi
 review_filter+="] | last"
 
@@ -86,7 +86,7 @@ while IFS= read -r comment_b64; do
   if [ -n "$body" ]; then
     while IFS= read -r body_line; do
       printf '> %s\n' "$body_line"
-    done <<< "$body"
+    done <<<"$body"
   else
     printf '> (no body)\n'
   fi

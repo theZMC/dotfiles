@@ -1,6 +1,8 @@
-if (( $+commands[bat] || $+commands[batcat] )); then
+#!/usr/bin/env zsh
+
+if (($+commands[bat] || $+commands[batcat])); then
   export BAT_PAGER="less -RFX"
-  if ! (( $+commands[bat] )); then
+  if ! (($+commands[bat])); then
     alias bat=batcat
   fi
   alias cat=bat

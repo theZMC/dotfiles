@@ -27,6 +27,9 @@ return {
     ---@diagnostic disable: missing-fields
     config = {
       clangd = { capabilities = { offsetEncoding = "utf-8" } },
+      jsonls = {
+        filetypes = { "json", "jsonc", "json5" },
+      },
       bashls = {
         filetypes = { "bash", "sh" },
       },

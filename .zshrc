@@ -1,10 +1,10 @@
 can_start=true
-if ! (( $+commands[git] )); then
+if ! (($+commands[git])); then
   echo "git must be installed for this zsh config to work"
   can_start=false
 fi
 
-if ! (( $+commands[wget] || $+commands[curl] )); then
+if ! (($+commands[wget] || $+commands[curl])); then
   echo "either wget or curl must be installed for this zsh config to work"
   can_start=false
 fi
@@ -17,8 +17,8 @@ if ! [[ $PATH =~ "${HOME}/.local/bin" ]]; then
   export PATH="${HOME}/.local/bin:${PATH}"
 fi
 
-if ! (( $+commands[mise] )); then
-  if (( $+commands[curl] )); then
+if ! (($+commands[mise])); then
+  if (($+commands[curl])); then
     curl -fsSL https://mise.run | sh
   else
     wget -qO- https://mise.run | sh
@@ -43,8 +43,8 @@ for plugin in "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/{applications,co
   source "$plugin"
 done
 
-test -f ~/.zshrc.local \
-  && source ~/.zshrc.local
+test -f ~/.zshrc.local &&
+  source ~/.zshrc.local
 
 eval "$(oh-my-posh init zsh --config "$HOME/.config/oh-my-posh/config.yaml")"
 

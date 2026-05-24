@@ -8,7 +8,7 @@ fi
 type=$(file --brief --dereference --mime -- "$1")
 
 if [[ $type =~ image/ ]]; then
-  if (( $+commands[viu] )); then
+  if (($+commands[viu])); then
     viu -w "${FZF_PREVIEW_COLUMNS}" "$1"
   else
     echo "viu not installed; cannot preview image"
@@ -21,7 +21,7 @@ if [[ $type =~ "=binary" ]]; then
   exit
 fi
 
-if ! (( $+commands[bat] )); then
+if ! (($+commands[bat])); then
   cat "$1"
   exit
 fi

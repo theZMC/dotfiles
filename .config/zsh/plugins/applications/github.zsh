@@ -1,3 +1,5 @@
-if (( $+commands[gh] )); then
+#!/usr/bin/env zsh
+
+if (($+commands[gh])); then
   eval "$(gh copilot alias -- zsh 2>/dev/null)"
 fi

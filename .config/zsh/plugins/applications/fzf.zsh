@@ -1,8 +1,11 @@
-if (( $+commands[fzf] )); then
+#!/usr/bin/env zsh
+
+if (($+commands[fzf])); then
   if ! eval "$(fzf --zsh)"; then
-    if ! source /usr/share/doc/fzf/examples/key-bindings.zsh
+    if ! source /usr/share/doc/fzf/examples/key-bindings.zsh; then
       echo "Failed to source fzf key bindings"
       exit
+    fi
   fi
 fi
 
@@ -33,11 +36,11 @@ export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
   --color=spinner:#5EB7FF \
 "
 
-if (( $+commands[preview] )); then
+if (($+commands[preview])); then
   export FZF_CTRL_T_OPTS="${FZF_DEFAULT_OPTS} --preview 'preview {}' --preview-window='right:60%'"
 fi
 
-if (( $+commands[rg] )); then
+if (($+commands[rg])); then
   export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!{.git,node_modules}/*"'
 fi
 
