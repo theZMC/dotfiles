@@ -1,1 +1,0 @@
-runtime! syntax/terraform.vim

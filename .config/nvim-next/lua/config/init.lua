@@ -1,7 +1,0 @@
-require "config.options"
-require "config.diagnostics"
-require "config.keymaps"
-require "config.autocmds"
-require "config.commands"
-require "config.plugins"
-require "config.languages"
