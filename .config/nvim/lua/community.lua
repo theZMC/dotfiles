@@ -54,4 +54,6 @@ return {
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.test.neotest" },
   { import = "astrocommunity.test.nvim-coverage" },
+  { import = "astrocommunity.utility.live-preview" },
+  { import = "astrocommunity.utility.noice-nvim" },
 }
