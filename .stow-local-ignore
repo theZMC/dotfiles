@@ -20,6 +20,6 @@ _darcs
 ^/LICENSE.*
 ^/COPYING
 
-^renovate\.jsonc?
+^renovate\.json(5|c)?
 ^skills-lock\.json
 ^\.pre-commit-config\.yaml
