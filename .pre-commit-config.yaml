@@ -27,6 +27,11 @@ repos:
     name: TruffleHog
     language: system
     entry: trufflehog filesystem --no-update
+  - id: shfmt
+    name: shfmt
+    language: system
+    types_or: [sh, bash, zsh]
+    entry: shfmt -l -w -ci -i 2
   - id: update-mise-lock
     name: Update mise.lock
     language: system
