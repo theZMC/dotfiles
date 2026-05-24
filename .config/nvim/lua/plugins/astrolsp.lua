@@ -17,9 +17,6 @@ return {
     formatting = {
       format_on_save = {
         enabled = true, -- enable or disable format on save globally
-        ignore_filetypes = { -- disable format on save for specified filetypes
-          "zsh",
-        },
       },
       timeout_ms = 1000, -- default format timeout
     },
@@ -29,9 +26,6 @@ return {
       clangd = { capabilities = { offsetEncoding = "utf-8" } },
       jsonls = {
         filetypes = { "json", "jsonc", "json5" },
-      },
-      bashls = {
-        filetypes = { "bash", "sh" },
       },
       gopls = {
         settings = {

@@ -17,6 +17,7 @@ os_icons=(
 get_os_name() {
   if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if [ -f /etc/os-release ]; then
+      # shellcheck disable=SC1091 # The /etc/os-release file is expected to be present on Linux systems
       . /etc/os-release
       echo "${ID,,}"
     else

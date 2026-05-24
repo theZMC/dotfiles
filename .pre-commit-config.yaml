@@ -32,6 +32,11 @@ repos:
     language: system
     types_or: [sh, bash, zsh]
     entry: shfmt -l -w -ci -i 2
+  - id: shellcheck
+    name: shellcheck
+    language: system
+    types_or: [sh, bash]
+    entry: shellcheck
   - id: update-mise-lock
     name: Update mise.lock
     language: system
