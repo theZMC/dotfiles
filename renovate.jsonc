@@ -6,6 +6,9 @@
     "group:allNonMajor",
     "schedule:weekly"
   ],
+  "pre-commit": {
+    "enabled": true
+  },
   "minimumReleaseAge": "7 days",
   "minimumReleaseAgeBehaviour": "timestamp-required",
   "packageRules": [
