@@ -678,6 +678,183 @@ checksum = "sha256:ced3e6f4bb5a9865056b594b7ad0cf42137dc92c494346f1ca705b5dbf14c
 url = "https://github.com/cli/cli/releases/download/v2.91.0/gh_2.91.0_windows_amd64.zip"
 provenance = "github-attestations"
 
+[[tools."github:uutils/coreutils"]]
+version = "0.8.0"
+backend = "github:uutils/coreutils"
+
+[tools."github:uutils/coreutils"."platforms.linux-arm64"]
+checksum = "sha256:358c03e93535a19c2119ccbde14080e3cbfbf4ca913cbc359cd01fe52d91d808"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390280124"
+
+[tools."github:uutils/coreutils"."platforms.linux-arm64-musl"]
+checksum = "sha256:e592200ef784deecc5ac2328b0617422c89f62b9bb841eb114528ed938ccb725"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390290053"
+
+[tools."github:uutils/coreutils"."platforms.linux-x64"]
+checksum = "sha256:ea8f0a4f6815c1da0df539c88b4776b976983c0139879662de03bc4010bd0504"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390289878"
+
+[tools."github:uutils/coreutils"."platforms.linux-x64-baseline"]
+checksum = "sha256:ea8f0a4f6815c1da0df539c88b4776b976983c0139879662de03bc4010bd0504"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390289878"
+
+[tools."github:uutils/coreutils"."platforms.linux-x64-musl"]
+checksum = "sha256:b8977997a49b677169f7ce65bfc2ad658d4943c4f02f0493b1a802137202b0bf"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390293390"
+
+[tools."github:uutils/coreutils"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:b8977997a49b677169f7ce65bfc2ad658d4943c4f02f0493b1a802137202b0bf"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390293390"
+
+[tools."github:uutils/coreutils"."platforms.macos-arm64"]
+checksum = "sha256:add95b420f9f1b69a0a7cb7b2672648fc72cf1294384344791e8e064bdc5e8c2"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390293854"
+
+[tools."github:uutils/coreutils"."platforms.macos-x64"]
+checksum = "sha256:8ac6299b298eb3ba995973b42aece162578e19f9243425a5945d9c4bd8135b0a"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390295243"
+
+[tools."github:uutils/coreutils"."platforms.macos-x64-baseline"]
+checksum = "sha256:8ac6299b298eb3ba995973b42aece162578e19f9243425a5945d9c4bd8135b0a"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390295243"
+
+[tools."github:uutils/coreutils"."platforms.windows-x64"]
+checksum = "sha256:db464cf2a6ecbfd42c85f46ed2d749be574df4df47feca1f08988fd760f324f3"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390293995"
+
+[tools."github:uutils/coreutils"."platforms.windows-x64-baseline"]
+checksum = "sha256:0d56aba36367a612e1c7c98c593e5dca070ca4fe42f6200e89ee244e9b78a279"
+url = "https://github.com/uutils/coreutils/releases/download/0.8.0/coreutils-0.8.0-x86_64-pc-windows-gnu.zip"
+url_api = "https://api.github.com/repos/uutils/coreutils/releases/assets/390291395"
+
+[[tools."github:uutils/findutils"]]
+version = "0.8.0"
+backend = "github:uutils/findutils"
+
+[tools."github:uutils/findutils"."platforms.linux-arm64"]
+checksum = "sha256:05a8c7d6f3dab9a6261f098b6203e909e1031f79b4a9395d9fe1c2d0a4a966ce"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/source.tar.gz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016749"
+
+[tools."github:uutils/findutils"."platforms.linux-arm64-musl"]
+checksum = "sha256:05a8c7d6f3dab9a6261f098b6203e909e1031f79b4a9395d9fe1c2d0a4a966ce"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/source.tar.gz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016749"
+
+[tools."github:uutils/findutils"."platforms.linux-x64"]
+checksum = "sha256:1dadf135f099f6270014fbbdb3c13523bdc558667892fc3bed8d30b2bf1a9ded"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016746"
+
+[tools."github:uutils/findutils"."platforms.linux-x64-baseline"]
+checksum = "sha256:1dadf135f099f6270014fbbdb3c13523bdc558667892fc3bed8d30b2bf1a9ded"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016746"
+
+[tools."github:uutils/findutils"."platforms.linux-x64-musl"]
+checksum = "sha256:1dadf135f099f6270014fbbdb3c13523bdc558667892fc3bed8d30b2bf1a9ded"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016746"
+
+[tools."github:uutils/findutils"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:1dadf135f099f6270014fbbdb3c13523bdc558667892fc3bed8d30b2bf1a9ded"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016746"
+
+[tools."github:uutils/findutils"."platforms.macos-arm64"]
+checksum = "sha256:ec6913f85fc39cdfe05579b4e1f3c0686728096673568c89c06bd5ecfccf8249"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-aarch64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016742"
+
+[tools."github:uutils/findutils"."platforms.macos-x64"]
+checksum = "sha256:38fd95673c7aec661f13ac09b0341b44664774634ed40e3e4bde2c1fd9175656"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016740"
+
+[tools."github:uutils/findutils"."platforms.macos-x64-baseline"]
+checksum = "sha256:38fd95673c7aec661f13ac09b0341b44664774634ed40e3e4bde2c1fd9175656"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016740"
+
+[tools."github:uutils/findutils"."platforms.windows-x64"]
+checksum = "sha256:f7dbf4f9db77d7622dcb3b4c61e8a3ec87d1b56905cc5ff9488165841a97611f"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016744"
+
+[tools."github:uutils/findutils"."platforms.windows-x64-baseline"]
+checksum = "sha256:f7dbf4f9db77d7622dcb3b4c61e8a3ec87d1b56905cc5ff9488165841a97611f"
+url = "https://github.com/uutils/findutils/releases/download/0.8.0/findutils-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/uutils/findutils/releases/assets/244016744"
+
+[[tools."github:uutils/sed"]]
+version = "0.1.1"
+backend = "github:uutils/sed"
+
+[tools."github:uutils/sed"."platforms.linux-arm64"]
+checksum = "sha256:f8bb5249a437e08c5b5efec124f14d6e719fb0d6896614f0d9cf19c283948f19"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-aarch64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919318"
+
+[tools."github:uutils/sed"."platforms.linux-arm64-musl"]
+checksum = "sha256:f8bb5249a437e08c5b5efec124f14d6e719fb0d6896614f0d9cf19c283948f19"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-aarch64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919318"
+
+[tools."github:uutils/sed"."platforms.linux-x64"]
+checksum = "sha256:ae88d7897790bfcf33b8f893c09e440ae343ae0c824e93730f4fa9b1f0f9f44a"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919328"
+
+[tools."github:uutils/sed"."platforms.linux-x64-baseline"]
+checksum = "sha256:ae88d7897790bfcf33b8f893c09e440ae343ae0c824e93730f4fa9b1f0f9f44a"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-unknown-linux-gnu.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919328"
+
+[tools."github:uutils/sed"."platforms.linux-x64-musl"]
+checksum = "sha256:ee6cf7a8476ca91fd35f1ebaf7aff1c7cb98b933641bfae3803d9910e490719c"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919336"
+
+[tools."github:uutils/sed"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:ee6cf7a8476ca91fd35f1ebaf7aff1c7cb98b933641bfae3803d9910e490719c"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919336"
+
+[tools."github:uutils/sed"."platforms.macos-arm64"]
+checksum = "sha256:c94acd36d08df82a6910b2831c8f9c5d8f1d712cc7c9c2841fa05e6abf207a52"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-aarch64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919316"
+
+[tools."github:uutils/sed"."platforms.macos-x64"]
+checksum = "sha256:08d39915b225f69739ede649024ad3124b6c3dabac2607f378a746128b3dc109"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919323"
+
+[tools."github:uutils/sed"."platforms.macos-x64-baseline"]
+checksum = "sha256:08d39915b225f69739ede649024ad3124b6c3dabac2607f378a746128b3dc109"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919323"
+
+[tools."github:uutils/sed"."platforms.windows-x64"]
+checksum = "sha256:558fb3c5ba636403ab6a7137846d202009cf717ca8673339bb121f8231509dbf"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919327"
+
+[tools."github:uutils/sed"."platforms.windows-x64-baseline"]
+checksum = "sha256:558fb3c5ba636403ab6a7137846d202009cf717ca8673339bb121f8231509dbf"
+url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919327"
+
 [[tools.go]]
 version = "1.26.2"
 backend = "core:go"
