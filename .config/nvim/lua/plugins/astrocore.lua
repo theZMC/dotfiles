@@ -5,10 +5,19 @@ return {
   opts = {
     features = {
       large_buf = { size = 1024 * 1024, lines = 100000 },
+      autopairs = true,
+      cmp = true,
+      diagnostics = true,
+      highlighturl = true,
+      notifications = true,
     },
     diagnostics = {
-      virtual_lines = { current_line = true },
-      virtual_text = { current_line = false },
+      virtual_lines = {
+        current_line = true,
+      },
+      virtual_text = {
+        current_line = false,
+      },
     },
     mappings = {
       v = {
@@ -23,7 +32,7 @@ return {
             local diff = vim.fn.system("git diff -U5 HEAD -- " .. vim.fn.shellescape(file))
 
             if vim.v.shell_error ~= 0 or diff == "" then
-              print "No changes found"
+              vim.notify("No git diff available for the current file", vim.log.levels.WARN)
               return
             end
 
@@ -43,7 +52,7 @@ return {
             local markdown_diff = "```diff\n" .. clean_diff .. "\n```"
 
             vim.fn.setreg("+", markdown_diff)
-            print "Git diff copied to clipboard!"
+            vim.notifyn("Git diff copied to clipboard", vim.log.levels.INFO)
           end,
           desc = "Copy git diff to clipboard (markdown)",
         },
