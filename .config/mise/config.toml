@@ -1,7 +1,11 @@
+#:schema https://mise.en.dev/schema/mise.json
 [settings]
 experimental = true
 auto_install = true
 lockfile = true
+
+[shell_alias]
+helm3 = "mise x helm@3 -- helm"
 
 [settings.npm]
 package_manager = "bun"
