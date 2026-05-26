@@ -15,6 +15,7 @@ tooltips:
   tips:
   - kubectl
   - helm
+  - helm3
   - flux
   template: ' {{.Context}}{{if .Namespace}} ({{.Namespace}}){{end}}'
 transient_prompt:
@@ -50,17 +51,9 @@ blocks:
       github_icon: 
       gitlab_icon: 
       bitbucket_icon: 
-      ahead_icon: 
-      behind_icon: 
+      branch_ahead_icon: 
+      branch_behind_icon: 
       branch_icon: ' '
-      conflict_icon: 
-      display_status: true
-      display_upstream: true
-      modified_icon: 
-      separator: ' | '
-      staged_icon: 
-      stashed_icon: 
-      untracked_icon: 
     cache:
       duration: 10s
       strategy: folder
