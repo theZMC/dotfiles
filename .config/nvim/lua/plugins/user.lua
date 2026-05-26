@@ -30,4 +30,23 @@ return {
       },
     },
   },
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters_by_ft = {
+        markdown = { "deno_fmt" },
+        astro = { "deno_fmt", lsp_format = "never", stop_after_first = true },
+        yaml = { "yamlfmt" },
+        terraform = { "hcl" },
+        hcl = { "hcl" },
+        zsh = {},
+      },
+      formatters = {
+        yamlfmt = {
+          prepend_args = { "-formatter", "indentless_arrays=true,retain_line_breaks=true,scan_folded_as_literal=true" },
+        },
+      },
+    },
+  },
 }
