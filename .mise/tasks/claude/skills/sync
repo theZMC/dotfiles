@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# [MISE] description="Mirror .agents/skills to .claude/skills (Claude Code doesn't follow symlinks)"
+# [MISE] dir="{{config_root}}"
+# [MISE] sources=[".agents/skills/**/*"]
+# [MISE] outputs=[".claude/skills/**/*"]
+set -euo pipefail
+
+src=".agents/skills"
+dst=".claude/skills"
+
+if [[ ! -d "$src" ]]; then
+  echo "source directory $src does not exist" >&2
+  exit 1
+fi
+
+mkdir -p "$dst"
+rsync -aL --delete "$src/" "$dst/"
