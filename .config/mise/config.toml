@@ -26,6 +26,10 @@ postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-bu
 version = "2.34.49"
 symlink_bins = "true"
 
+[tools.podman]
+version = "5.8.2"
+bin = "podman"
+
 [tools]
 "aqua:charmbracelet/gum" = "0.17.0"
 "cargo:taws" = "1.2.1"
@@ -79,7 +83,6 @@ npm = "11.15.0"
 oh-my-posh = "29.14.0"
 packer = "1.15.3"
 pnpm = "11.2.2"
-podman = "5.8.2"
 pre-commit = "4.6.0"
 pulumi = "3.241.0"
 python = "3.14.5"
@@ -105,3 +108,5 @@ yq = "4.53.2"
 zoxide = "0.9.9"
 "github:atanunq/viu" = "1.6.1"
 dive = "0.13.1"
+taplo = "0.10.0"
+"npm:@rynfar/meridian" = "1.42.1"
