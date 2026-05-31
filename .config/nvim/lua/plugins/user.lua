@@ -38,6 +38,7 @@ return {
         markdown = { "deno_fmt" },
         astro = { "deno_fmt", lsp_format = "never", stop_after_first = true },
         yaml = { "yamlfmt" },
+        toml = { "taplo" },
         terraform = { "hcl" },
         hcl = { "hcl" },
         zsh = {},
