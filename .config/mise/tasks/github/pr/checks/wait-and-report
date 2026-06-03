@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# [MISE] description="Wait for PR checks then print final snapshot"
+# [MISE] description="Wait for PR checks then print a markdown report with logs for any failing checks"
 # [MISE] dir="{{cwd}}"
 # [USAGE] flag "--owner <owner>" help="Repository owner (optional; inferred from origin if omitted)"
 # [USAGE] flag "--repo <repo>" help="Repository name (optional; inferred from origin if omitted)"
@@ -33,7 +33,7 @@ if [ -z "$owner" ] || [ -z "$repo" ]; then
     exit 64
   fi
 
-  echo "Inferred repository $owner/$repo from origin remote."
+  echo "Inferred repository $owner/$repo from origin remote." >&2
 fi
 
 args=(--owner "$owner" --repo "$repo")
@@ -47,7 +47,9 @@ if [ -n "${usage_interval:-}" ]; then
   args+=(--interval "$usage_interval")
 fi
 
-mise run github:pr:checks:wait "${args[@]}"
+wait_rc=0
+mise run github:pr:checks:wait "${args[@]}" >&2 || wait_rc=$?
+
 if [ -z "$pr" ]; then
   head_branch="$(git branch --show-current)"
   if [ -z "$head_branch" ]; then
@@ -63,4 +65,115 @@ if [ -z "$pr" ]; then
   fi
   pr="${matching_prs[0]}"
 fi
-mise run github:gh:retry -- pr checks "$pr" --repo "$owner/$repo" --json name,state,bucket,link
+
+checks_json="$(mise run github:gh:retry -- pr checks "$pr" --repo "$owner/$repo" --json name,state,bucket,link,workflow,startedAt,completedAt)"
+
+pass_count="$(printf '%s' "$checks_json" | yq -p=json -r '[.[] | select(.bucket=="pass")] | length')"
+fail_count="$(printf '%s' "$checks_json" | yq -p=json -r '[.[] | select(.bucket=="fail" or .bucket=="cancel")] | length')"
+pending_count="$(printf '%s' "$checks_json" | yq -p=json -r '[.[] | select(.bucket=="pending")] | length')"
+skip_count="$(printf '%s' "$checks_json" | yq -p=json -r '[.[] | select(.bucket=="skipping")] | length')"
+
+html_escape() {
+  sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+}
+
+report_file="$(mktemp)"
+trap 'rm -f "$report_file"' EXIT
+
+{
+  printf '# PR #%s checks — %s/%s\n\n' "$pr" "$owner" "$repo"
+  # printf '**Summary:**  %s passed ·  %s failed ·  %s pending ·  %s skipped\n\n' \
+  printf '**Summary:**  %s  passed ·  %s  failed ·  %s 󱎫 pending ·  %s  skipped\n\n' \
+    "$pass_count" "$fail_count" "$pending_count" "$skip_count"
+
+  if [ "$fail_count" -gt 0 ]; then
+    printf '##  Failing (%s)\n\n' "$fail_count"
+    while IFS=$'\t' read -r name workflow link state bucket started completed; do
+      [ -z "$name" ] && continue
+      printf '### %s' "$name"
+      if [ -n "$workflow" ] && [ "$workflow" != "null" ]; then
+        # shellcheck disable=SC2016 # We want literal backticks
+        printf ' (`%s`)' "$workflow"
+      fi
+      printf '\n\n'
+      if [ -n "$link" ] && [ "$link" != "null" ]; then
+        printf -- '- Link: %s\n' "$link"
+      fi
+      printf -- '- State: %s (%s)\n' "$state" "$bucket"
+      if [ -n "$started" ] && [ "$started" != "null" ]; then
+        if [ -n "$completed" ] && [ "$completed" != "null" ]; then
+          printf -- '- Duration: %s → %s\n' "$started" "$completed"
+        else
+          printf -- '- Started: %s\n' "$started"
+        fi
+      fi
+
+      if [[ "$link" =~ /actions/runs/([0-9]+)/job/([0-9]+) ]]; then
+        run_id="${BASH_REMATCH[1]}"
+        job_id="${BASH_REMATCH[2]}"
+        logs="$(mise run github:gh:retry -- run view "$run_id" -R "$owner/$repo" --log-failed --job "$job_id" 2>&1 || true)"
+        printf -- '- Failed step logs\n```\n'
+        printf '%s\n' "$logs" | html_escape
+        printf '```\n\n'
+      elif [[ "$link" =~ /actions/runs/([0-9]+) ]]; then
+        run_id="${BASH_REMATCH[1]}"
+        logs="$(mise run github:gh:retry -- run view "$run_id" -R "$owner/$repo" --log-failed 2>&1 || true)"
+        printf -- '- Failed step logs\n```\n'
+        printf '%s\n' "$logs" | html_escape
+        printf '```\n\n'
+      else
+        printf '_No logs available; see the link above._\n\n'
+      fi
+    done < <(printf '%s' "$checks_json" | yq -p=json -r '.[] | select(.bucket=="fail" or .bucket=="cancel") | [.name, .workflow // "", .link // "", .state // "", .bucket, .startedAt // "", .completedAt // ""] | @tsv')
+  fi
+
+  if [ "$pending_count" -gt 0 ]; then
+    printf '## 󱎫 Pending (%s)\n\n' "$pending_count"
+    while IFS=$'\t' read -r name workflow link; do
+      [ -z "$name" ] && continue
+      line="- [ ] ${name}"
+      if [ -n "$workflow" ] && [ "$workflow" != "null" ]; then
+        line+=" (\`${workflow}\`)"
+      fi
+      if [ -n "$link" ] && [ "$link" != "null" ]; then
+        line+=" — ${link}"
+      fi
+      printf '%s\n' "$line"
+    done < <(printf '%s' "$checks_json" | yq -p=json -r '.[] | select(.bucket=="pending") | [.name, .workflow // "", .link // ""] | @tsv')
+    printf '\n'
+  fi
+
+  if [ "$pass_count" -gt 0 ]; then
+    printf '##  Passing (%s)\n\n' "$pass_count"
+    while IFS=$'\t' read -r name workflow; do
+      [ -z "$name" ] && continue
+      line="- [x] ${name}"
+      if [ -n "$workflow" ] && [ "$workflow" != "null" ]; then
+        line+=" (\`${workflow}\`)"
+      fi
+      printf '%s\n' "$line"
+    done < <(printf '%s' "$checks_json" | yq -p=json -r '.[] | select(.bucket=="pass") | [.name, .workflow // ""] | @tsv')
+    printf '\n'
+  fi
+
+  if [ "$skip_count" -gt 0 ]; then
+    printf '##  Skipped (%s)\n\n' "$skip_count"
+    while IFS=$'\t' read -r name workflow; do
+      [ -z "$name" ] && continue
+      line="- ${name}"
+      if [ -n "$workflow" ] && [ "$workflow" != "null" ]; then
+        line+=" (\`${workflow}\`)"
+      fi
+      printf '%s\n' "$line"
+    done < <(printf '%s' "$checks_json" | yq -p=json -r '.[] | select(.bucket=="skipping") | [.name, .workflow // ""] | @tsv')
+    printf '\n'
+  fi
+} >"$report_file"
+
+if command -v glow >/dev/null 2>&1 && [ -t 1 ]; then
+  glow -w 0 <"$report_file"
+else
+  cat "$report_file"
+fi
+
+exit "$wait_rc"
