@@ -3,11 +3,11 @@ name: work-github-issue
 description: |
   Works a GitHub issue end-to-end using gh CLI: reads issue, creates branch,
   implements changes, keeps one signed conventional commit (amended as needed),
-  opens PR, requests @copilot review, triages feedback, and performs final
-  ff-only merge after user approval.
+  opens PR, optionally requests @copilot review only when explicitly requested,
+  and performs final ff-only merge after user approval.
 metadata:
   author: Zach Callahan
-  version: "1.5"
+  version: "1.6"
 ---
 
 # Work GitHub Issue (gh CLI)
@@ -15,20 +15,23 @@ metadata:
 ## Use when
 
 Use when the user wants an issue worked end-to-end: branch, implementation,
-single signed commit, PR, `@copilot` triage, and final ff-only merge.
+single signed commit, PR, optional `@copilot` triage when explicitly requested,
+and final ff-only merge.
 
 ## Required input
 
 1. Issue id (number or URL).
 2. Repository (`owner/repo`, infer from git remote when possible).
 3. Base branch (optional; default to repo default branch).
+4. Copilot review preference (optional; default no Copilot review unless the
+   invocation explicitly requests it).
 
 If issue id cannot be inferred, ask for it.
 
 ## Preconditions
 
 - `gh` authenticated and repo-accessible.
-- `gh` version `2.88.0+` (Copilot reviewer support).
+- `gh` version `2.88.0+` if Copilot review is explicitly requested.
 - GPG signing configured for git.
 - Working tree clean before branch creation.
 
@@ -40,8 +43,8 @@ If working tree is dirty, stop and ask user how to proceed.
 - Keep exactly one commit for the issue across the full lifecycle; maintain via
   amend.
 - Use `--force-with-lease` after amend (never `--force`).
-- Keep Copilot review loops conservative and bounded.
-- Default to one Copilot review round.
+- Do not request Copilot review unless the invocation explicitly requests it.
+- When Copilot review is requested, keep review loops conservative and bounded.
 - Request another Copilot round only when the prior round found substantive
   must-fix issues, or when the implemented work / follow-up fixes were broad
   enough that another architectural pass is justified.
@@ -99,7 +102,8 @@ Closes #<issue-number>
 7. Push branch: `git push -u origin <branch>`.
 8. Open PR with fill:
    `gh pr create --repo <owner>/<repo> --base <base> --head <branch> --fill-verbose`.
-9. Request/wait for the initial Copilot review via mise:
+9. If the invocation explicitly requested Copilot review, request/wait for the
+   initial Copilot review via mise:
    `mise run github:pr:copilot:request-and-wait --owner <owner> --repo <repo> --pr <pr-number>`.
    This prints a Markdown Copilot review summary, including inline comments when
    present. If you need a stable review window, capture a UTC RFC3339 timestamp
@@ -110,9 +114,10 @@ Closes #<issue-number>
    `mise run github:pr:copilot:report-feedback --owner <owner> --repo <repo> --pr <pr-number> --since <same-rfc3339-timestamp>`.
    Reuse the same RFC3339 `--since` value so follow-up renders stay scoped to
    the same Copilot review cycle. If unavailable, report and ask whether to
-   continue without Copilot.
-10. Triage Copilot feedback from the mise-rendered Markdown summary and classify
-    items as:
+   continue without Copilot. If Copilot review was not explicitly requested,
+   skip this step.
+10. If Copilot review was explicitly requested, triage Copilot feedback from the
+    mise-rendered Markdown summary and classify items as:
     - must-fix: correctness/test/security/defects
     - optional: style/preference
     - needs-decision: behavior tradeoffs requiring user input
@@ -121,7 +126,8 @@ Closes #<issue-number>
     - If commit message unchanged: `git commit --amend -S --no-edit`
     - If summary/body changed: `git commit --amend -S` and keep required body
       format.
-11. Decide whether another Copilot round is warranted.
+11. If Copilot review was explicitly requested, decide whether another Copilot
+    round is warranted.
     Default answer: no.
     Request a follow-up Copilot review only when one or more of these are true:
     - the previous round found real must-fix issues
@@ -147,7 +153,7 @@ Report at these checkpoints:
 1. Issue loaded (number/title/url).
 2. Branch created/checked out.
 3. Validation result and commit SHA.
-4. PR URL and Copilot status.
+4. PR URL and whether Copilot review was skipped or requested.
 5. Triage outcomes and decisions needed.
 6. Check status for all non-skipped checks.
 7. Merge result or exact blocker.
@@ -155,8 +161,8 @@ Report at these checkpoints:
 ## Failure handling
 
 - On command failure: report command, key error, next action.
-- If Copilot feedback times out (15-minute bounded wait), ask whether to
-  continue with human review.
+- If explicitly-requested Copilot feedback times out (15-minute bounded wait),
+  ask whether to continue with human review.
 - If Copilot has already been requested 3 times, stop the Copilot loop and move
   forward with human judgment, remaining checks, and user approval.
 - If checks remain pending after bounded wait, ask whether to continue waiting

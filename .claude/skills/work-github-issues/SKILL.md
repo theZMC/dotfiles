@@ -1,9 +1,9 @@
 ---
 name: work-github-issues
-description: Use when the user wants to work multiple GitHub issues serially with subagents, wrapping `work-github-issue` for dependency-aware orchestration, PRs, checks, and approved merges.
+description: Use when the user wants to work multiple GitHub issues serially with subagents, wrapping `work-github-issue`, coordinating local review subagents unless Copilot review is explicitly requested, and managing dependency-aware PRs, checks, and approved merges.
 metadata:
   author: Zach Callahan
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Work GitHub Issues
@@ -12,7 +12,8 @@ metadata:
 
 Use this skill when the user wants a set of GitHub issues worked by subagents,
 especially after issues were generated from a plan. This is a lightweight
-orchestration wrapper around `work-github-issue`.
+orchestration wrapper around `work-github-issue` with a local review phase by
+default.
 
 Common request forms:
 
@@ -38,18 +39,27 @@ Common request forms:
    - a GitHub Project query requested by the user.
 3. A merge policy:
    - If the user explicitly approves merges, pass that approval to each
-     `work-github-issue` worker.
+     `work-github-issue` worker after the review path clears.
    - If the user does not explicitly approve merges, workers must stop after PR
      checks and report back for approval.
+4. A review preference:
+   - If the invocation explicitly requests Copilot review, pass that request to
+     each `work-github-issue` worker and skip local review subagents unless the
+     user also explicitly requests local review.
+   - Otherwise, do not request Copilot. Run a local review subagent for each PR
+     before final merge.
 
 Ask one concise clarifying question only when the repository, issue set, or
-merge policy cannot be inferred.
+merge policy cannot be inferred. Do not ask about review preference when it is
+omitted; default to local review and no Copilot.
 
 ## Core Rule
 
 The coordinator does not implement issue work directly. It launches or resumes
 subagents, and each issue worker uses the `work-github-issue` skill for its own
-branch, implementation, validation, PR, Copilot triage, checks, and merge policy.
+branch, implementation, validation, PR, checks, and merge policy. Copilot triage
+happens only when the invocation explicitly requested Copilot review. Otherwise,
+the coordinator runs a local read-only review subagent before final merge.
 
 ## Issue Discovery
 
@@ -92,6 +102,46 @@ Ordering rules:
 - Put tracker verification or closure last.
 - If dependency data contains a cycle, stop and report the exact conflict.
 
+## Review Mode
+
+At the start, classify the invocation:
+
+- **Copilot review requested**: the user explicitly asks for Copilot review,
+  Copilot reviewer, or `@copilot` triage. Pass this through to workers and do
+  not launch local review subagents unless the user explicitly asked for both.
+- **Local review default**: any other request, including generic "review" or no
+  review mention. Do not request Copilot. Run local review subagents.
+
+When local review is active, keep final merge approval in the coordinator until
+the local review path clears. Even if the user pre-approved merges, the first
+worker run must stop after PR/checks and report the PR for coordinator review.
+After local review clears, resume the original issue worker with final merge
+approval if the user already approved merges.
+
+## Review Skill Discovery
+
+Do this only in local review mode, and only from skill metadata.
+
+- Use the available-skills metadata already visible to the coordinator when
+  possible.
+- If filesystem discovery is needed, read only the frontmatter of `SKILL.md`
+  files in configured skill directories; do not read skill bodies.
+- Do not call the `skill` tool in the coordinator for review-skill discovery.
+- Treat a skill as a review candidate only when its name or description says it
+  can critique, validate, test, inspect implementation quality, exercise UI/UX,
+  assess architecture, assess security, or otherwise review a change.
+- Ignore skills whose metadata only says they create/read/summarize GitHub
+  artifacts, orchestrate work, or hand off context.
+- For each issue, choose at most one primary review skill by matching the issue
+  title/body, PR file list, and candidate metadata. Prefer the most specific fit.
+- If the PR file list is not in the worker result, fetch only PR metadata such
+  as `gh pr view <pr-number> --repo <owner>/<repo> --json title,body,files` for
+  selection; do not pull the full diff just to choose a skill.
+- Pass the chosen skill name and metadata description to the review subagent.
+  The review subagent may load and use that selected skill in its own context.
+- If no review skills are available or none fit the issue, launch the review
+  subagent with the ad-hoc review prompt below instead.
+
 ## Coordinator Loop
 
 For each issue:
@@ -100,14 +150,26 @@ For each issue:
 2. Launch a `general` subagent with the worker prompt below.
 3. Wait for the worker result.
 4. If the worker completed, record the branch, PR URL, commit SHA, validation,
-   merge or approval status, and follow-up risks.
-5. If the worker returns a continuation state or the user interrupts, resume the
+   merge or approval status, review status, and follow-up risks.
+5. If local review mode is active and the worker returned a PR URL, choose a
+   review skill from metadata and launch a read-only `general` review subagent
+   with the review prompt below.
+6. If the review subagent returns must-fix findings, resume the original issue
+   worker with the findings. The worker fixes, validates, amends, pushes with
+   `--force-with-lease`, and returns an updated status. Re-run local review only
+   when the fixes materially changed behavior, control flow, architecture, or the
+   prior review found real must-fix issues. Cap local review at 3 rounds.
+7. If local review clears and the user already approved merges, resume the
+   original issue worker with final merge approval. Otherwise report the PR for
+   approval.
+8. If the worker returns a continuation state or the user interrupts, resume the
    same `task_id`.
-6. If a technical intervention is needed, use a subagent. Do not repair the
+9. If a technical intervention is needed, use a subagent. Do not repair the
    issue branch directly in the coordinator context.
-7. If a product decision is required, stop and ask the user one concise question.
-8. Start the next issue only after the previous write-capable worker has
-   completed, stopped safely, or been explicitly abandoned by the user.
+10. If a product decision is required, stop and ask the user one concise question.
+11. Start the next issue only after the previous issue's worker, local review
+    path, and merge/approval handoff have completed, stopped safely, or been
+    explicitly abandoned by the user.
 
 ## Worker Prompt
 
@@ -119,8 +181,18 @@ Use the `work-github-issue` skill and follow it end-to-end.
 
 Repository: <owner>/<repo>. Base branch: <base>. Working directory: <path>.
 
+Copilot review: <state whether Copilot review was explicitly requested. If not
+requested, say: "Do not request Copilot review.">
+
+Coordinator local review: <state whether local review is enabled. If enabled,
+say: "Stop before final merge after PR/checks so the coordinator can run local
+review. If later resumed with review findings, fix them through the normal amend
+flow. If later resumed with final merge approval, merge only when all gates
+pass.">
+
 Merge policy: <state whether the user explicitly approved final merge, or that
-the worker must stop before merge and report the PR for approval>.
+the worker must stop before merge and report the PR for approval. In local review
+mode, pre-approved merge means approval applies only after local review clears>.
 
 Context:
 - <completed prerequisite issues>
@@ -138,7 +210,47 @@ Rules:
   coordinator.
 
 Return only a concise final status with: issue number/title, branch, PR URL,
-commit SHA, validation performed, merge or approval status, and follow-up risks.
+commit SHA, validation performed, Copilot/local review status, merge or approval
+status, and follow-up risks.
+```
+
+## Review Prompt
+
+Use this template for each local review subagent:
+
+```text
+You are the local PR reviewer for <owner>/<repo> issue #<number> only.
+Review PR <pr-url> for correctness, regressions, missing tests, security risks,
+and maintainability risks.
+
+Repository: <owner>/<repo>. Base branch: <base>. Working directory: <path>.
+
+Selected review skill: <skill-name and metadata description, or "none">.
+
+If a selected review skill is provided, load and use `<skill-name>` in your own
+subagent context. Apply it as the main review lens, but keep the output PR-focused
+and actionable. Do not load unrelated skills. If the selected skill is
+unavailable, fall back to the ad-hoc review path and mention that in the result.
+
+If no selected review skill is provided, perform a best-effort ad-hoc review:
+inspect the issue, PR metadata, changed files, diff, and relevant tests using
+available read-only commands and file reads.
+
+Rules:
+- Read-only review only. Do not edit files, commit, push, merge, or request
+  Copilot review.
+- Do not ask the user directly. Return blockers or decisions to the coordinator.
+- Prefer high-signal findings over broad commentary.
+- Treat correctness, data loss, security, broken tests, missing critical tests,
+  and behavioral regressions as must-fix.
+- Treat style, naming, and low-risk polish as optional.
+
+Return only:
+- selected skill used, or ad-hoc review,
+- must-fix findings with file/line references when possible,
+- optional findings,
+- validation commands run or not run,
+- clear recommendation: "resume worker for fixes" or "local review cleared".
 ```
 
 ## Intervention Policy
@@ -147,7 +259,7 @@ Use or resume a subagent for any intervention, including:
 
 - main moved ahead of the feature branch,
 - checks failed,
-- Copilot found must-fix feedback,
+- a local review subagent or Copilot found must-fix feedback,
 - ff-only merge is blocked,
 - branch or PR state became stale,
 - GitHub Project or dependency metadata needs repair,
@@ -172,6 +284,7 @@ When the work set has an overarching tracker issue:
 Summarize only the useful outcome:
 
 - issues completed and PRs merged or awaiting approval,
+- local review status, or Copilot review status when explicitly requested,
 - tracker closure status,
 - validation gates verified,
 - blockers or follow-up risks.
