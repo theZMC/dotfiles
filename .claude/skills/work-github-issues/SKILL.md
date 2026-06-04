@@ -3,7 +3,7 @@ name: work-github-issues
 description: Use when the user wants to work multiple GitHub issues serially with subagents, wrapping `work-github-issue`, coordinating local review subagents unless Copilot review is explicitly requested, and managing dependency-aware PRs, checks, and approved merges.
 metadata:
   author: Zach Callahan
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Work GitHub Issues
@@ -114,9 +114,11 @@ At the start, classify the invocation:
 
 When local review is active, keep final merge approval in the coordinator until
 the local review path clears. Even if the user pre-approved merges, the first
-worker run must stop after PR/checks and report the PR for coordinator review.
-After local review clears, resume the original issue worker with final merge
-approval if the user already approved merges.
+worker run must stop as soon as the PR is open and pushed, without waiting for
+PR checks to settle, and report the PR for coordinator review. Local review then
+runs in parallel with PR checks. After local review clears, resume the original
+issue worker with final merge approval if the user already approved merges; the
+resumed worker waits for checks before merging.
 
 ## Review Skill Discovery
 
@@ -153,15 +155,16 @@ For each issue:
    merge or approval status, review status, and follow-up risks.
 5. If local review mode is active and the worker returned a PR URL, choose a
    review skill from metadata and launch a read-only `general` review subagent
-   with the review prompt below.
+   with the review prompt below. PR checks may still be running at this point;
+   the review subagent runs in parallel with them.
 6. If the review subagent returns must-fix findings, resume the original issue
    worker with the findings. The worker fixes, validates, amends, pushes with
    `--force-with-lease`, and returns an updated status. Re-run local review only
    when the fixes materially changed behavior, control flow, architecture, or the
    prior review found real must-fix issues. Cap local review at 3 rounds.
 7. If local review clears and the user already approved merges, resume the
-   original issue worker with final merge approval. Otherwise report the PR for
-   approval.
+   original issue worker with final merge approval. The resumed worker waits for
+   PR checks to settle before merging. Otherwise report the PR for approval.
 8. If the worker returns a continuation state or the user interrupts, resume the
    same `task_id`.
 9. If a technical intervention is needed, use a subagent. Do not repair the
@@ -185,14 +188,17 @@ Copilot review: <state whether Copilot review was explicitly requested. If not
 requested, say: "Do not request Copilot review.">
 
 Coordinator local review: <state whether local review is enabled. If enabled,
-say: "Stop before final merge after PR/checks so the coordinator can run local
-review. If later resumed with review findings, fix them through the normal amend
-flow. If later resumed with final merge approval, merge only when all gates
-pass.">
+say: "Stop and return as soon as the PR is open and pushed. Do NOT wait for PR
+checks to settle — the coordinator will run local review in parallel with checks.
+If later resumed with review findings, fix them through the normal amend flow.
+If later resumed with final merge approval, then wait for checks and merge only
+when all gates pass.">
 
 Merge policy: <state whether the user explicitly approved final merge, or that
 the worker must stop before merge and report the PR for approval. In local review
-mode, pre-approved merge means approval applies only after local review clears>.
+mode, pre-approved merge means approval applies only after local review clears,
+and the worker still hands back immediately after PR creation rather than waiting
+for checks>.
 
 Context:
 - <completed prerequisite issues>
@@ -210,8 +216,9 @@ Rules:
   coordinator.
 
 Return only a concise final status with: issue number/title, branch, PR URL,
-commit SHA, validation performed, Copilot/local review status, merge or approval
-status, and follow-up risks.
+commit SHA, local validation performed (note that PR checks may still be running
+if you handed back early in local review mode), Copilot/local review status,
+merge or approval status, and follow-up risks.
 ```
 
 ## Review Prompt
@@ -239,6 +246,10 @@ available read-only commands and file reads.
 Rules:
 - Read-only review only. Do not edit files, commit, push, merge, or request
   Copilot review.
+- Do not wait for PR checks to settle. Checks are running in parallel with your
+  review and the worker will gate the final merge on them. Snapshot current check
+  status if useful, but never block on `--watch`, `wait-and-report`, or any
+  polling loop.
 - Do not ask the user directly. Return blockers or decisions to the coordinator.
 - Prefer high-signal findings over broad commentary.
 - Treat correctness, data loss, security, broken tests, missing critical tests,
