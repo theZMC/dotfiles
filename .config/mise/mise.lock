@@ -982,6 +982,65 @@ url_api = "https://api.github.com/repos/docker/buildx/releases/assets/424359349"
 [tools."github:docker/buildx"."platforms.windows-x64-baseline".provenance.slsa]
 url = "https://github.com/docker/buildx/releases/download/v0.34.1/buildx-v0.34.1.windows-amd64.provenance.json"
 
+[[tools."github:tmuxpack/tpack"]]
+version = "1.0.0"
+backend = "github:tmuxpack/tpack"
+
+[tools."github:tmuxpack/tpack"."platforms.linux-arm64"]
+checksum = "sha256:c7fec2dad1e8fac9cd1e90cbaf8ea916af9facad7cfa49fd81d6be24f61a82be"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018797"
+
+[tools."github:tmuxpack/tpack"."platforms.linux-arm64-musl"]
+checksum = "sha256:c7fec2dad1e8fac9cd1e90cbaf8ea916af9facad7cfa49fd81d6be24f61a82be"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018797"
+
+[tools."github:tmuxpack/tpack"."platforms.linux-x64"]
+checksum = "sha256:30be322c6e36a23ae654a482bbb592465a7aa670bd7b61a919cc5846ffa2de9c"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018807"
+
+[tools."github:tmuxpack/tpack"."platforms.linux-x64-baseline"]
+checksum = "sha256:30be322c6e36a23ae654a482bbb592465a7aa670bd7b61a919cc5846ffa2de9c"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018807"
+
+[tools."github:tmuxpack/tpack"."platforms.linux-x64-musl"]
+checksum = "sha256:30be322c6e36a23ae654a482bbb592465a7aa670bd7b61a919cc5846ffa2de9c"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018807"
+
+[tools."github:tmuxpack/tpack"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:30be322c6e36a23ae654a482bbb592465a7aa670bd7b61a919cc5846ffa2de9c"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018807"
+
+[tools."github:tmuxpack/tpack"."platforms.macos-arm64"]
+checksum = "sha256:94c8fcf9131a1f8cd16781c1233969d7fbce2094c961668c6554cd306c395f5c"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018795"
+
+[tools."github:tmuxpack/tpack"."platforms.macos-x64"]
+checksum = "sha256:96d6bd9982210b7bf3ef4179f3dd22ac16e0f5732df07cab8b851df19c996940"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018796"
+
+[tools."github:tmuxpack/tpack"."platforms.macos-x64-baseline"]
+checksum = "sha256:96d6bd9982210b7bf3ef4179f3dd22ac16e0f5732df07cab8b851df19c996940"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018796"
+
+[tools."github:tmuxpack/tpack"."platforms.windows-x64"]
+checksum = "sha256:7d79ff88f400a797fbd7e560efe23812c3aa9ffee07e1aef032b67e7bab6fa5c"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_freebsd_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018798"
+
+[tools."github:tmuxpack/tpack"."platforms.windows-x64-baseline"]
+checksum = "sha256:7d79ff88f400a797fbd7e560efe23812c3aa9ffee07e1aef032b67e7bab6fa5c"
+url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_freebsd_amd64.tar.gz"
+url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018798"
+
 [[tools."github:uutils/coreutils"]]
 version = "0.8.0"
 backend = "github:uutils/coreutils"
