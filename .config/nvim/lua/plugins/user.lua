@@ -50,4 +50,11 @@ return {
       },
     },
   },
+  {
+    "akinsho/toggleterm.nvim",
+    optional = true,
+    opts = {
+      direction = "float",
+    },
+  },
 }
