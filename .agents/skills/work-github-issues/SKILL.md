@@ -3,7 +3,7 @@ name: work-github-issues
 description: Use when the user wants to work multiple GitHub issues serially with subagents, wrapping `work-github-issue`, coordinating local review subagents unless Copilot review is explicitly requested, and managing dependency-aware PRs, checks, and approved merges.
 metadata:
   author: Zach Callahan
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Work GitHub Issues
@@ -155,8 +155,11 @@ For each issue:
    merge or approval status, review status, and follow-up risks.
 5. If local review mode is active and the worker returned a PR URL, choose a
    review skill from metadata and launch a read-only `general` review subagent
-   with the review prompt below. PR checks may still be running at this point;
-   the review subagent runs in parallel with them.
+   with the review prompt below. PR checks may still be running at this point,
+   but the review subagent must not inspect, wait on, or reason from GitHub
+   checks, CI logs, or test validation status. The review subagent validates PR
+   fit and code/doc quality only; the issue worker owns test execution, PR check
+   waiting, and final gate handling.
 6. If the review subagent returns must-fix findings, resume the original issue
    worker with the findings. The worker fixes, validates, amends, pushes with
    `--force-with-lease`, and returns an updated status. Re-run local review only
@@ -240,16 +243,23 @@ and actionable. Do not load unrelated skills. If the selected skill is
 unavailable, fall back to the ad-hoc review path and mention that in the result.
 
 If no selected review skill is provided, perform a best-effort ad-hoc review:
-inspect the issue, PR metadata, changed files, diff, and relevant tests using
-available read-only commands and file reads.
+inspect the issue, PR metadata, changed files, diff, and relevant test files
+using available read-only commands and file reads.
+
+Review boundary: your job is to decide whether the PR fits the issue and whether
+the code/docs introduce correctness, contract, security, maintainability, or
+missing-test risks. Do not inspect GitHub check status, CI logs, workflow runs,
+or test validation results. Do not run test suites, linters, builds, typechecks,
+or other validation commands unless a specific code-level concern cannot be
+understood from the diff and file reads. The implementation worker owns all test
+execution, PR check waiting, CI failure triage, and final gate handling.
 
 Rules:
 - Read-only review only. Do not edit files, commit, push, merge, or request
   Copilot review.
-- Do not wait for PR checks to settle. Checks are running in parallel with your
-  review and the worker will gate the final merge on them. Snapshot current check
-  status if useful, but never block on `--watch`, `wait-and-report`, or any
-  polling loop.
+- Ignore GitHub checks and CI entirely. Do not wait for PR checks to settle,
+  snapshot check status, read CI logs, inspect workflow runs, or diagnose check
+  failures. The worker will gate the final merge on checks.
 - Do not ask the user directly. Return blockers or decisions to the coordinator.
 - Prefer high-signal findings over broad commentary.
 - Treat correctness, data loss, security, broken tests, missing critical tests,
@@ -260,7 +270,9 @@ Return only:
 - selected skill used, or ad-hoc review,
 - must-fix findings with file/line references when possible,
 - optional findings,
-- validation commands run or not run,
+- validation commands run only if strictly necessary to investigate a specific
+  code-level concern; otherwise state that validation/checks were intentionally
+  not inspected because the worker owns them,
 - clear recommendation: "resume worker for fixes" or "local review cleared".
 ```
 
