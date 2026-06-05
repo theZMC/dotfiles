@@ -57,4 +57,18 @@ return {
       direction = "float",
     },
   },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    optional = true,
+    -- disable buf and git tabs
+    opts = {
+      sources = {
+        "filesystem",
+      },
+      source_selector = {
+        winbar = false,
+        statusline = false,
+      },
+    },
+  },
 }
