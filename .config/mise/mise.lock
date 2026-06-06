@@ -1848,6 +1848,9 @@ backend = "npm:npm"
 version = "2.1.161"
 backend = "npm:@anthropic-ai/claude-code"
 
+[tools."npm:@anthropic-ai/claude-code".options]
+allow_builds = '["@anthropic-ai/claude-code"]'
+
 [[tools."npm:@astrojs/language-server"]]
 version = "2.16.10"
 backend = "npm:@astrojs/language-server"
@@ -1893,7 +1896,7 @@ version = "0.4.5"
 backend = "npm:ctx7"
 
 [[tools."npm:opencode-ai"]]
-version = "1.15.13"
+version = "1.16.2"
 backend = "npm:opencode-ai"
 
 [[tools."npm:prettier"]]

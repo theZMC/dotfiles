@@ -22,6 +22,10 @@ version = "0.34.1"
 bin = "docker-buildx"
 postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-buildx)" "$HOME/.docker/cli-plugins/docker-buildx"'
 
+[tools."npm:@anthropic-ai/claude-code"]
+version = "2.1.161"
+allow_builds = ["@anthropic-ai/claude-code"]
+
 [tools.aws-cli]
 version = "2.34.57"
 symlink_bins = "true"
@@ -39,7 +43,6 @@ bin = "uds"
 "go:github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer" = "0.7.4"
 "go:github.com/charmbracelet/crush" = "v0.74.1"
 "go:golang.org/x/tools/gopls" = "v0.22.0"
-"npm:@anthropic-ai/claude-code" = "2.1.161"
 "npm:@astrojs/language-server" = "2.16.10"
 "npm:@playwright/cli" = "0.1.13"
 "npm:@playwright/mcp" = "0.0.75"
@@ -50,7 +53,7 @@ bin = "uds"
 "npm:agent-browser" = "0.27.1"
 "npm:bash-language-server" = "5.6.0"
 "npm:ctx7" = "0.4.5"
-"npm:opencode-ai" = "1.15.13"
+"npm:opencode-ai" = "1.16.2"
 "npm:prettier" = "3.8.3"
 "npm:skills" = "1.5.10"
 "npm:svelte-language-server" = "0.18.1"
