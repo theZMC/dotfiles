@@ -6,6 +6,7 @@ brew "gnupg"
 brew "grep"
 brew "lazydocker"
 brew "pinentry-mac"
+brew "podman"
 brew "stow"
 brew "syncthing", restart_service: :changed
 brew "tailscale", restart_service: :changed
