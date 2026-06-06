@@ -893,6 +893,55 @@ checksum = "sha256:9bc12fce6061b0dd45325401b0d11ec2e45981b76eef2b7fa3c0f941ba5c0
 url = "https://github.com/charmbracelet/glow/releases/download/v2.1.2/glow_2.1.2_Windows_x86_64.zip"
 url_api = "https://api.github.com/repos/charmbracelet/glow/releases/assets/392672345"
 
+[[tools."github:defenseunicorns/uds-cli"]]
+version = "0.32.0"
+backend = "github:defenseunicorns/uds-cli"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.linux-arm64"]
+checksum = "sha256:764f1b0d028d3868bcfba91be27311242a069d46518152312fa4b59c7bdbb47b"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Linux_arm64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499169"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.linux-arm64-musl"]
+checksum = "sha256:764f1b0d028d3868bcfba91be27311242a069d46518152312fa4b59c7bdbb47b"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Linux_arm64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499169"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.linux-x64"]
+checksum = "sha256:ad12917d1bfda029a8db2dace1bb873df6fa331f74b7f1f9edb13db4066e0834"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Linux_amd64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499178"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.linux-x64-baseline"]
+checksum = "sha256:ad12917d1bfda029a8db2dace1bb873df6fa331f74b7f1f9edb13db4066e0834"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Linux_amd64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499178"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.linux-x64-musl"]
+checksum = "sha256:ad12917d1bfda029a8db2dace1bb873df6fa331f74b7f1f9edb13db4066e0834"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Linux_amd64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499178"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:ad12917d1bfda029a8db2dace1bb873df6fa331f74b7f1f9edb13db4066e0834"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Linux_amd64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499178"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.macos-arm64"]
+checksum = "sha256:1f34e3fad4f526e9adfc6bb4d7ee675000f52266d6824e653745d4de726bc190"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Darwin_arm64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499173"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.macos-x64"]
+checksum = "sha256:7d1373ba7a4dfa0195eb1cc3f816b0c94a18046ac911c3b3b689455d06a628d6"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Darwin_amd64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499180"
+
+[tools."github:defenseunicorns/uds-cli"."platforms.macos-x64-baseline"]
+checksum = "sha256:7d1373ba7a4dfa0195eb1cc3f816b0c94a18046ac911c3b3b689455d06a628d6"
+url = "https://github.com/defenseunicorns/uds-cli/releases/download/v0.32.0/uds-cli_v0.32.0_Darwin_amd64"
+url_api = "https://api.github.com/repos/defenseunicorns/uds-cli/releases/assets/437499180"
+
 [[tools."github:docker/buildx"]]
 version = "0.34.1"
 backend = "github:docker/buildx"
@@ -2006,65 +2055,6 @@ provenance = "github-attestations"
 checksum = "sha256:c904bff9595cd681bb8c396b454677a5294217e1726b7afca1839bbbb31a91d2"
 url = "https://github.com/pnpm/pnpm/releases/download/v11.2.2/pnpm-win32-x64.zip"
 provenance = "github-attestations"
-
-[[tools.podman]]
-version = "5.8.2"
-backend = "github:containers/podman"
-
-[tools.podman."platforms.linux-arm64"]
-checksum = "sha256:7c93faf3cdfa25f920bfcdc2e7d449a4224dd3e618eff08bf88456d70b471535"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-static-linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393574"
-
-[tools.podman."platforms.linux-arm64-musl"]
-checksum = "sha256:7c93faf3cdfa25f920bfcdc2e7d449a4224dd3e618eff08bf88456d70b471535"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-static-linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393574"
-
-[tools.podman."platforms.linux-x64"]
-checksum = "sha256:88f7c21e8399a8f5edd1ef7b5c2e12b29706d0a4f24463f264a0e88d887ebbbf"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-static-linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393573"
-
-[tools.podman."platforms.linux-x64-baseline"]
-checksum = "sha256:88f7c21e8399a8f5edd1ef7b5c2e12b29706d0a4f24463f264a0e88d887ebbbf"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-static-linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393573"
-
-[tools.podman."platforms.linux-x64-musl"]
-checksum = "sha256:88f7c21e8399a8f5edd1ef7b5c2e12b29706d0a4f24463f264a0e88d887ebbbf"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-static-linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393573"
-
-[tools.podman."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:88f7c21e8399a8f5edd1ef7b5c2e12b29706d0a4f24463f264a0e88d887ebbbf"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-static-linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393573"
-
-[tools.podman."platforms.macos-arm64"]
-checksum = "sha256:2379bcb0bf320df5deccf84115337109d3f9051f7d017948ee68a92ce932e798"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-release-darwin_arm64.zip"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393567"
-
-[tools.podman."platforms.macos-x64"]
-checksum = "sha256:8c54f845651fd606512debd509a273f7a8d20e6ab0adb372a46863608275aa78"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-release-darwin_amd64.zip"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393565"
-
-[tools.podman."platforms.macos-x64-baseline"]
-checksum = "sha256:8c54f845651fd606512debd509a273f7a8d20e6ab0adb372a46863608275aa78"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-release-darwin_amd64.zip"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393565"
-
-[tools.podman."platforms.windows-x64"]
-checksum = "sha256:1b60aae4bd4879c3932c283d2070bb87116ec1f0ab3a4a98eff7e65f318f9e4e"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-release-windows_amd64.zip"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393568"
-
-[tools.podman."platforms.windows-x64-baseline"]
-checksum = "sha256:1b60aae4bd4879c3932c283d2070bb87116ec1f0ab3a4a98eff7e65f318f9e4e"
-url = "https://github.com/podman-container-tools/podman/releases/download/v5.8.2/podman-remote-release-windows_amd64.zip"
-url_api = "https://api.github.com/repos/podman-container-tools/podman/releases/assets/396393568"
 
 [[tools.pre-commit]]
 version = "4.6.0"

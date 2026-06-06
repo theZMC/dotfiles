@@ -8,7 +8,7 @@ lockfile = true
 helm3 = "mise x helm@3 -- helm"
 
 [settings.npm]
-package_manager = "bun"
+package_manager = "pnpm"
 
 [tool_alias]
 nvim12 = "neovim@0.12"
@@ -26,9 +26,9 @@ postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-bu
 version = "2.34.49"
 symlink_bins = "true"
 
-[tools.podman]
-version = "5.8.2"
-bin = "podman"
+[tools."github:defenseunicorns/uds-cli"]
+version = "v0.32.0"
+bin = "uds"
 
 [tools]
 "aqua:charmbracelet/gum" = "0.17.0"
