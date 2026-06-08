@@ -6,5 +6,6 @@
   },
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true
-  }
+  },
+  "agentPushNotifEnabled": true
 }
