@@ -1028,6 +1028,65 @@ url_api = "https://api.github.com/repos/docker/buildx/releases/assets/424359349"
 [tools."github:docker/buildx"."platforms.windows-x64-baseline".provenance.slsa]
 url = "https://github.com/docker/buildx/releases/download/v0.34.1/buildx-v0.34.1.windows-amd64.provenance.json"
 
+[[tools."github:k3d-io/k3d"]]
+version = "5.9.0"
+backend = "github:k3d-io/k3d"
+
+[tools."github:k3d-io/k3d"."platforms.linux-arm64"]
+checksum = "sha256:03cde5cf23e6e8e67de5a039ecf26e5b85aca82fba3e5d13dadf904cd218a250"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-linux-arm64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305757"
+
+[tools."github:k3d-io/k3d"."platforms.linux-arm64-musl"]
+checksum = "sha256:03cde5cf23e6e8e67de5a039ecf26e5b85aca82fba3e5d13dadf904cd218a250"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-linux-arm64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305757"
+
+[tools."github:k3d-io/k3d"."platforms.linux-x64"]
+checksum = "sha256:06d8f25bc3a971c4eb29e0ff08429b180402db0f4dec838c9eac427e296800a0"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-linux-amd64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305793"
+
+[tools."github:k3d-io/k3d"."platforms.linux-x64-baseline"]
+checksum = "sha256:06d8f25bc3a971c4eb29e0ff08429b180402db0f4dec838c9eac427e296800a0"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-linux-amd64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305793"
+
+[tools."github:k3d-io/k3d"."platforms.linux-x64-musl"]
+checksum = "sha256:06d8f25bc3a971c4eb29e0ff08429b180402db0f4dec838c9eac427e296800a0"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-linux-amd64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305793"
+
+[tools."github:k3d-io/k3d"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:06d8f25bc3a971c4eb29e0ff08429b180402db0f4dec838c9eac427e296800a0"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-linux-amd64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305793"
+
+[tools."github:k3d-io/k3d"."platforms.macos-arm64"]
+checksum = "sha256:fe106541d5d0a3f18debcd4d432a16f8c0ce3e6ddc06f8fbb6f696a122313e00"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-darwin-arm64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305875"
+
+[tools."github:k3d-io/k3d"."platforms.macos-x64"]
+checksum = "sha256:b4aabc37534f95b9c764e7823f2df923f50d57600837aa60a06266cce47db732"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-darwin-amd64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305915"
+
+[tools."github:k3d-io/k3d"."platforms.macos-x64-baseline"]
+checksum = "sha256:b4aabc37534f95b9c764e7823f2df923f50d57600837aa60a06266cce47db732"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-darwin-amd64"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305915"
+
+[tools."github:k3d-io/k3d"."platforms.windows-x64"]
+checksum = "sha256:49d0b9c796f5b8ba6f58a1dd5469e8b7b34bf9b6ce9078633eedb2789680a034"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-windows-amd64.exe"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305724"
+
+[tools."github:k3d-io/k3d"."platforms.windows-x64-baseline"]
+checksum = "sha256:49d0b9c796f5b8ba6f58a1dd5469e8b7b34bf9b6ce9078633eedb2789680a034"
+url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-windows-amd64.exe"
+url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305724"
+
 [[tools."github:tmuxpack/tpack"]]
 version = "1.0.0"
 backend = "github:tmuxpack/tpack"
@@ -1263,6 +1322,65 @@ url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919327"
 checksum = "sha256:558fb3c5ba636403ab6a7137846d202009cf717ca8673339bb121f8231509dbf"
 url = "https://github.com/uutils/sed/releases/download/0.1.1/sed-x86_64-pc-windows-msvc.zip"
 url_api = "https://api.github.com/repos/uutils/sed/releases/assets/329919327"
+
+[[tools."github:zarf-dev/zarf"]]
+version = "0.77.0"
+backend = "github:zarf-dev/zarf"
+
+[tools."github:zarf-dev/zarf"."platforms.linux-arm64"]
+checksum = "sha256:c06b0af6f61d5d52bd4af4bfa3790639617c354118782703a1fc43cac0e96020"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Linux_arm64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328237"
+
+[tools."github:zarf-dev/zarf"."platforms.linux-arm64-musl"]
+checksum = "sha256:c06b0af6f61d5d52bd4af4bfa3790639617c354118782703a1fc43cac0e96020"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Linux_arm64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328237"
+
+[tools."github:zarf-dev/zarf"."platforms.linux-x64"]
+checksum = "sha256:7e335ffe9861d6ce254d75b31fde9c96c0fa83469c82cd20228b27e63d18dd85"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Linux_amd64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328239"
+
+[tools."github:zarf-dev/zarf"."platforms.linux-x64-baseline"]
+checksum = "sha256:7e335ffe9861d6ce254d75b31fde9c96c0fa83469c82cd20228b27e63d18dd85"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Linux_amd64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328239"
+
+[tools."github:zarf-dev/zarf"."platforms.linux-x64-musl"]
+checksum = "sha256:7e335ffe9861d6ce254d75b31fde9c96c0fa83469c82cd20228b27e63d18dd85"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Linux_amd64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328239"
+
+[tools."github:zarf-dev/zarf"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:7e335ffe9861d6ce254d75b31fde9c96c0fa83469c82cd20228b27e63d18dd85"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Linux_amd64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328239"
+
+[tools."github:zarf-dev/zarf"."platforms.macos-arm64"]
+checksum = "sha256:8d854bfd5af3a6ee9795572e9f94b9e1f4d69c77d192276bd774240267182d60"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Darwin_arm64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328235"
+
+[tools."github:zarf-dev/zarf"."platforms.macos-x64"]
+checksum = "sha256:b7e2e1ebbd98cb716ebdea1dbc731ac7fd90be1f02f2f656e892b242772b1eff"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Darwin_amd64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328234"
+
+[tools."github:zarf-dev/zarf"."platforms.macos-x64-baseline"]
+checksum = "sha256:b7e2e1ebbd98cb716ebdea1dbc731ac7fd90be1f02f2f656e892b242772b1eff"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Darwin_amd64"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328234"
+
+[tools."github:zarf-dev/zarf"."platforms.windows-x64"]
+checksum = "sha256:c0ba4427c209121969d5ebfb6ee05209c0082f4314896e03e0543247ae2f8ee4"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Windows_amd64.exe"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328232"
+
+[tools."github:zarf-dev/zarf"."platforms.windows-x64-baseline"]
+checksum = "sha256:c0ba4427c209121969d5ebfb6ee05209c0082f4314896e03e0543247ae2f8ee4"
+url = "https://github.com/zarf-dev/zarf/releases/download/v0.77.0/zarf_v0.77.0_Windows_amd64.exe"
+url_api = "https://api.github.com/repos/zarf-dev/zarf/releases/assets/432328232"
 
 [[tools.go]]
 version = "1.26.3"
@@ -1527,6 +1645,54 @@ url = "https://github.com/mrjosh/helm-ls/releases/download/v0.5.4/helm_ls_window
 checksum = "sha256:38ed1eea9c018365d4ba1c335c2955b067a4ae68fcfe18ed52b5dc1df51c860f"
 url = "https://github.com/mrjosh/helm-ls/releases/download/v0.5.4/helm_ls_windows_amd64.exe"
 
+[[tools.istioctl]]
+version = "1.30.1"
+backend = "aqua:istio/istio/istioctl"
+
+[tools.istioctl."platforms.linux-arm64"]
+checksum = "sha256:3109f575feebf99c9d8372a0db9936a256f50118e09f0f1b307d95c4517ba65c"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-linux-arm64.tar.gz"
+
+[tools.istioctl."platforms.linux-arm64-musl"]
+checksum = "sha256:3109f575feebf99c9d8372a0db9936a256f50118e09f0f1b307d95c4517ba65c"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-linux-arm64.tar.gz"
+
+[tools.istioctl."platforms.linux-x64"]
+checksum = "sha256:44ab251548af669661a53f1c30d3bf80f482bc352d9ed5161d577b970e3a58fd"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-linux-amd64.tar.gz"
+
+[tools.istioctl."platforms.linux-x64-baseline"]
+checksum = "sha256:44ab251548af669661a53f1c30d3bf80f482bc352d9ed5161d577b970e3a58fd"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-linux-amd64.tar.gz"
+
+[tools.istioctl."platforms.linux-x64-musl"]
+checksum = "sha256:44ab251548af669661a53f1c30d3bf80f482bc352d9ed5161d577b970e3a58fd"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-linux-amd64.tar.gz"
+
+[tools.istioctl."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:44ab251548af669661a53f1c30d3bf80f482bc352d9ed5161d577b970e3a58fd"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-linux-amd64.tar.gz"
+
+[tools.istioctl."platforms.macos-arm64"]
+checksum = "sha256:8130e7dc37d98da7550638333fe27a8755e6252665b31c11b34ef9af1887e43b"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-osx-arm64.tar.gz"
+
+[tools.istioctl."platforms.macos-x64"]
+checksum = "sha256:876596de1c4ca45f73da6b240db34b0ab7b4ecae5cbd86dff0bbb00cdf4d9b55"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-osx.tar.gz"
+
+[tools.istioctl."platforms.macos-x64-baseline"]
+checksum = "sha256:876596de1c4ca45f73da6b240db34b0ab7b4ecae5cbd86dff0bbb00cdf4d9b55"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-osx.tar.gz"
+
+[tools.istioctl."platforms.windows-x64"]
+checksum = "sha256:d6c58a959299aeead5e38bf712fc15cba30a1a71bc91bacdd9ef7d4bb638f419"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-win.zip"
+
+[tools.istioctl."platforms.windows-x64-baseline"]
+checksum = "sha256:d6c58a959299aeead5e38bf712fc15cba30a1a71bc91bacdd9ef7d4bb638f419"
+url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-win.zip"
+
 [[tools.java]]
 version = "26.0.0"
 backend = "core:java"
@@ -1755,6 +1921,44 @@ url = "https://github.com/LuaLS/lua-language-server/releases/download/3.18.2/lua
 checksum = "sha256:a4439a8f5e8e9e6505c11f045a7bf45db602124a1e246371c1dbe34924f3cf71"
 url = "https://github.com/LuaLS/lua-language-server/releases/download/3.18.2/lua-language-server-3.18.2-win32-x64.zip"
 
+[[tools.mkcert]]
+version = "1.4.4"
+backend = "aqua:FiloSottile/mkcert"
+
+[tools.mkcert."platforms.linux-arm64"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-arm64"
+
+[tools.mkcert."platforms.linux-arm64-musl"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-arm64"
+
+[tools.mkcert."platforms.linux-x64"]
+checksum = "blake3:2337bf318a54e40d6fb36ee89306f031fcecc00e02dad69afa2bc2b579959f80"
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64"
+
+[tools.mkcert."platforms.linux-x64-baseline"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64"
+
+[tools.mkcert."platforms.linux-x64-musl"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64"
+
+[tools.mkcert."platforms.linux-x64-musl-baseline"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64"
+
+[tools.mkcert."platforms.macos-arm64"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-darwin-arm64"
+
+[tools.mkcert."platforms.macos-x64"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-darwin-amd64"
+
+[tools.mkcert."platforms.macos-x64-baseline"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-darwin-amd64"
+
+[tools.mkcert."platforms.windows-x64"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe"
+
+[tools.mkcert."platforms.windows-x64-baseline"]
+url = "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe"
+
 [[tools.neovim]]
 version = "0.12.2"
 backend = "vfox:mise-plugins/vfox-neovim"
@@ -1898,6 +2102,9 @@ backend = "npm:ctx7"
 [[tools."npm:opencode-ai"]]
 version = "1.16.2"
 backend = "npm:opencode-ai"
+
+[tools."npm:opencode-ai".options]
+allow_builds = '["opencode-ai"]'
 
 [[tools."npm:prettier"]]
 version = "3.8.3"
@@ -2899,52 +3106,52 @@ checksum = "sha256:d13aa1c4e3654d873fb929ecd1215608dfcac2e83d60b86b510d34a7183cc
 url = "https://github.com/trufflesecurity/trufflehog/releases/download/v3.95.3/trufflehog_3.95.3_windows_amd64.tar.gz"
 
 [[tools.usage]]
-version = "3.3.0"
+version = "3.4.0"
 backend = "aqua:jdx/usage"
 
 [tools.usage."platforms.linux-arm64"]
-checksum = "sha256:55a0c94c35bb9e2c5cbc223973667cd450759cd3410d4c5836ef2fdfd95adc57"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-aarch64-unknown-linux-musl.tar.gz"
+checksum = "sha256:5cea2993383ccbbdbf9693bec484c47fc3cbcff75ec167618e1e775e5df9ba19"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-aarch64-unknown-linux-musl.tar.gz"
 
 [tools.usage."platforms.linux-arm64-musl"]
-checksum = "sha256:55a0c94c35bb9e2c5cbc223973667cd450759cd3410d4c5836ef2fdfd95adc57"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-aarch64-unknown-linux-musl.tar.gz"
+checksum = "sha256:5cea2993383ccbbdbf9693bec484c47fc3cbcff75ec167618e1e775e5df9ba19"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-aarch64-unknown-linux-musl.tar.gz"
 
 [tools.usage."platforms.linux-x64"]
-checksum = "sha256:9a4316d633243aa54308ff3bf6970923b18c105dea34fbc3009d51889e1dd03f"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:1a54260df50f1764bc8cbabf8763f2a6314c5025d3b06b512d02898eb28768b3"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-x86_64-unknown-linux-musl.tar.gz"
 
 [tools.usage."platforms.linux-x64-baseline"]
-checksum = "sha256:9a4316d633243aa54308ff3bf6970923b18c105dea34fbc3009d51889e1dd03f"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:1a54260df50f1764bc8cbabf8763f2a6314c5025d3b06b512d02898eb28768b3"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-x86_64-unknown-linux-musl.tar.gz"
 
 [tools.usage."platforms.linux-x64-musl"]
-checksum = "sha256:9a4316d633243aa54308ff3bf6970923b18c105dea34fbc3009d51889e1dd03f"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:1a54260df50f1764bc8cbabf8763f2a6314c5025d3b06b512d02898eb28768b3"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-x86_64-unknown-linux-musl.tar.gz"
 
 [tools.usage."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:9a4316d633243aa54308ff3bf6970923b18c105dea34fbc3009d51889e1dd03f"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:1a54260df50f1764bc8cbabf8763f2a6314c5025d3b06b512d02898eb28768b3"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-x86_64-unknown-linux-musl.tar.gz"
 
 [tools.usage."platforms.macos-arm64"]
-checksum = "sha256:ab6c69a6541e18ffca7bd950dd4cc867ea9267d0f91115c13aa650cde6634d62"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-universal-apple-darwin.tar.gz"
+checksum = "sha256:e9f7cd9038fec6352eaa001903414edc95bb77386a9573fde21be17991f3f719"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-universal-apple-darwin.tar.gz"
 
 [tools.usage."platforms.macos-x64"]
-checksum = "sha256:ab6c69a6541e18ffca7bd950dd4cc867ea9267d0f91115c13aa650cde6634d62"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-universal-apple-darwin.tar.gz"
+checksum = "sha256:e9f7cd9038fec6352eaa001903414edc95bb77386a9573fde21be17991f3f719"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-universal-apple-darwin.tar.gz"
 
 [tools.usage."platforms.macos-x64-baseline"]
-checksum = "sha256:ab6c69a6541e18ffca7bd950dd4cc867ea9267d0f91115c13aa650cde6634d62"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-universal-apple-darwin.tar.gz"
+checksum = "sha256:e9f7cd9038fec6352eaa001903414edc95bb77386a9573fde21be17991f3f719"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-universal-apple-darwin.tar.gz"
 
 [tools.usage."platforms.windows-x64"]
-checksum = "sha256:628b8743d552f2cff2dee2b783a4827ef555409def3fb9ec536117d96cda2018"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-x86_64-pc-windows-msvc.zip"
+checksum = "sha256:2272ad0d264b99986ef8e3d537f774f046db5fe096e8a9375fbb1482f0934e8c"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-x86_64-pc-windows-msvc.zip"
 
 [tools.usage."platforms.windows-x64-baseline"]
-checksum = "sha256:628b8743d552f2cff2dee2b783a4827ef555409def3fb9ec536117d96cda2018"
-url = "https://github.com/jdx/usage/releases/download/v3.3.0/usage-x86_64-pc-windows-msvc.zip"
+checksum = "sha256:2272ad0d264b99986ef8e3d537f774f046db5fe096e8a9375fbb1482f0934e8c"
+url = "https://github.com/jdx/usage/releases/download/v3.4.0/usage-x86_64-pc-windows-msvc.zip"
 
 [[tools.uv]]
 version = "0.11.17"

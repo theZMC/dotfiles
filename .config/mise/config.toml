@@ -26,6 +26,10 @@ postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-bu
 version = "2.1.161"
 allow_builds = ["@anthropic-ai/claude-code"]
 
+[tools."npm:opencode-ai"]
+version = "1.16.2"
+allow_builds = ["opencode-ai"]
+
 [tools.aws-cli]
 version = "2.34.57"
 symlink_bins = "true"
@@ -33,6 +37,10 @@ symlink_bins = "true"
 [tools."github:defenseunicorns/uds-cli"]
 version = "v0.32.0"
 bin = "uds"
+
+[tools."github:zarf-dev/zarf"]
+version = "v0.77.0"
+bin = "zarf"
 
 [tools]
 "aqua:charmbracelet/gum" = "0.17.0"
@@ -44,7 +52,7 @@ bin = "uds"
 "go:github.com/charmbracelet/crush" = "v0.74.1"
 "go:golang.org/x/tools/gopls" = "v0.22.0"
 "npm:@astrojs/language-server" = "2.16.10"
-"npm:@playwright/cli" = "0.1.13"
+"npm:@playwright/cli" = "latest"
 "npm:@playwright/mcp" = "0.0.75"
 "npm:@slidev/cli" = "52.16.0"
 "npm:@sveltejs/mcp" = "0.1.23"
@@ -53,7 +61,6 @@ bin = "uds"
 "npm:agent-browser" = "0.27.1"
 "npm:bash-language-server" = "5.6.0"
 "npm:ctx7" = "0.4.5"
-"npm:opencode-ai" = "1.16.2"
 "npm:prettier" = "3.8.3"
 "npm:skills" = "1.5.10"
 "npm:svelte-language-server" = "0.18.1"
@@ -102,7 +109,7 @@ terraform-ls = "0.38.6"
 tmux = "3.6a"
 tree-sitter = "0.26.9"
 trufflehog = "3.95.3"
-usage = "3.3.0"
+usage = "3.4.0"
 uv = "0.11.17"
 viddy = "1.3.0"
 yamlfmt = "0.21.0"
@@ -115,3 +122,6 @@ taplo = "0.10.0"
 "npm:@rynfar/meridian" = "1.42.1"
 "github:charmbracelet/glow" = "2.1.2"
 "github:tmuxpack/tpack" = "v1.0.0"
+mkcert = "1.4.4"
+"github:k3d-io/k3d" = "v5.9.0"
+istioctl = "1.30.1"
