@@ -3,7 +3,7 @@ name: create-github-issue
 description: Creates a well-structured GitHub issue with Motivation, Acceptance Criteria, and optional References sections using the GitHub CLI (`gh`). Use when the user asks to create, file, or open a GitHub issue.
 metadata:
   author: Zach Callahan
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Create GitHub Issue (gh CLI)
@@ -105,6 +105,16 @@ Generate the issue title from the Motivation content. The title should be:
    EOF
    )"
    ```
+
+   **Escaping backticks in heredocs.** Issue bodies routinely contain backticks
+   (inline code spans, fenced code blocks). Always **quote the heredoc delimiter**
+   (`<<'EOF'`, not `<<EOF`) so the shell treats the body as a literal — backticks,
+   `$(...)`, and `$VAR` are then passed through verbatim with no command or
+   variable substitution. If you ever use an **unquoted** delimiter (`<<EOF`),
+   every backtick in the body is interpreted as a subshell (legacy backtick
+   command substitution) and must be escaped as ``\` ``; an unescaped pair like
+   `` `gh` `` would otherwise run `gh` as a command and inject its output (or an
+   error) into the issue. Prefer the quoted delimiter to avoid escaping entirely.
 
    If labels or assignees are requested, include them with `--label` and
    `--assignee`.
