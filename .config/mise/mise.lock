@@ -1146,6 +1146,65 @@ checksum = "sha256:7d79ff88f400a797fbd7e560efe23812c3aa9ffee07e1aef032b67e7bab6f
 url = "https://github.com/tmuxpack/tpack/releases/download/v1.0.0/tpack_1.0.0_freebsd_amd64.tar.gz"
 url_api = "https://api.github.com/repos/tmuxpack/tpack/releases/assets/414018798"
 
+[[tools."github:tombi-toml/tombi"]]
+version = "1.1.2"
+backend = "github:tombi-toml/tombi"
+
+[tools."github:tombi-toml/tombi"."platforms.linux-arm64"]
+checksum = "sha256:e12b92009e489a21b3dedddb1b74cf54416b86ef58dc7f3efb56bb7fbf9158f4"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771027"
+
+[tools."github:tombi-toml/tombi"."platforms.linux-arm64-musl"]
+checksum = "sha256:e12b92009e489a21b3dedddb1b74cf54416b86ef58dc7f3efb56bb7fbf9158f4"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771027"
+
+[tools."github:tombi-toml/tombi"."platforms.linux-x64"]
+checksum = "sha256:6a435cd296247e17f7971e3616370e3d0651c18301c2346872794e1903366440"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771026"
+
+[tools."github:tombi-toml/tombi"."platforms.linux-x64-baseline"]
+checksum = "sha256:6a435cd296247e17f7971e3616370e3d0651c18301c2346872794e1903366440"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771026"
+
+[tools."github:tombi-toml/tombi"."platforms.linux-x64-musl"]
+checksum = "sha256:6a435cd296247e17f7971e3616370e3d0651c18301c2346872794e1903366440"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771026"
+
+[tools."github:tombi-toml/tombi"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:6a435cd296247e17f7971e3616370e3d0651c18301c2346872794e1903366440"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771026"
+
+[tools."github:tombi-toml/tombi"."platforms.macos-arm64"]
+checksum = "sha256:e0b670cb6a1e5a49c608838a5fcb7fec6020ee9596288fba17400a48a79feb5b"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771066"
+
+[tools."github:tombi-toml/tombi"."platforms.macos-x64"]
+checksum = "sha256:169241e4050a427d20b173f324a913e56f5504d565d56e4f3c87e4b2f0451829"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771068"
+
+[tools."github:tombi-toml/tombi"."platforms.macos-x64-baseline"]
+checksum = "sha256:169241e4050a427d20b173f324a913e56f5504d565d56e4f3c87e4b2f0451829"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771068"
+
+[tools."github:tombi-toml/tombi"."platforms.windows-x64"]
+checksum = "sha256:8845ade444df7b87e9199a65b8a70594920a74c05740fd8e8763f8083e751752"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771024"
+
+[tools."github:tombi-toml/tombi"."platforms.windows-x64-baseline"]
+checksum = "sha256:8845ade444df7b87e9199a65b8a70594920a74c05740fd8e8763f8083e751752"
+url = "https://github.com/tombi-toml/tombi/releases/download/v1.1.2/tombi-cli-1.1.2-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/440771024"
+
 [[tools."github:uutils/coreutils"]]
 version = "0.8.0"
 backend = "github:uutils/coreutils"

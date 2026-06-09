@@ -23,8 +23,15 @@ repos:
     args:
     - -formatter
     - indentless_arrays=true,retain_line_breaks=true,scan_folded_as_literal=true
+  - id: tombi-format
+    name: tombi format
+    files: \.toml$
+    language: system
+    entry: tombi
+    args:
+    - format
   - id: trufflehog
-    name: TruffleHog
+    name: trufflehog
     language: system
     entry: trufflehog filesystem --no-update
   - id: shfmt
@@ -38,7 +45,7 @@ repos:
     types_or: [sh, bash]
     entry: shellcheck
   - id: update-mise-lock
-    name: Update mise.lock
+    name: update mise.lock
     language: system
     entry: bash
     files: ^\.config/mise/(config\.toml|mise\.lock)$
@@ -47,7 +54,7 @@ repos:
     - |
       GITHUB_TOKEN=$(gh auth token || true) mise lock
   - id: sync-claude-skills
-    name: Sync .agents/skills to .claude/skills
+    name: sync .agents/skills to .claude/skills
     language: system
     entry: bash
     files: ^\.agents/skills/
