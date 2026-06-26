@@ -1004,6 +1004,9 @@ checksum = "sha256:e5040acdaac1a349de84c0e7a80c861a368e0d141bf7260e1fd9a74b16749
 url = "https://github.com/docker/buildx/releases/download/v0.34.1/buildx-v0.34.1.darwin-arm64"
 url_api = "https://api.github.com/repos/docker/buildx/releases/assets/424427906"
 
+[tools."github:docker/buildx"."platforms.macos-arm64".provenance.slsa]
+url = "https://github.com/docker/buildx/releases/download/v0.34.1/buildx-v0.34.1.darwin-arm64.provenance.json"
+
 [tools."github:docker/buildx"."platforms.macos-x64"]
 checksum = "sha256:a4a74ff86e70706a0ae24330052ab52989da9f2090dc8fc478e398813de7b550"
 url = "https://github.com/docker/buildx/releases/download/v0.34.1/buildx-v0.34.1.darwin-amd64"
@@ -2117,6 +2120,33 @@ url = "https://nodejs.org/dist/v26.3.1/node-v26.3.1-win-x64.zip"
 [[tools.npm]]
 version = "11.17.0"
 backend = "npm:npm"
+
+[tools.npm."platforms.linux-arm64"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.linux-arm64-musl"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.linux-x64"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.linux-x64-baseline"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.linux-x64-musl"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.linux-x64-musl-baseline"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.macos-arm64"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.macos-x64"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
+
+[tools.npm."platforms.macos-x64-baseline"]
+url = "https://registry.npmjs.org/npm/-/npm-11.17.0.tgz"
 
 [[tools."npm:@anthropic-ai/claude-code"]]
 version = "2.1.186"
