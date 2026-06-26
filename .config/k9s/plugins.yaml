@@ -57,9 +57,9 @@ plugins:
     - -c
     - |
       if [ -n "$NAMESPACE" ]; then
-        crossplane beta trace --context $CONTEXT -n $NAMESPACE $RESOURCE_NAME.$RESOURCE_GROUP $NAME -owide | less -K
+        crossplane resource trace --context $CONTEXT -n $NAMESPACE $RESOURCE_NAME.$RESOURCE_GROUP $NAME -owide | less -K
       else
-        crossplane beta trace --context $CONTEXT $RESOURCE_NAME.$RESOURCE_GROUP $NAME -owide | less -K
+        crossplane resource trace --context $CONTEXT $RESOURCE_NAME.$RESOURCE_GROUP $NAME -owide | less -K
       fi
   # crossplane-watch requires 'crossplane' cli and 'viddy' binaries installed
   # 'viddy' is a modern implementation of 'watch' command written in rust. Read more on https://github.com/sachaos/viddy.
