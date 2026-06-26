@@ -4,6 +4,7 @@
     "commit": "",
     "pr": ""
   },
+  "model": "opus[1m]",
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true
   },
