@@ -11,7 +11,7 @@
     "pinDigests": true
   },
   "minimumReleaseAge": "7 days",
-  "minimumReleaseAgeBehaviour": "timestamp-required",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "packageRules": [
     {
       "description": "Keep mise java updates installable by dropping LTS/build suffixes",
