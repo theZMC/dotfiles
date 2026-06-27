@@ -99,6 +99,7 @@ yq = "4.53.3"
 zoxide = "0.9.9"
 aws-cli = { version = "2.35.8", symlink_bins = "true" }
 "github:docker/buildx" = { version = "0.34.1", bin = "docker-buildx", postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-buildx)" "$HOME/.docker/cli-plugins/docker-buildx"' }
+hyperfine = "latest"
 
 [tools.docker-compose]
 version = "5.1.4"
