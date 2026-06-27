@@ -316,11 +316,11 @@ checksum = "sha256:4254ec12123cfcf88b87703d7acf092a1ea024bdf9be8dd3cd9d4474761cb
 url = "https://dl.deno.land/release/v2.8.3/deno-x86_64-apple-darwin.zip"
 
 [tools.deno."platforms.windows-x64"]
-checksum = "sha256:7fdd1f42e6b0855421ecf27bb406e2492ade1087c85e30ebf0deab6280ea743c"
+checksum = "sha256:Algorithm"
 url = "https://dl.deno.land/release/v2.8.3/deno-x86_64-pc-windows-msvc.zip"
 
 [tools.deno."platforms.windows-x64-baseline"]
-checksum = "sha256:7fdd1f42e6b0855421ecf27bb406e2492ade1087c85e30ebf0deab6280ea743c"
+checksum = "sha256:Algorithm"
 url = "https://dl.deno.land/release/v2.8.3/deno-x86_64-pc-windows-msvc.zip"
 
 [[tools.dive]]
@@ -1767,9 +1767,6 @@ url = "https://github.com/istio/istio/releases/download/1.30.1/istioctl-1.30.1-w
 version = "26.0.1"
 backend = "core:java"
 
-[tools.java.options]
-shorthand_vendor = "openjdk"
-
 [tools.java."platforms.linux-arm64"]
 checksum = "sha256:12a3649b2f4a0c9f6491d220bdd04b4fff07cae502b435aaff46eac0e36f4df1"
 url = "https://download.java.net/java/GA/jdk26.0.1/458fda22e4c54d5ba572ab8d2b22eb83/8/GPL/openjdk-26.0.1_linux-aarch64_bin.tar.gz"
@@ -2180,7 +2177,7 @@ version = "0.1.24"
 backend = "npm:@sveltejs/mcp"
 
 [[tools."npm:@upstash/context7-mcp"]]
-version = "3.2.2"
+version = "3.2.0"
 backend = "npm:@upstash/context7-mcp"
 
 [[tools."npm:@vtsls/language-server"]]
@@ -2188,7 +2185,7 @@ version = "0.3.0"
 backend = "npm:@vtsls/language-server"
 
 [[tools."npm:agent-browser"]]
-version = "0.29.1"
+version = "0.28.0"
 backend = "npm:agent-browser"
 
 [[tools."npm:bash-language-server"]]

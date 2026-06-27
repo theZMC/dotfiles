@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# [MISE] description="Create a GitHub issue (optionally add to a project and set status), returning {number,url,id} JSON"
+# [USAGE] flag "--repo <owner/repo>" help="Target repository as owner/name"
+# [USAGE] flag "--title <title>" help="Issue title"
+# [USAGE] flag "--body <body>" help="Issue body markdown (prefer --body-file for long/backtick-heavy bodies)"
+# [USAGE] flag "--body-file <path>" help="Path to a file containing the issue body markdown"
+# [USAGE] flag "--label <labels>" help="Comma-separated labels"
+# [USAGE] flag "--assignee <assignees>" help="Comma-separated assignees"
+# [USAGE] flag "--project <name-or-number>" help="Project number or (fuzzy) title to add the issue to"
+# [USAGE] flag "--status <name>" help="Status option to set on the project item (requires --project)"
+# shellcheck disable=SC2016 # GraphQL query variables are substituted by gh, not the shell
+set -euo pipefail
+
+repo="${usage_repo?missing --repo}"
+title="${usage_title?missing --title}"
+body="${usage_body:-}"
+body_file="${usage_body_file:-}"
+labels="${usage_label:-}"
+assignees="${usage_assignee:-}"
+project="${usage_project:-}"
+status="${usage_status:-}"
+
+if [[ "$repo" != */* ]]; then
+  echo "Invalid --repo: $repo (expected owner/name)" >&2
+  exit 64
+fi
+owner="${repo%%/*}"
+name="${repo#*/}"
+
+if [ -n "$status" ] && [ -z "$project" ]; then
+  echo "--status requires --project." >&2
+  exit 64
+fi
+
+create_args=(issue create --repo "$repo" --title "$title")
+if [ -n "$body_file" ]; then
+  create_args+=(--body-file "$body_file")
+elif [ -n "$body" ]; then
+  create_args+=(--body "$body")
+else
+  echo "Provide --body or --body-file." >&2
+  exit 64
+fi
+[ -n "$labels" ] && create_args+=(--label "$labels")
+[ -n "$assignees" ] && create_args+=(--assignee "$assignees")
+
+issue_url="$(mise run github:gh:retry -- "${create_args[@]}")"
+issue_url="$(printf '%s' "$issue_url" | tr -d '[:space:]')"
+issue_number="${issue_url##*/}"
+if ! [[ "$issue_number" =~ ^[0-9]+$ ]]; then
+  echo "Could not parse issue number from create output: $issue_url" >&2
+  exit 2
+fi
+
+view_json="$(mise run github:gh:retry -- issue view "$issue_number" --repo "$repo" --json id,number,url)"
+issue_id="$(printf '%s' "$view_json" | yq -p=json -o=json -r '.id')"
+
+if [ -n "$project" ] && [ -n "$status" ]; then
+  mise run github:project:status:set \
+    --owner "$owner" --repo "$name" --issue "$issue_number" \
+    --project "$project" --status "$status" >/dev/null
+elif [ -n "$project" ]; then
+  # Add to the project without changing status (defaults to the project's initial column).
+  if [[ "$project" =~ ^[0-9]+$ ]]; then
+    project_json="$(mise run github:project:resolve --owner "$owner" --number "$project")"
+  else
+    project_json="$(mise run github:project:resolve --owner "$owner" --name "$project")"
+  fi
+  project_id="$(printf '%s' "$project_json" | yq -p=json -o=json -r '.id')"
+  mise run github:gh:retry -- api graphql \
+    -f query='mutation($project:ID!,$content:ID!){addProjectV2ItemById(input:{projectId:$project,contentId:$content}){item{id}}}' \
+    -f project="$project_id" -f content="$issue_id" >/dev/null
+fi
+
+echo "Created issue #$issue_number: $issue_url" >&2
+printf '{"number":%s,"url":"%s","id":"%s"}\n' "$issue_number" "$issue_url" "$issue_id"

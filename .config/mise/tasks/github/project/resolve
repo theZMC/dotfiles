@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# [MISE] description="Resolve a GitHub project by number or (fuzzy) name to {number,id,title,url,ownerType} JSON"
+# [USAGE] flag "--owner <owner>" help="Project owner login (organization or user)"
+# [USAGE] flag "--name <name>" help="Project title to match (case-insensitive exact, then fuzzy)"
+# [USAGE] flag "--number <number>" help="Project number (bypasses name matching)"
+# [USAGE] flag "--best" help="On ambiguous fuzzy matches, accept the top-ranked match instead of failing"
+set -euo pipefail
+
+owner="${usage_owner?missing --owner}"
+name="${usage_name:-}"
+number="${usage_number:-}"
+best="${usage_best:-false}"
+
+if [ -z "$number" ] && [ -z "$name" ]; then
+  echo "Provide --number or --name." >&2
+  exit 64
+fi
+
+if [ -n "$number" ] && ! [[ "$number" =~ ^[0-9]+$ ]]; then
+  echo "Invalid --number: $number (must be a positive integer)" >&2
+  exit 64
+fi
+
+projects_json="$(mise run github:gh:retry -- project list --owner "$owner" --limit 100 --format json)"
+
+emit() {
+  # $1 = a single project JSON object
+  printf '%s' "$1" | yq -p=json -o=json -I=0 \
+    '{"number": .number, "id": .id, "title": .title, "url": .url, "ownerType": .owner.type}'
+  echo
+}
+
+# 1) Explicit number wins.
+if [ -n "$number" ]; then
+  match="$(printf '%s' "$projects_json" | yq -p=json -o=json -I=0 \
+    ".projects[] | select(.number == $number)" | head -n1)"
+  if [ -z "$match" ]; then
+    echo "No project number $number for owner '$owner'." >&2
+    exit 66
+  fi
+  emit "$match"
+  exit 0
+fi
+
+# 2) Case-insensitive exact title match.
+export NAME_LC="${name,,}"
+match="$(printf '%s' "$projects_json" | yq -p=json -o=json -I=0 \
+  '.projects[] | select((.title | downcase) == strenv(NAME_LC))' | head -n1)"
+if [ -n "$match" ]; then
+  emit "$match"
+  exit 0
+fi
+
+# 3) Fuzzy match on titles via fzf's non-interactive filter mode.
+titles="$(printf '%s' "$projects_json" | yq -p=json -o=json -r '.projects[] | .title')"
+if [ -z "$titles" ]; then
+  echo "Owner '$owner' has no projects." >&2
+  exit 66
+fi
+
+mapfile -t ranked < <(printf '%s\n' "$titles" | fzf --filter "$name" || true)
+
+if [ "${#ranked[@]}" -eq 0 ]; then
+  echo "No project matches '$name' for owner '$owner'. Available projects:" >&2
+  printf '%s\n' "$titles" | sed 's/^/  - /' >&2
+  exit 66
+fi
+
+if [ "${#ranked[@]}" -gt 1 ] && [ "$best" != "true" ]; then
+  echo "Ambiguous project name '$name' for owner '$owner'. Candidates (best first):" >&2
+  printf '%s\n' "${ranked[@]}" | sed 's/^/  - /' >&2
+  echo "Re-run with an exact --name or --number, or pass --best to accept the top match." >&2
+  exit 64
+fi
+
+export CHOSEN_TITLE="${ranked[0]}"
+match="$(printf '%s' "$projects_json" | yq -p=json -o=json -I=0 \
+  '.projects[] | select(.title == strenv(CHOSEN_TITLE))' | head -n1)"
+if [ -z "$match" ]; then
+  echo "Failed to resolve matched title '${ranked[0]}'." >&2
+  exit 2
+fi
+
+if [ "$best" = "true" ] && [ "${#ranked[@]}" -gt 1 ]; then
+  echo "Accepted top fuzzy match '${ranked[0]}' for '$name' (--best); other candidates:" >&2
+  printf '%s\n' "${ranked[@]:1}" | sed 's/^/  - /' >&2
+fi
+
+emit "$match"

@@ -3,7 +3,7 @@ name: work-github-issues
 description: Use when the user wants to work multiple GitHub issues serially with subagents, wrapping `work-github-issue`, coordinating local review subagents unless Copilot review is explicitly requested, and managing dependency-aware PRs, checks, and approved merges.
 metadata:
   author: Zach Callahan
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Work GitHub Issues
@@ -89,10 +89,12 @@ Skip closed issues unless the user explicitly asks to verify or close a tracker.
 Default to serial execution. Do not run multiple write-capable issue workers in
 the same working tree at the same time.
 
-Build the order from GitHub dependency links when available:
+Build the order from GitHub dependency links when available. The
+`github:issue:blocked-by:list` task returns an issue's blockers as a JSON array
+(`[]` when none), with transient-failure retries:
 
 ```bash
-gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner,name:$repo){ issue(number:$number){ number blockedBy(first:20){ nodes { number title url } } } } }' -f owner='<owner>' -f repo='<repo>' -F number=<issue-number>
+mise run github:issue:blocked-by:list --repo <owner>/<repo> --issue <number>
 ```
 
 Ordering rules:

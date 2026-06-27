@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# [MISE] description="Link an issue as blocked by another issue (GitHub issue dependency)"
+# [USAGE] flag "--repo <owner/repo>" help="Repository as owner/name"
+# [USAGE] flag "--issue <number>" help="The blocked issue number"
+# [USAGE] flag "--by <number>" help="The blocking issue number"
+# shellcheck disable=SC2016 # GraphQL query variables are substituted by gh, not the shell
+set -euo pipefail
+
+repo="${usage_repo?missing --repo}"
+issue="${usage_issue?missing --issue}"
+by="${usage_by?missing --by}"
+
+if [[ "$repo" != */* ]]; then
+  echo "Invalid --repo: $repo (expected owner/name)" >&2
+  exit 64
+fi
+
+for n in "$issue" "$by"; do
+  if ! [[ "$n" =~ ^[0-9]+$ ]]; then
+    echo "Invalid issue number: $n (must be a positive integer)" >&2
+    exit 64
+  fi
+done
+
+issue_id="$(mise run github:gh:retry -- issue view "$issue" --repo "$repo" --json id | yq -p=json -o=json -r '.id')"
+by_id="$(mise run github:gh:retry -- issue view "$by" --repo "$repo" --json id | yq -p=json -o=json -r '.id')"
+
+mise run github:gh:retry -- api graphql \
+  -f query='mutation($issueId:ID!,$blockingIssueId:ID!){addBlockedBy(input:{issueId:$issueId,blockingIssueId:$blockingIssueId}){clientMutationId}}' \
+  -f issueId="$issue_id" -f blockingIssueId="$by_id" >/dev/null
+
+echo "Linked: issue #$issue is now blocked by #$by." >&2
+printf '{"issue":%s,"blockedBy":%s}\n' "$issue" "$by"

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# [MISE] description="Set an issue's project Status field, resolving the project, field, option, and item automatically"
+# [USAGE] flag "--owner <owner>" help="Project and repository owner login"
+# [USAGE] flag "--repo <repo>" help="Repository name (without owner)"
+# [USAGE] flag "--issue <number>" help="Issue number"
+# [USAGE] flag "--project <name-or-number>" help="Project number or (fuzzy) title"
+# [USAGE] flag "--status <name>" help="Target Status option name (case-insensitive, e.g. Ready)"
+# [USAGE] flag "--no-add-if-missing" help="Do not add the issue to the project if it is not already an item"
+# [USAGE] flag "--skip-if-blocked" help="Leave status unchanged if the issue has open blockers"
+# shellcheck disable=SC2016 # GraphQL query variables are substituted by gh, not the shell
+set -euo pipefail
+
+owner="${usage_owner?missing --owner}"
+repo="${usage_repo?missing --repo}"
+issue="${usage_issue?missing --issue}"
+project="${usage_project?missing --project}"
+status="${usage_status?missing --status}"
+skip_if_blocked="${usage_skip_if_blocked:-false}"
+add_if_missing=true
+[ "${usage_no_add_if_missing:-false}" = "true" ] && add_if_missing=false
+
+if ! [[ "$issue" =~ ^[0-9]+$ ]]; then
+  echo "Invalid --issue: $issue (must be a positive integer)" >&2
+  exit 64
+fi
+
+# Resolve the project (number bypasses fuzzy matching).
+if [[ "$project" =~ ^[0-9]+$ ]]; then
+  project_json="$(mise run github:project:resolve --owner "$owner" --number "$project")"
+else
+  project_json="$(mise run github:project:resolve --owner "$owner" --name "$project")"
+fi
+project_id="$(printf '%s' "$project_json" | yq -p=json -o=json -r '.id')"
+project_number="$(printf '%s' "$project_json" | yq -p=json -o=json -r '.number')"
+
+# Resolve the Status field id and the requested option id. Owner-type-agnostic:
+# repositoryOwner + a ProjectV2Owner inline fragment works for orgs and users.
+status_json="$(mise run github:gh:retry -- api graphql \
+  -f query='query($login:String!,$number:Int!){repositoryOwner(login:$login){... on ProjectV2Owner{projectV2(number:$number){field(name:"Status"){... on ProjectV2SingleSelectField{id options{id name}}}}}}}' \
+  -f login="$owner" -F number="$project_number")"
+
+field_id="$(printf '%s' "$status_json" | yq -p=json -o=json -r '.data.repositoryOwner.projectV2.field.id')"
+if [ -z "$field_id" ] || [ "$field_id" = "null" ]; then
+  echo "Project $project_number has no single-select 'Status' field." >&2
+  exit 2
+fi
+
+export STATUS_LC="${status,,}"
+option_id="$(printf '%s' "$status_json" | yq -p=json -o=json -r \
+  '.data.repositoryOwner.projectV2.field.options[] | select((.name | downcase) == strenv(STATUS_LC)) | .id' | head -n1)"
+if [ -z "$option_id" ] || [ "$option_id" = "null" ]; then
+  echo "No Status option named '$status' on project $project_number. Available options:" >&2
+  printf '%s' "$status_json" | yq -p=json -o=json -r \
+    '.data.repositoryOwner.projectV2.field.options[].name' | sed 's/^/  - /' >&2
+  exit 64
+fi
+
+# Resolve the issue's node id, blocker count, and existing project item id.
+item_json="$(mise run github:gh:retry -- api graphql \
+  -f query='query($owner:String!,$repo:String!,$number:Int!){repository(owner:$owner,name:$repo){issue(number:$number){id blockedBy(first:20){totalCount} projectItems(first:50){nodes{id project{... on ProjectV2{number}}}}}}}' \
+  -f owner="$owner" -f repo="$repo" -F number="$issue")"
+
+issue_node_id="$(printf '%s' "$item_json" | yq -p=json -o=json -r '.data.repository.issue.id')"
+blocked_count="$(printf '%s' "$item_json" | yq -p=json -o=json -r '.data.repository.issue.blockedBy.totalCount')"
+item_id="$(printf '%s' "$item_json" | yq -p=json -o=json -r \
+  ".data.repository.issue.projectItems.nodes[] | select(.project.number == $project_number) | .id" | head -n1)"
+
+if [ "$skip_if_blocked" = "true" ] && [ "$blocked_count" -gt 0 ]; then
+  echo "Issue #$issue has $blocked_count open blocker(s); leaving status unchanged." >&2
+  printf '{"issue":%s,"project":%s,"status":null,"skipped":"blocked"}\n' "$issue" "$project_number"
+  exit 0
+fi
+
+if [ -z "$item_id" ] || [ "$item_id" = "null" ]; then
+  if [ "$add_if_missing" != "true" ]; then
+    echo "Issue #$issue is not on project $project_number and --no-add-if-missing was set." >&2
+    exit 66
+  fi
+  add_json="$(mise run github:gh:retry -- api graphql \
+    -f query='mutation($project:ID!,$content:ID!){addProjectV2ItemById(input:{projectId:$project,contentId:$content}){item{id}}}' \
+    -f project="$project_id" -f content="$issue_node_id")"
+  item_id="$(printf '%s' "$add_json" | yq -p=json -o=json -r '.data.addProjectV2ItemById.item.id')"
+fi
+
+mise run github:gh:retry -- project item-edit \
+  --project-id "$project_id" --id "$item_id" \
+  --field-id "$field_id" --single-select-option-id "$option_id" >/dev/null
+
+echo "Set issue #$issue Status to '$status' on project $project_number." >&2
+printf '{"issue":%s,"project":%s,"itemId":"%s","status":"%s"}\n' \
+  "$issue" "$project_number" "$item_id" "$status"

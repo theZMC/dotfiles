@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# [MISE] description="List the issues blocking a given issue as JSON [{number,title,url}]"
+# [USAGE] flag "--repo <owner/repo>" help="Repository as owner/name"
+# [USAGE] flag "--issue <number>" help="Issue number"
+# shellcheck disable=SC2016 # GraphQL query variables are substituted by gh, not the shell
+set -euo pipefail
+
+repo="${usage_repo?missing --repo}"
+issue="${usage_issue?missing --issue}"
+
+if [[ "$repo" != */* ]]; then
+  echo "Invalid --repo: $repo (expected owner/name)" >&2
+  exit 64
+fi
+owner="${repo%%/*}"
+name="${repo#*/}"
+
+if ! [[ "$issue" =~ ^[0-9]+$ ]]; then
+  echo "Invalid --issue: $issue (must be a positive integer)" >&2
+  exit 64
+fi
+
+out="$(mise run github:gh:retry -- api graphql \
+  -f query='query($owner:String!,$repo:String!,$number:Int!){repository(owner:$owner,name:$repo){issue(number:$number){blockedBy(first:50){nodes{number title url}}}}}' \
+  -f owner="$owner" -f repo="$name" -F number="$issue")"
+
+printf '%s' "$out" | yq -p=json -o=json -I=0 '.data.repository.issue.blockedBy.nodes'
+echo

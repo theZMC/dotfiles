@@ -3,7 +3,7 @@ name: create-github-issue
 description: Creates a well-structured GitHub issue with Motivation, Acceptance Criteria, and optional References sections using the GitHub CLI (`gh`). Use when the user asks to create, file, or open a GitHub issue.
 metadata:
   author: Zach Callahan
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Create GitHub Issue (gh CLI)
@@ -91,65 +91,57 @@ Generate the issue title from the Motivation content. The title should be:
 3. Generate a concise, descriptive title from the Motivation.
 4. Present the draft title and body to the user for confirmation before
    creating.
-5. Use the GitHub CLI to create the issue:
+5. Create the issue with the `github:issue:create` mise task. It wraps
+   `gh issue create` with transient-failure retries and prints `{number,url,id}`
+   JSON to stdout (so you get the node id without a separate lookup):
 
    ```bash
-   gh issue create --repo <owner>/<repo> --title "<title>" --body "<body>"
+   mise run github:issue:create --repo <owner>/<repo> --title "<title>" --body-file <path>
    ```
 
-   For multiline bodies, prefer a heredoc-safe form:
+   **Always pass the body via `--body-file`, never `--body`.** Write the markdown
+   body to a file first (e.g. a `mktemp` path). This sidesteps all shell
+   heredoc/backtick escaping problems — issue bodies routinely contain inline
+   code spans and fenced code blocks, and `--body-file` passes them through
+   verbatim with no shell interpretation. If labels or assignees are requested,
+   add `--label <comma,separated>` and/or `--assignee <comma,separated>`.
+
+   To create the issue and place it on a project in one step, add
+   `--project <name-or-number>` (fuzzy title or number) and optionally
+   `--status <option>`:
 
    ```bash
-   gh issue create --repo <owner>/<repo> --title "<title>" --body "$(cat <<'EOF'
-   <issue body markdown>
-   EOF
-   )"
+   mise run github:issue:create --repo <owner>/<repo> --title "<title>" \
+     --body-file <path> --project "<project>" --status Ready
    ```
-
-   **Escaping backticks in heredocs.** Issue bodies routinely contain backticks
-   (inline code spans, fenced code blocks). Always **quote the heredoc delimiter**
-   (`<<'EOF'`, not `<<EOF`) so the shell treats the body as a literal — backticks,
-   `$(...)`, and `$VAR` are then passed through verbatim with no command or
-   variable substitution. If you ever use an **unquoted** delimiter (`<<EOF`),
-   every backtick in the body is interpreted as a subshell (legacy backtick
-   command substitution) and must be escaped as ``\` ``; an unescaped pair like
-   `` `gh` `` would otherwise run `gh` as a command and inject its output (or an
-   error) into the issue. Prefer the quoted delimiter to avoid escaping entirely.
-
-   If labels or assignees are requested, include them with `--label` and
-   `--assignee`.
 
 6. If multiple related issues were created, automatically apply dependency links
-   before finishing.
-7. If a project target is specified, add each issue to the project and move
-   non-blocked issues to `Ready`.
+   before finishing (see
+   [Creating multiple related issues](#creating-multiple-related-issues)).
+7. If a project target is specified, ensure each issue is on the project with the
+   correct status (see [Project assignment](#project-assignment)).
 8. Report the created issue number and URL back to the user.
 
 ## Creating multiple related issues
 
 When creating multiple issues in one request:
 
-1. Create all issues first and capture each issue number + node ID.
+1. Create all issues first. `github:issue:create` returns `{number,url,id}` JSON
+   per issue, so capture each number/URL straight from its output — no separate
+   node-id lookup is required.
 
-   - You can fetch node IDs with:
-
-     ```bash
-     gh issue view <number> --repo <owner>/<repo> --json id,number,title,url
-     ```
-
-2. Build a dependency graph for clearly dependent issues.
-
-   - If issue B cannot be completed without issue A, set **B blocked by A**.
-   - Use GraphQL `addBlockedBy` mutation:
-
-     ```bash
-     gh api graphql -f query='mutation($issueId:ID!, $blockingIssueId:ID!){ addBlockedBy(input:{issueId:$issueId, blockingIssueId:$blockingIssueId}) { clientMutationId } }' -f issueId='<blocked-issue-node-id>' -f blockingIssueId='<blocking-issue-node-id>'
-     ```
-
-3. Verify dependency links for each issue when practical:
+2. Build a dependency graph for clearly dependent issues. If issue B cannot be
+   completed without issue A, link **B blocked by A**:
 
    ```bash
-   gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner,name:$repo){ issue(number:$number){ number blockedBy(first:20){ nodes { number title url } } } } }' -f owner='<owner>' -f repo='<repo>' -F number=<issue-number>
+   mise run github:issue:blocked-by:add --repo <owner>/<repo> --issue <B> --by <A>
+   ```
+
+3. Verify an issue's dependency links when practical (returns a JSON array of
+   blockers, `[]` when none):
+
+   ```bash
+   mise run github:issue:blocked-by:list --repo <owner>/<repo> --issue <number>
    ```
 
 4. Do this dependency-linking step automatically when dependencies are known; do
@@ -158,50 +150,35 @@ When creating multiple issues in one request:
 ## Project assignment
 
 If the user specifies a project in the initial "create these issues" request,
-add every created issue to that project before finishing.
+place every created issue on that project before finishing. The
+`github:project:status:set` mise task resolves the project (by fuzzy name or
+number), finds the `Status` field and the requested option, adds the issue to
+the project if it isn't already an item, and sets the status — all in one call,
+with transient-failure retries:
 
-1. Add issue to project by name:
+```bash
+mise run github:project:status:set --owner <owner> --repo <repo> \
+  --issue <number> --project "<name-or-number>" --status Ready --skip-if-blocked
+```
 
-   ```bash
-   gh issue edit <number> --repo <owner>/<repo> --add-project "<Project Name>"
-   ```
+- `--project` accepts a fuzzy title (e.g. `"centralized cluster management"`
+  resolves to `Centralized Cluster Management`) or a project number. If a name is
+  ambiguous the task prints the candidates and exits non-zero; re-run with an
+  exact name or the number.
+- `--skip-if-blocked` encodes the Ready-vs-Backlog rule: issues with open
+  blockers are left unchanged (in `Backlog`); non-blocked issues move to `Ready`.
+  Apply the dependency links (above) **first** so this rule sees them.
+- The task needs the `project` and `read:project` scopes. If a scope error
+  appears, refresh once and retry:
 
-2. If project lookup fails, verify project access and available projects:
+  ```bash
+  gh auth refresh -s read:project -s project
+  ```
 
-   ```bash
-   gh project list --owner <owner> --format json
-   ```
-
-3. If project scopes are missing, ask the user to refresh auth scopes and then
-   continue:
-
-   ```bash
-   gh auth refresh -s read:project -s project
-   ```
-
-4. After adding issues to the project, move all non-blocked issues to `Ready`.
-   Keep blocked issues in `Backlog`.
-
-   - Get the project id, `Status` field id, and option ids:
-
-     ```bash
-     gh api graphql -f query='query($owner:String!, $number:Int!) { organization(login:$owner) { projectV2(number:$number) { id title fields(first:50) { nodes { ... on ProjectV2FieldCommon { id name } ... on ProjectV2SingleSelectField { id name options { id name } } } } } } }' -f owner='<owner>' -F number=<project-number>
-     ```
-
-   - Get each issue's project item id and whether it is blocked:
-
-     ```bash
-     gh api graphql -f query='query($owner:String!, $repo:String!, $number:Int!){ repository(owner:$owner,name:$repo){ issue(number:$number){ number blockedBy(first:20){ nodes { number } } projectItems(first:20){ nodes { id project { ... on ProjectV2 { id title number } } } } } } }' -f owner='<owner>' -f repo='<repo>' -F number=<issue-number>
-     ```
-
-   - Move non-blocked issues to `Ready`:
-
-     ```bash
-     gh project item-edit --project-id <project-id> --id <project-item-id> --field-id <status-field-id> --single-select-option-id <ready-option-id>
-     ```
-
-   - Rule: if `blockedBy.nodes` is empty, set status to `Ready`; otherwise leave
-     status unchanged (typically `Backlog`).
+`github:issue:create --project <...> --status <...>` performs the same placement
+inline at creation time. Use the standalone `github:project:status:set` task
+when status must be set *after* dependency links exist (so `--skip-if-blocked`
+can take effect).
 
 ## Labels and assignees
 
