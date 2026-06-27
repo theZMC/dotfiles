@@ -20,6 +20,7 @@ typeset -gA ZSH_LAZY_COMPLETIONS=(
   flux ''
   gh 'gh completion -s zsh'
   glab 'glab completion -s zsh'
+  istioctl ''
   uds ''
   zarf ''
 )
