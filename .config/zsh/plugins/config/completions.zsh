@@ -3,15 +3,15 @@
 # Lazily generate each tool's completion on first Tab and cache it to disk.
 # Must be sourced after compinit (it relies on compdef).
 
-# cmd => generator; empty value means the conventional `<cmd> completion zsh`.
+# cmd => generator (a command whose stdout is a zsh completion script).
 typeset -gA ZSH_LAZY_COMPLETIONS=(
-  crush ''
-  flux ''
+  crush 'crush completion zsh'
+  flux 'flux completion zsh'
   gh 'gh completion -s zsh'
   glab 'glab completion -s zsh'
-  istioctl ''
-  uds ''
-  zarf ''
+  istioctl 'istioctl completion zsh'
+  uds 'uds completion zsh'
+  zarf 'zarf completion zsh'
 )
 
 ZSH_COMPL_CACHE="${ZSH_COMPL_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/completions}"
@@ -21,8 +21,7 @@ ZSH_COMPL_CACHE="${ZSH_COMPL_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/completi
 _lazy_completion_loader() {
   emulate -L zsh
   local cmd=${words[1]:t}
-  local gen=${ZSH_LAZY_COMPLETIONS[$cmd]:-}
-  [[ -n $gen ]] || gen="$cmd completion zsh"
+  local gen=${ZSH_LAZY_COMPLETIONS[$cmd]}
   local cache="${ZSH_COMPL_CACHE}/${cmd}.zsh"
 
   if [[ ! -s $cache || ${commands[$cmd]} -nt $cache ]]; then
