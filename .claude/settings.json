@@ -5,6 +5,9 @@
     "pr": "",
     "sessionUrl": false
   },
+  "env": {
+    "CLAUDE_CODE_SUPPRESS_SESSION_ATTRIBUTION": "1"
+  },
   "model": "opus[1m]",
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true
