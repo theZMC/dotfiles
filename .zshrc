@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 can_start=true
 if ! (($+commands[git])); then
   echo "git must be installed for this zsh config to work"
