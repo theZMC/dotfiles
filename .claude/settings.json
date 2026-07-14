@@ -12,5 +12,8 @@
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true
   },
+  "worktree": {
+    "bgIsolation": "none"
+  },
   "agentPushNotifEnabled": true
 }
