@@ -8,6 +8,14 @@ return {
     },
   },
   {
+    "meanderingprogrammer/render-markdown.nvim",
+    opts = {
+      code = {
+        border = "thin",
+      },
+    },
+  },
+  {
     "folke/noice.nvim",
     optional = true,
     opts = {
