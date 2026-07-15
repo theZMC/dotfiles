@@ -63,7 +63,7 @@ if [ ! -f "${zsh_plugins_root}.zsh" ]; then
   touch "${zsh_plugins_root}.zsh"
 fi
 
-if ! cmp -s <(printf '%s\n' "${zsh_plugins[@]}") "${zsh_plugins_root}.txt" || ! test -d ~/.cache/antidote; then
+if ! cmp -s <(printf '%s\n' "${zsh_plugins[@]}") "${zsh_plugins_root}.txt" || ! test -d "$(antidote home)"; then
   printf '%s\n' "${zsh_plugins[@]}" >"${zsh_plugins_root}.txt"
   antidote bundle <"${zsh_plugins_root}.txt" >|"${zsh_plugins_root}.zsh"
 fi
