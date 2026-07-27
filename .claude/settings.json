@@ -8,7 +8,7 @@
     "pr": "",
     "sessionUrl": false
   },
-  "model": "opus[1m]",
+  "model": "claude-fable-5[1m]",
   "worktree": {
     "bgIsolation": "none"
   },
