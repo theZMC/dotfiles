@@ -17,7 +17,6 @@ helm3 = "mise x helm@3 -- helm"
 bat = "0.26.1"
 bottom = "0.14.6"
 bun = "1.3.14"
-"cargo:taws" = "1.2.1"
 crane = "0.21.7"
 crossplane-cli = "2.3.3"
 deno = "2.9.3"
@@ -30,8 +29,11 @@ flux2 = "2.9.2"
 fzf = "0.74.1"
 gh = "2.96.0"
 "github:atanunq/viu" = "1.6.1"
+"github:awslabs/eks-node-viewer" = "0.7.4"
+"github:charmbracelet/crush" = "v0.86.0"
 "github:charmbracelet/glow" = "2.1.2"
 "github:charmbracelet/gum" = "v0.17.0"
+"github:huseyinbabal/taws" = "v1.2.1"
 "github:k3d-io/k3d" = "v5.9.0"
 "github:tmuxpack/tpack" = "v1.2.1"
 "github:tombi-toml/tombi" = "v1.2.4"
@@ -39,9 +41,6 @@ gh = "2.96.0"
 "github:uutils/findutils" = "0.9.1"
 "github:uutils/sed" = "0.1.1"
 go = "1.26.5"
-"go:github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer" = "0.7.4"
-"go:github.com/charmbracelet/crush" = "v0.86.0"
-"go:golang.org/x/tools/gopls" = "v0.23.0"
 golangci-lint = "2.12.2"
 golangci-lint-langserver = "0.0.12"
 helm = "4.2.3"
@@ -102,7 +101,9 @@ aws-cli = { version = "2.36.9", symlink_bins = "true" }
   "darwin",
 ], bin = "docker-buildx", postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-buildx)" "$HOME/.docker/cli-plugins/docker-buildx"' }
 hyperfine = "latest"
-"npm:opencode-ai" = { version = "1.18.5", allow_builds = ["opencode-ai"], minimum_release_age = "1d" }
+"npm:opencode-ai" = { version = "1.18.5", allow_builds = [
+  "opencode-ai",
+], minimum_release_age = "1d" }
 "github:zarf-dev/zarf" = { version = "v0.81.1", bin = "zarf" }
 "github:defenseunicorns/uds-cli" = { version = "v0.34.2", bin = "uds" }
 claude-code = "2.1.216"

@@ -208,10 +208,6 @@ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.14/bun-windows-
 checksum = "sha256:538f9c846355d9e847b2671bc00c47da4229a0befb24df3282b739770f3b475f"
 url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.14/bun-windows-x64-baseline.zip"
 
-[[tools."cargo:taws"]]
-version = "1.2.1"
-backend = "cargo:taws"
-
 [[tools.claude-code]]
 version = "2.1.216"
 backend = "aqua:anthropics/claude-code"
@@ -919,6 +915,124 @@ checksum = "sha256:f2d16bbe088b205985a49d4f7e4860c74818d41a93a294ba1cb67d4879d55
 url = "https://github.com/atanunq/viu/releases/download/v1.6.1/viu-x86_64-pc-windows-msvc.exe"
 url_api = "https://api.github.com/repos/atanunq/viu/releases/assets/328855182"
 
+[[tools."github:awslabs/eks-node-viewer"]]
+version = "0.7.4"
+backend = "github:awslabs/eks-node-viewer"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.linux-arm64"]
+checksum = "sha256:5f25b2f647a54a2743132c37049e2ffc34331e5a5b6bb3f24e2e523f904481d3"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Linux_arm64"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148435"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.linux-arm64-musl"]
+checksum = "sha256:5f25b2f647a54a2743132c37049e2ffc34331e5a5b6bb3f24e2e523f904481d3"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Linux_arm64"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148435"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.linux-x64"]
+checksum = "sha256:b1ca7d41485deea85c846caeccde28219fd5925a8c64585a4f87ae131b70d01a"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Linux_x86_64"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148436"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.linux-x64-baseline"]
+checksum = "sha256:b1ca7d41485deea85c846caeccde28219fd5925a8c64585a4f87ae131b70d01a"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Linux_x86_64"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148436"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.linux-x64-musl"]
+checksum = "sha256:b1ca7d41485deea85c846caeccde28219fd5925a8c64585a4f87ae131b70d01a"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Linux_x86_64"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148436"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:b1ca7d41485deea85c846caeccde28219fd5925a8c64585a4f87ae131b70d01a"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Linux_x86_64"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148436"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.macos-arm64"]
+checksum = "sha256:33d4e2f54a8d7f3a3cc7dee3d7492a4e8adf1423ad4aad762c563cdaa075fb25"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Darwin_all"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148434"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.macos-x64"]
+checksum = "sha256:33d4e2f54a8d7f3a3cc7dee3d7492a4e8adf1423ad4aad762c563cdaa075fb25"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Darwin_all"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148434"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.macos-x64-baseline"]
+checksum = "sha256:33d4e2f54a8d7f3a3cc7dee3d7492a4e8adf1423ad4aad762c563cdaa075fb25"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Darwin_all"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148434"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.windows-x64"]
+checksum = "sha256:e0e726fd34d5dd96c68381f69fd4457145d9fd0cca6fc4739b65bafe9eb24a84"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Windows_x86_64.exe"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148438"
+
+[tools."github:awslabs/eks-node-viewer"."platforms.windows-x64-baseline"]
+checksum = "sha256:e0e726fd34d5dd96c68381f69fd4457145d9fd0cca6fc4739b65bafe9eb24a84"
+url = "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.4/eks-node-viewer_Windows_x86_64.exe"
+url_api = "https://api.github.com/repos/awslabs/eks-node-viewer/releases/assets/249148438"
+
+[[tools."github:charmbracelet/crush"]]
+version = "0.86.0"
+backend = "github:charmbracelet/crush"
+
+[tools."github:charmbracelet/crush"."platforms.linux-arm64"]
+checksum = "sha256:562f075e1501990a30f2079f69aa3f28e348fe69287df8fbfcffc410dc22c81a"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856204"
+
+[tools."github:charmbracelet/crush"."platforms.linux-arm64-musl"]
+checksum = "sha256:562f075e1501990a30f2079f69aa3f28e348fe69287df8fbfcffc410dc22c81a"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856204"
+
+[tools."github:charmbracelet/crush"."platforms.linux-x64"]
+checksum = "sha256:f6dc4f714846e9ba04597e5f4fddec15f6270010245c333c0c0c89232c47411e"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856155"
+
+[tools."github:charmbracelet/crush"."platforms.linux-x64-baseline"]
+checksum = "sha256:f6dc4f714846e9ba04597e5f4fddec15f6270010245c333c0c0c89232c47411e"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856155"
+
+[tools."github:charmbracelet/crush"."platforms.linux-x64-musl"]
+checksum = "sha256:f6dc4f714846e9ba04597e5f4fddec15f6270010245c333c0c0c89232c47411e"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856155"
+
+[tools."github:charmbracelet/crush"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:f6dc4f714846e9ba04597e5f4fddec15f6270010245c333c0c0c89232c47411e"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856155"
+
+[tools."github:charmbracelet/crush"."platforms.macos-arm64"]
+checksum = "sha256:250d6475ccb625fde9924020d730f1ce648380b5b9e650d1bf8d3302d70cbd5f"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856160"
+
+[tools."github:charmbracelet/crush"."platforms.macos-x64"]
+checksum = "sha256:5661f22cff370bdd0c1ad4bac43b55d4cb5dcd2a0abc9fac50101c4be0d55e58"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Darwin_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856158"
+
+[tools."github:charmbracelet/crush"."platforms.macos-x64-baseline"]
+checksum = "sha256:5661f22cff370bdd0c1ad4bac43b55d4cb5dcd2a0abc9fac50101c4be0d55e58"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Darwin_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856158"
+
+[tools."github:charmbracelet/crush"."platforms.windows-x64"]
+checksum = "sha256:9f3ef68df9345c1f968ce902bc8f7bad5a74fab9a50abe5a848c6c309af6f9e3"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Windows_x86_64.zip"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856200"
+
+[tools."github:charmbracelet/crush"."platforms.windows-x64-baseline"]
+checksum = "sha256:9f3ef68df9345c1f968ce902bc8f7bad5a74fab9a50abe5a848c6c309af6f9e3"
+url = "https://github.com/charmbracelet/crush/releases/download/v0.86.0/crush_0.86.0_Windows_x86_64.zip"
+url_api = "https://api.github.com/repos/charmbracelet/crush/releases/assets/483856200"
+
 [[tools."github:charmbracelet/glow"]]
 version = "2.1.2"
 backend = "github:charmbracelet/glow"
@@ -1174,6 +1288,65 @@ url_api = "https://api.github.com/repos/docker/buildx/releases/assets/450562356"
 
 [tools."github:docker/buildx"."platforms.windows-x64-baseline".provenance.slsa]
 url = "https://github.com/docker/buildx/releases/download/v0.35.0/buildx-v0.35.0.windows-amd64.provenance.json"
+
+[[tools."github:huseyinbabal/taws"]]
+version = "1.2.1"
+backend = "github:huseyinbabal/taws"
+
+[tools."github:huseyinbabal/taws"."platforms.linux-arm64"]
+checksum = "sha256:2ab5809f9e6c2cb39fb815941eb26d722e7943340b32c0ef2572afbc937b913d"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702749"
+
+[tools."github:huseyinbabal/taws"."platforms.linux-arm64-musl"]
+checksum = "sha256:2ab5809f9e6c2cb39fb815941eb26d722e7943340b32c0ef2572afbc937b913d"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702749"
+
+[tools."github:huseyinbabal/taws"."platforms.linux-x64"]
+checksum = "sha256:59ddf32d9891ab7ccc9deafaa26060d23785ce0fe493d97be308b86e8d48b83a"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702750"
+
+[tools."github:huseyinbabal/taws"."platforms.linux-x64-baseline"]
+checksum = "sha256:59ddf32d9891ab7ccc9deafaa26060d23785ce0fe493d97be308b86e8d48b83a"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702750"
+
+[tools."github:huseyinbabal/taws"."platforms.linux-x64-musl"]
+checksum = "sha256:59ddf32d9891ab7ccc9deafaa26060d23785ce0fe493d97be308b86e8d48b83a"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702750"
+
+[tools."github:huseyinbabal/taws"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:59ddf32d9891ab7ccc9deafaa26060d23785ce0fe493d97be308b86e8d48b83a"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702750"
+
+[tools."github:huseyinbabal/taws"."platforms.macos-arm64"]
+checksum = "sha256:027104b856781df4f8d70dad506a5141839dba602984af1e7973ba37a20fa590"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702752"
+
+[tools."github:huseyinbabal/taws"."platforms.macos-x64"]
+checksum = "sha256:99c812582bd685caa8d186dfc9d336ac911b33db2ede5eb0c23bc1c0d0cb67bf"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702751"
+
+[tools."github:huseyinbabal/taws"."platforms.macos-x64-baseline"]
+checksum = "sha256:99c812582bd685caa8d186dfc9d336ac911b33db2ede5eb0c23bc1c0d0cb67bf"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702751"
+
+[tools."github:huseyinbabal/taws"."platforms.windows-x64"]
+checksum = "sha256:4bc8faaf2a59004ae7da25964e2af7296fd2a02a816d19e4fab8c888388658de"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702747"
+
+[tools."github:huseyinbabal/taws"."platforms.windows-x64-baseline"]
+checksum = "sha256:4bc8faaf2a59004ae7da25964e2af7296fd2a02a816d19e4fab8c888388658de"
+url = "https://github.com/huseyinbabal/taws/releases/download/v1.2.1/taws-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/huseyinbabal/taws/releases/assets/342702747"
 
 [[tools."github:k3d-io/k3d"]]
 version = "5.9.0"
@@ -1647,18 +1820,6 @@ url = "https://dl.google.com/go/go1.26.5.windows-amd64.zip"
 [tools.go."platforms.windows-x64-baseline"]
 checksum = "sha256:97e6b2a833b6d89f9ff17d25419ac0a7e3b482a044e9ab18cdef834bd834fd38"
 url = "https://dl.google.com/go/go1.26.5.windows-amd64.zip"
-
-[[tools."go:github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer"]]
-version = "0.7.4"
-backend = "go:github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer"
-
-[[tools."go:github.com/charmbracelet/crush"]]
-version = "0.86.0"
-backend = "go:github.com/charmbracelet/crush"
-
-[[tools."go:golang.org/x/tools/gopls"]]
-version = "0.23.0"
-backend = "go:golang.org/x/tools/gopls"
 
 [[tools.golangci-lint]]
 version = "2.12.2"
