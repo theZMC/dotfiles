@@ -102,12 +102,12 @@ aws-cli = { version = "2.36.9", symlink_bins = "true" }
   "darwin",
 ], bin = "docker-buildx", postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-buildx)" "$HOME/.docker/cli-plugins/docker-buildx"' }
 hyperfine = "latest"
-"npm:@anthropic-ai/claude-code" = { version = "2.1.220", allow_builds = [
-  "@anthropic-ai/claude-code"
+"npm:opencode-ai" = { version = "1.18.5", allow_builds = [
+  "opencode-ai",
 ], minimum_release_age = "1d" }
-"npm:opencode-ai" = { version = "1.18.5", allow_builds = ["opencode-ai"], minimum_release_age = "1d" }
 "github:zarf-dev/zarf" = { version = "v0.81.1", bin = "zarf" }
 "github:defenseunicorns/uds-cli" = { version = "v0.34.2", bin = "uds" }
+claude-code = "2.1.216"
 
 [tools.docker-compose]
 version = "5.3.1"
