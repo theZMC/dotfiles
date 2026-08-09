@@ -1261,6 +1261,9 @@ checksum = "sha256:82c6a3d9df37790c5bdb0d7ca88986d1d17622fc2b88ebe34b275c6c47acd
 url = "https://github.com/docker/buildx/releases/download/v0.36.0/buildx-v0.36.0.darwin-arm64"
 url_api = "https://api.github.com/repos/docker/buildx/releases/assets/494505916"
 
+[tools."github:docker/buildx"."platforms.macos-arm64".provenance.slsa]
+url = "https://github.com/docker/buildx/releases/download/v0.36.0/buildx-v0.36.0.darwin-arm64.provenance.json"
+
 [tools."github:docker/buildx"."platforms.macos-x64"]
 checksum = "sha256:8a75be22ecf40f633fe0a0199be48fa304c0446a0d7fa8a53d7c71b1d0093028"
 url = "https://github.com/docker/buildx/releases/download/v0.36.0/buildx-v0.36.0.darwin-amd64"
@@ -1550,6 +1553,7 @@ checksum = "sha256:05385bdf47d10828c1fc27190ee0ad44b777a57f56ea95c9ef568c845e3b7
 url = "https://github.com/tombi-toml/tombi/releases/download/v1.2.5/tombi-cli-1.2.5-x86_64-unknown-linux-musl.tar.gz"
 url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/496096100"
 provenance = "github-attestations"
+provenance_verified = true
 
 [tools."github:tombi-toml/tombi"."platforms.linux-x64-baseline"]
 checksum = "sha256:05385bdf47d10828c1fc27190ee0ad44b777a57f56ea95c9ef568c845e3b7872"
@@ -2667,7 +2671,7 @@ version = "2.16.13"
 backend = "npm:@astrojs/language-server"
 
 [[tools."npm:@playwright/cli"]]
-version = "0.1.13"
+version = "0.1.17"
 backend = "npm:@playwright/cli"
 
 [[tools."npm:@playwright/mcp"]]
