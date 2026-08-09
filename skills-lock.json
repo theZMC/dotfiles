@@ -31,6 +31,12 @@
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "c77b86b4332919499608f9af1880074e1fec65a59b95c70c27a9f39cd137865e"
     },
+    "plain-english": {
+      "source": "b1rdmania/claude-plain-english-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "9a7cb38d0e9b6b32655ac20a5c03de5386f603ceb60638664e31e2718bd03830"
+    },
     "playwright-cli": {
       "source": "microsoft/playwright-cli",
       "sourceType": "github",
