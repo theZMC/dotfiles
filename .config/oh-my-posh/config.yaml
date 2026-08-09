@@ -82,7 +82,7 @@ blocks:
     foreground: '#FF9900'
     options:
       style: round
-    template: '⏱  {{ .FormattedMs }}'
+    template: ' ⏱  {{ .FormattedMs }}'
 - type: prompt
   alignment: left
   newline: true
