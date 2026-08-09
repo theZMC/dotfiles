@@ -2730,63 +2730,63 @@ version = "0.18.3"
 backend = "npm:svelte-language-server"
 
 [[tools.oh-my-posh]]
-version = "29.37.0"
+version = "30.2.0"
 backend = "aqua:JanDeDobbeleer/oh-my-posh"
 
 [tools.oh-my-posh."platforms.linux-arm64"]
-checksum = "sha256:a06df50b283e29a88801c0466008861c89e21652e455cde4ae15599e68cdeca1"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-linux-arm64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408893"
+checksum = "sha256:f8daaaad43af30cf510c8563a8bc5a1e36c6ec801e848e57fcce4029e478b05e"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-linux-arm64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818981"
 
 [tools.oh-my-posh."platforms.linux-arm64-musl"]
-checksum = "sha256:a06df50b283e29a88801c0466008861c89e21652e455cde4ae15599e68cdeca1"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-linux-arm64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408893"
+checksum = "sha256:f8daaaad43af30cf510c8563a8bc5a1e36c6ec801e848e57fcce4029e478b05e"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-linux-arm64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818981"
 
 [tools.oh-my-posh."platforms.linux-x64"]
-checksum = "sha256:7e92e23f7c44d3efa108a05f5d3f503b8b728467f2951d42a4a167c3c1cc8ac1"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-linux-amd64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408888"
+checksum = "sha256:018e68dfd1b69f08173b7ac21eb845f8a12b97239de7439ff38e7222b17fc560"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-linux-amd64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818989"
 
 [tools.oh-my-posh."platforms.linux-x64-baseline"]
-checksum = "sha256:7e92e23f7c44d3efa108a05f5d3f503b8b728467f2951d42a4a167c3c1cc8ac1"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-linux-amd64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408888"
+checksum = "sha256:018e68dfd1b69f08173b7ac21eb845f8a12b97239de7439ff38e7222b17fc560"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-linux-amd64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818989"
 
 [tools.oh-my-posh."platforms.linux-x64-musl"]
-checksum = "sha256:7e92e23f7c44d3efa108a05f5d3f503b8b728467f2951d42a4a167c3c1cc8ac1"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-linux-amd64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408888"
+checksum = "sha256:018e68dfd1b69f08173b7ac21eb845f8a12b97239de7439ff38e7222b17fc560"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-linux-amd64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818989"
 
 [tools.oh-my-posh."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:7e92e23f7c44d3efa108a05f5d3f503b8b728467f2951d42a4a167c3c1cc8ac1"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-linux-amd64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408888"
+checksum = "sha256:018e68dfd1b69f08173b7ac21eb845f8a12b97239de7439ff38e7222b17fc560"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-linux-amd64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818989"
 
 [tools.oh-my-posh."platforms.macos-arm64"]
-checksum = "sha256:bacbf91dcb4597e69c4f7ef254c452f218bd1692277dc56a1fc9ba062c26a722"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-darwin-arm64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408884"
+checksum = "sha256:aa6ec7820a3676b8cff40a75f5c0a7ccecf8bdca64046f5a5ea454712043e103"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-darwin-arm64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818982"
 
 [tools.oh-my-posh."platforms.macos-x64"]
-checksum = "sha256:1da387c4138f9dbdf545ad2a6fdf5f27a99391a9c8ca7901241dd47aa1c6777b"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-darwin-amd64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408896"
+checksum = "sha256:40386a306ca738fd279d633cbebfe1eead864d825925f6a8cd89c6310b778c9f"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-darwin-amd64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818986"
 
 [tools.oh-my-posh."platforms.macos-x64-baseline"]
-checksum = "sha256:1da387c4138f9dbdf545ad2a6fdf5f27a99391a9c8ca7901241dd47aa1c6777b"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-darwin-amd64"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408896"
+checksum = "sha256:40386a306ca738fd279d633cbebfe1eead864d825925f6a8cd89c6310b778c9f"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-darwin-amd64"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818986"
 
 [tools.oh-my-posh."platforms.windows-x64"]
-checksum = "sha256:e53b8f425e3510578cf0ec96b9d08d0d82674a4c1cf74b56e5728c14db871bbb"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-windows-amd64.exe"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408883"
+checksum = "sha256:5bdaab4ba6e9cb2f810564ba87200587a003c1b4272d7babb70e3bbfeadf7da5"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-windows-amd64.exe"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818992"
 
 [tools.oh-my-posh."platforms.windows-x64-baseline"]
-checksum = "sha256:e53b8f425e3510578cf0ec96b9d08d0d82674a4c1cf74b56e5728c14db871bbb"
-url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v29.37.0/posh-windows-amd64.exe"
-url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/492408883"
+checksum = "sha256:5bdaab4ba6e9cb2f810564ba87200587a003c1b4272d7babb70e3bbfeadf7da5"
+url = "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v30.2.0/posh-windows-amd64.exe"
+url_api = "https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/assets/498818992"
 
 [[tools.packer]]
 version = "1.16.0"
