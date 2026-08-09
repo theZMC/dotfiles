@@ -53,13 +53,12 @@ repos:
     - -c
     - |
       GITHUB_TOKEN=$(gh auth token || true) mise lock
-  # - id: sync-claude-skills
-  #   name: sync .agents/skills to .claude/skills
-  #   language: system
-  #   entry: bash
-  #   files: ^\.agents/skills/
-  #   pass_filenames: false
-  #   args:
-  #   - -c
-  #   - |
-  #     mise run claude:skills:sync && git add .claude/skills
+  - id: sync-claude-skills
+    name: sync .agents/skills to .claude/skills
+    language: system
+    entry: bash
+    always_run: true
+    pass_filenames: false
+    args:
+    - -c
+    - mise run claude:skills:sync

@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# [MISE] description="Mirror .agents/skills to .claude/skills (Claude Code doesn't follow symlinks)"
-# [MISE] dir="{{config_root}}"
-# [MISE] sources=[".agents/skills/**/*"]
-# [MISE] outputs=[".claude/skills/**/*"]
+# [MISE] description="Symlink repo .agents/skills directories into repo .claude/skills"
 set -euo pipefail
+shopt -s nullglob
 
-src=".agents/skills"
-dst=".claude/skills"
+# Resolve the dotfiles repo root from this task file's physical location
+# ({{config_root}} resolves to $HOME for the global mise config, not the repo).
+repo_root="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../../../.." && pwd)"
+src="$repo_root/.agents/skills"
+dst="$repo_root/.claude/skills"
 
 if [[ ! -d "$src" ]]; then
   echo "source directory $src does not exist" >&2
@@ -14,4 +15,23 @@ if [[ ! -d "$src" ]]; then
 fi
 
 mkdir -p "$dst"
-rsync -aL --delete "$src/" "$dst/"
+
+for skill in "$src"/*/; do
+  name="$(basename "$skill")"
+  target="../../.agents/skills/$name"
+  link="$dst/$name"
+  if [[ "$(readlink "$link" 2>/dev/null || true)" == "$target" ]]; then
+    continue
+  fi
+  rm -rf "$link"
+  ln -s "$target" "$link"
+  echo "linked $link -> $target"
+done
+
+for link in "$dst"/*; do
+  name="$(basename "$link")"
+  if [[ ! -d "$src/$name" ]]; then
+    rm -rf "$link"
+    echo "removed stale $link"
+  fi
+done
