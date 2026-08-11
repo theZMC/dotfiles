@@ -19,6 +19,11 @@ return {
     "folke/noice.nvim",
     optional = true,
     opts = {
+      lsp = {
+        signature = {
+          view = "hover",
+        },
+      },
       routes = {
         {
           filter = {
@@ -37,6 +42,16 @@ return {
         hover = {
           border = {
             style = "rounded",
+          },
+          relative = "cursor",
+          position = {
+            row = 2,
+          },
+          size = {
+            width = "auto",
+            height = "auto",
+            max_height = math.floor(vim.api.nvim_win_get_height(0) * 0.5) - 4,
+            max_width = math.floor(vim.api.nvim_win_get_width(0) * 0.6),
           },
         },
         popup = {
