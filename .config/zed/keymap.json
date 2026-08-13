@@ -118,6 +118,18 @@
     },
   },
   {
+    // Edit predictions are shown while editing, not in Vim normal mode. Replace
+    // Zed's default acceptance keys so Option-L is the sole accept shortcut.
+    "context": "Editor && edit_prediction",
+    "unbind": {
+      "tab": "editor::AcceptEditPrediction",
+      "alt-tab": "editor::AcceptEditPrediction",
+    },
+    "bindings": {
+      "alt-l": "editor::AcceptEditPrediction",
+    },
+  },
+  {
     "context": "Editor && vim_mode == visual",
     "bindings": {
       "tab": "vim::Indent",
