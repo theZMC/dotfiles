@@ -1,0 +1,187 @@
+// Zed keymap — AstroNvim (leader = space) muscle-memory port.
+//
+// Zed's vim mode already covers a lot of AstroNvim for free; those keys are
+// deliberately NOT bound here: gd/gD/gy/gI, grn/gra/grr, K hover, ]d/[d
+// diagnostics, ]c/[c hunks, ]b/[b buffer/tab nav, gc comments, all ctrl-w
+// window commands, z folds, marks/registers/macros, gs/gS symbols.
+//
+// Nvim groups with no Zed analogue are skipped: Molten, sessions (resession),
+// lazy/mason (space p), LeetCode, live-preview, coverage, refactoring.nvim.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-'": "terminal_panel::Toggle",
+      // Debugger F-keys to match nvim-dap; Zed defaults already provide
+      // f5 continue/rerun, f9 toggle breakpoint, shift-f11 step out, f4 start.
+      "f10": "debugger::StepOver",
+      "f11": "debugger::StepInto",
+    },
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-s": "workspace::Save",
+    },
+  },
+  {
+    // Leader bindings (normal mode)
+    "context": "Editor && vim_mode == normal && !menu",
+    "bindings": {
+      // Core
+      "space w": "workspace::Save",
+      "space q": "workspace::CloseWindow",
+      "space shift-q": "zed::Quit",
+      "space n": "workspace::NewFile",
+      "|": "pane::SplitRight",
+      "\\": "pane::SplitDown",
+      "space /": ["editor::ToggleComments", { "advance_downwards": false }],
+      "space c": "pane::CloseActiveItem",
+      "space shift-c": ["pane::CloseActiveItem", { "save_intent": "skip" }],
+      // No rename-file-from-editor action in Zed; reveal in panel, then f2
+      "space shift-r": "pane::RevealInProjectPanel",
+
+      // Find (space f)
+      "space f f": "file_finder::Toggle",
+      "space f shift-f": ["file_finder::Toggle", { "include_ignored": true }],
+      "space f b": "tab_switcher::Toggle",
+      "space f shift-c": "command_palette::Toggle",
+      "space f w": "pane::DeploySearch",
+      "space f o": ["file_finder::Toggle", { "separate_history": true }],
+      "space f k": "zed::OpenKeymap",
+      "space f s": "file_finder::Toggle",
+      "space f t": "theme_selector::Toggle",
+      "space f l": "outline::Toggle",
+      "space f p": "projects::OpenRecent",
+      // Grep word under cursor: select inner word, then g/ (project search
+      // prefilled from selection)
+      "space f c": ["workspace::SendKeystrokes", "v i w g /"],
+
+      // Language tools (space l)
+      "space l a": "editor::ToggleCodeActions",
+      "space l r": "editor::Rename",
+      "space l f": "editor::Format",
+      "space l s": "outline::Toggle",
+      "space l shift-g": "project_symbols::Toggle",
+      "space l shift-r": "editor::FindAllReferences",
+      "space l d": "editor::Hover",
+      "space l shift-d": "diagnostics::Deploy",
+      "space l h": "editor::ShowSignatureHelp",
+      "g l": "editor::Hover",
+      "g shift-k": "editor::ShowSignatureHelp",
+      "] e": ["editor::GoToDiagnostic", { "severity": "error" }],
+      "[ e": ["editor::GoToPreviousDiagnostic", { "severity": "error" }],
+
+      // Git (space g)
+      "space g g": ["task::Spawn", { "task_name": "lazygit", "reveal_target": "center" }],
+      "space g y": ["task::Spawn", { "task_name": "copy markdown git diff" }],
+      "space g b": "branches::OpenRecent",
+      "space g t": "git_panel::ToggleFocus",
+      "space g d": "git::Diff",
+      "space g shift-b": "git::Blame",
+      "space g l": "editor::ToggleGitBlameInline",
+      "space g s": "git::ToggleStaged",
+      "space g r": "git::Restore",
+      "space g o": "editor::OpenPermalinkToLine",
+      "] g": "editor::GoToHunk",
+      "[ g": "editor::GoToPreviousHunk",
+
+      // Lists (space x), explorer, terminal
+      "space x x": "diagnostics::Deploy",
+      "space x shift-x": "diagnostics::Deploy",
+      "space e": "workspace::ToggleLeftDock",
+      "space o": "project_panel::ToggleFocus",
+      "space t f": "terminal_panel::Toggle",
+      "space t l": ["task::Spawn", { "task_name": "lazygit", "reveal_target": "center" }],
+
+      // UI toggles (space u)
+      "space u w": "editor::ToggleSoftWrap",
+      "space u d": "editor::ToggleDiagnostics",
+      "space u h": "editor::ToggleInlayHints",
+      "space u n": "editor::ToggleLineNumbers",
+      "space u shift-z": "workspace::ToggleCenteredLayout",
+
+      // AI (space A)
+      "space shift-a c": "agent::ToggleFocus",
+
+      // Debugger (space d)
+      "space d b": "editor::ToggleBreakpoint",
+      "space d c": "debugger::Continue",
+      "space d i": "debugger::StepInto",
+      "space d o": "debugger::StepOver",
+      "space d shift-o": "debugger::StepOut",
+      "space d q": "debugger::Stop",
+      "space d u": "debug_panel::ToggleFocus",
+
+      // Tests (space T): run nearest runnable
+      "space shift-t t": "editor::SpawnNearestTask",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      "tab": "vim::Indent",
+      "shift-tab": "vim::Outdent",
+      "space /": "editor::ToggleComments",
+      "space l a": "editor::ToggleCodeActions",
+      "space l f": "editor::FormatSelections",
+      // Treesitter incremental selection (nvim <CR>/<BS>)
+      "enter": "editor::SelectLargerSyntaxNode",
+      "backspace": "editor::SelectSmallerSyntaxNode",
+    },
+  },
+  {
+    // flash.nvim stand-in: 2-char sneak (shadows s/S substitute, as flash does)
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      "s": "vim::PushSneak",
+      "shift-s": "vim::PushSneakBackward",
+    },
+  },
+  {
+    // better-escape parity
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "j k": "vim::NormalBefore",
+      "j j": "vim::NormalBefore",
+    },
+  },
+  {
+    // smart-splits parity: directional pane nav + resize. Pane nav reaches
+    // open docks (e.g. ctrl-l onto the agent panel). macOS claims
+    // ctrl-up/ctrl-down for Mission Control unless disabled in System
+    // Settings -> Keyboard Shortcuts.
+    "context": "VimControl && !menu",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-left": "vim::ResizePaneLeft",
+      "ctrl-right": "vim::ResizePaneRight",
+      "ctrl-up": "vim::ResizePaneUp",
+      "ctrl-down": "vim::ResizePaneDown",
+    },
+  },
+  {
+    // Leave the terminal with vim nav (shadows readline ctrl-h/k/l, matching
+    // nvim's terminal-mode mappings; cmd-k still clears).
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+    },
+  },
+  {
+    // Leave panels (project/git/agent docks) with vim nav
+    "context": "Dock",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+    },
+  },
+]

@@ -8,11 +8,17 @@ repos:
     - --unsafe
   - id: check-toml
   - id: check-json
+    exclude: ^\.config/zed/
   - id: end-of-file-fixer
   - id: trailing-whitespace
   - id: check-added-large-files
     args:
     - --maxkb=500
+- repo: https://gitlab.com/bmares/check-json5
+  rev: 82381b1133603e4ff6eb3d866ec4501d121b669b # v1.0.1
+  hooks:
+  - id: check-json5
+    files: ^\.config/zed/.*\.json$
 - repo: local
   hooks:
   - id: yamlfmt

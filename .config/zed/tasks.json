@@ -1,0 +1,24 @@
+// Zed tasks referenced by keymap.json (task_name must match label exactly)
+[
+  {
+    "label": "lazygit",
+    "command": "lazygit",
+    "reveal": "always",
+    "reveal_target": "center",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "hide": "always",
+    "show_summary": false,
+    "show_command": false,
+  },
+  {
+    // Parity with nvim <leader>gy (astrocore.lua): diff -U5 vs HEAD for the
+    // current file, strip headers up to the first @@, fence as ```diff, copy.
+    "label": "copy markdown git diff",
+    "command": "cd \"$ZED_DIRNAME\" && d=\"$(git diff -U5 HEAD -- \"$ZED_FILE\" | awk '/^@@/{f=1} f')\" && [ -n \"$d\" ] && printf '```diff\\n%s\\n```' \"$d\" | pbcopy && echo 'Copied.' || echo 'No diff for current file.'",
+    "reveal": "never",
+    "hide": "always",
+    "show_summary": false,
+    "show_command": false,
+  },
+]
