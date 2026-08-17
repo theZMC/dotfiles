@@ -23,7 +23,7 @@ macos.keyboard.initial_key_repeat = 15
 [settings]
 experimental = true
 auto_install = true
-lockfile = true
+lockfile = false           # it's just not there yet
 minimum_release_age = "7d"
 
 [settings.dotfiles]

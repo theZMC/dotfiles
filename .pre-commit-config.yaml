@@ -50,15 +50,6 @@ repos:
     language: system
     types_or: [sh, bash]
     entry: shellcheck
-  - id: update-mise-lock
-    name: update mise.lock
-    language: system
-    entry: bash
-    files: ^\.config/mise/(config\.toml|mise\.lock)$
-    args:
-    - -c
-    - |
-      GITHUB_TOKEN=$(gh auth token || true) mise lock
   - id: sync-claude-skills
     name: sync .agents/skills to .claude/skills
     language: system
