@@ -188,6 +188,10 @@
       "ctrl-j": "workspace::ActivatePaneDown",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-l": "workspace::ActivatePaneRight",
+      // fzf ctrl-t/ctrl-r: Zed's Workspace ctrl-t (project symbols) would
+      // otherwise win; ctrl-r is forwarded by default but pinned here too
+      "ctrl-t": ["terminal::SendKeystroke", "ctrl-t"],
+      "ctrl-r": ["terminal::SendKeystroke", "ctrl-r"],
     },
   },
   {
