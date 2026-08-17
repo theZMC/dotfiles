@@ -79,7 +79,7 @@
       // Git (space g)
       "space g g": ["task::Spawn", { "task_name": "lazygit", "reveal_target": "center" }],
       "space g y": ["task::Spawn", { "task_name": "copy markdown git diff" }],
-      "space g b": "branches::OpenRecent",
+      "space g b": "git::Branch",
       "space g t": "git_panel::ToggleFocus",
       "space g d": "git::Diff",
       "space g shift-b": "git::Blame",
