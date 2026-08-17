@@ -12,6 +12,7 @@
     "context": "Workspace",
     "bindings": {
       "ctrl-'": "terminal_panel::Toggle",
+      "ctrl-g": ["task::Spawn", { "task_name": "lazygit", "reveal_target": "center" }],
       // Debugger F-keys to match nvim-dap; Zed defaults already provide
       // f5 continue/rerun, f9 toggle breakpoint, shift-f11 step out, f4 start.
       "f10": "debugger::StepOver",
@@ -22,6 +23,9 @@
     "context": "Editor",
     "bindings": {
       "ctrl-s": "workspace::Save",
+      // Also bound in Workspace (for panels); repeated here because Zed's
+      // default Editor/vim ctrl-g bindings sit below Workspace and would win.
+      "ctrl-g": ["task::Spawn", { "task_name": "lazygit", "reveal_target": "center" }],
     },
   },
   {
@@ -184,6 +188,51 @@
       "ctrl-j": "workspace::ActivatePaneDown",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-l": "workspace::ActivatePaneRight",
+    },
+  },
+  {
+    // neo-tree (AstroNvim defaults) parity in the project panel. Overrides
+    // Zed's netrw-style vim bindings (% new file, d new dir, D delete, R rename,
+    // v/o splits). h (parent_or_close), enter, t (open), - and gg/G already
+    // match. No Zed analogue for . (set_root), R (refresh; automatic), i
+    // (file details), o* (sort order).
+    "context": "ProjectPanel && not_editing",
+    "unbind": {
+      // z-chords would make bare z (close_all_nodes) wait 1s for a follow-up key
+      "z t": "project_panel::ScrollCursorTop",
+      "z z": "project_panel::ScrollCursorCenter",
+      "z c": "project_panel::ScrollCursorCenter",
+      "z b": "project_panel::ScrollCursorBottom",
+      "z d": "project_panel::CompareMarkedFiles",
+      // AstroNvim disables <Space> in neo-tree; here it would also delay the
+      // space-o / space-e chords by 1s
+      "space": "project_panel::Open",
+    },
+    "bindings": {
+      "space o": "project_panel::ToggleFocus", // back to the editor
+      "space e": "workspace::ToggleLeftDock",
+      "l": "project_panel::OpenPermanent", // child_or_open: dir toggles, file opens
+      "a": "project_panel::NewFile", // trailing / creates a directory, as in neo-tree
+      "shift-a": "project_panel::NewDirectory",
+      "d": ["project_panel::Trash", { "skip_prompt": false }],
+      "shift-d": ["project_panel::Delete", { "skip_prompt": false }],
+      "r": "project_panel::Rename",
+      "m": "project_panel::Rename", // move: rename accepts a relative path
+      "c": "project_panel::Duplicate", // copy: creates "<name> copy" beside it; r to rename
+      "y": "project_panel::Copy",
+      "x": "project_panel::Cut",
+      "p": "project_panel::Paste",
+      "shift-y": "workspace::CopyPath", // copy_selector: absolute path
+      "g y": "workspace::CopyRelativePath",
+      "s": "project_panel::OpenSplitVertical",
+      "shift-s": "project_panel::OpenSplitHorizontal",
+      "shift-o": "workspace::OpenWithSystem",
+      "shift-c": "project_panel::CollapseSelectedEntry",
+      "z": "project_panel::CollapseAllEntries",
+      "shift-h": "project_panel::ToggleHideGitIgnore",
+      "backspace": "project_panel::SelectParent", // navigate_up; default backspace is Trash
+      "/": "file_finder::Toggle", // fuzzy_finder
+      "shift-f": "project_panel::NewSearchInDirectory", // find_in_dir
     },
   },
   {
