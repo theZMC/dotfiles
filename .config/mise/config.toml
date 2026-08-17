@@ -17,7 +17,7 @@ macos.keyboard.initial_key_repeat = 15
 "~/.gnupg" = { source = ".gnupg" }
 "~/.ssh" = { source = ".ssh" }
 "~/.gitconfig" = { source = ".gitconfig" }
-"~/.zshrc" = { source = ".gitconfig" }
+"~/.zshrc" = { source = ".zshrc" }
 "~/.local" = { source = ".local" }
 
 [settings]
