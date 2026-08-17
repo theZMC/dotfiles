@@ -1,5 +1,3 @@
-unset _style
-
 VI_MODE_SET_CURSOR=true
 
 zsh_plugins=(
@@ -21,7 +19,6 @@ zsh_plugins=(
   "ohmyzsh/ohmyzsh path:plugins/gnu-utils"
   "ohmyzsh/ohmyzsh path:plugins/golang"
   "ohmyzsh/ohmyzsh path:plugins/kubectl"
-  "ohmyzsh/ohmyzsh path:plugins/kubectx"
   "ohmyzsh/ohmyzsh path:plugins/mvn"
   "ohmyzsh/ohmyzsh path:plugins/terraform"
   "ohmyzsh/ohmyzsh path:plugins/uv"
