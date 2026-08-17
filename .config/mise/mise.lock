@@ -244,8 +244,9 @@ url = "https://github.com/anthropics/claude-code/releases/download/v2.1.221/clau
 url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/500592484"
 
 [tools.claude-code."platforms.macos-arm64"]
-checksum = "blake3:f7c73702a838dd969ee7a6940b828b58a359a8f3de90158a72f02b7f0e9ca5f5"
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.221/darwin-arm64/claude"
+checksum = "sha256:1a14ae6e0db980b4bf19d8dce58a1a14219597f926df75a3e0da0ba4d7435189"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.221/claude-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/500592482"
 
 [tools.claude-code."platforms.macos-x64"]
 checksum = "sha256:63b0bf91fe70cab131d9fbc481967a7d8d0e8cc2d4dea61c8d8586d8ff63bda8"
@@ -1579,6 +1580,7 @@ checksum = "sha256:43f8e209818f425d45fca06797eec44b1cf643e8a58c74f29dbdaaaf82705
 url = "https://github.com/tombi-toml/tombi/releases/download/v1.2.6/tombi-cli-1.2.6-x86_64-unknown-linux-musl.tar.gz"
 url_api = "https://api.github.com/repos/tombi-toml/tombi/releases/assets/499469529"
 provenance = "github-attestations"
+provenance_verified = true
 
 [tools."github:tombi-toml/tombi"."platforms.linux-x64-baseline"]
 checksum = "sha256:43f8e209818f425d45fca06797eec44b1cf643e8a58c74f29dbdaaaf827052e0"
@@ -2696,7 +2698,7 @@ version = "2.16.13"
 backend = "npm:@astrojs/language-server"
 
 [[tools."npm:@playwright/cli"]]
-version = "0.1.17"
+version = "0.1.18"
 backend = "npm:@playwright/cli"
 
 [[tools."npm:@playwright/mcp"]]
