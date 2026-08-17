@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-if (($+commands[go])); then
-  export GOPATH="${GOPATH:-${HOME}/go}"
-  export PATH="${GOPATH}/bin:${PATH}"
-fi
+(($+commands[go])) || return
+
+export GOPATH="${GOPATH:-${HOME}/go}"
+export PATH="${GOPATH}/bin:${PATH}"

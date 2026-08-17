@@ -1,8 +1,6 @@
 #!/usr/bin/env zsh
 
-if ((!$+commands[ghostty])); then
-  return
-fi
+(($+commands[ghostty])) || return
 
 function ghostty-run {
   (nohup ghostty -e "$@" </dev/null >/dev/null 2>&1 &)

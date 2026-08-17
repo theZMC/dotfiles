@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
 
-if (($+commands[pyenv])); then
-  eval "$(pyenv init --path)"
-fi
+(($+commands[pyenv])) || return
+
+eval "$(pyenv init --path)"

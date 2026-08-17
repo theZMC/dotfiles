@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
 
-if (($+commands["go-task"])); then
-  alias task=go-task
-fi
+(($+commands["go-task"])) || return
+
+alias task=go-task

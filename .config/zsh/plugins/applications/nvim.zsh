@@ -1,17 +1,17 @@
 #!/usr/bin/env zsh
 
-if (($+commands[nvim])); then
-  export EDITOR=nvim
-  export VISUAL=nvim
-  export MANPAGER="nvim +Man!"
+(($+commands[nvim])) || return
 
-  alias vi=vim
-  alias vim=nvim
-  alias vimdiff="nvim -d"
-  alias diff=vimdiff
+export EDITOR=nvim
+export VISUAL=nvim
+export MANPAGER="nvim +Man!"
 
-  # Clear the Neovim LSP log file if it exists
-  if [[ -f ~/.local/state/nvim/lsp.log ]]; then
-    echo '' >~/.local/state/nvim/lsp.log
-  fi
+alias vi=vim
+alias vim=nvim
+alias vimdiff="nvim -d"
+alias diff=vimdiff
+
+# Clear the Neovim LSP log file if it exists
+if [[ -f ~/.local/state/nvim/lsp.log ]]; then
+  echo '' >~/.local/state/nvim/lsp.log
 fi

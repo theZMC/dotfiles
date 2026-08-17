@@ -1,15 +1,21 @@
 #!/usr/bin/env zsh
 
-if (($+commands[fzf])); then
-  if ! eval "$(fzf --zsh)"; then
-    if ! source /usr/share/doc/fzf/examples/key-bindings.zsh; then
-      echo "Failed to source fzf key bindings"
-      exit
-    fi
-  fi
-fi
+(($+commands[fzf])) || return
 
-export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} \
+# `fzf --zsh` needs fzf >= 0.48; capture it first so a failure is detectable
+# (eval of an empty string succeeds), then fall back to the distro examples.
+if _fzf_init="$(fzf --zsh 2>/dev/null)"; then
+  eval "$_fzf_init"
+elif [[ -r /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+  source /usr/share/doc/fzf/examples/key-bindings.zsh
+else
+  echo "fzf: no key bindings available (fzf --zsh unsupported, no examples dir)" >&2
+fi
+unset _fzf_init
+
+# Assign, don't append: nested shells inherit the exported value and would
+# otherwise duplicate these flags on every startup.
+export FZF_DEFAULT_OPTS="\
   --highlight-line \
   --info=inline-right \
   --ansi \
