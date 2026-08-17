@@ -1499,6 +1499,65 @@ checksum = "sha256:49d0b9c796f5b8ba6f58a1dd5469e8b7b34bf9b6ce9078633eedb2789680a
 url = "https://github.com/k3d-io/k3d/releases/download/v5.9.0/k3d-windows-amd64.exe"
 url_api = "https://api.github.com/repos/k3d-io/k3d/releases/assets/436305724"
 
+[[tools."github:michel-kraemer/zsh-patina"]]
+version = "1.9.0"
+backend = "github:michel-kraemer/zsh-patina"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.linux-arm64"]
+checksum = "sha256:74132d5d3fdc9784f9180a9d7fcc250d101a08c7b22e08b099953587c9657262"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481409138"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.linux-arm64-musl"]
+checksum = "sha256:e9534d2f673c64ab1ef7157ef4439f314419fb44f4cd3aa08cdc41e9921a858c"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481409022"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.linux-x64"]
+checksum = "sha256:5227a155b29e6a51a468fd7b76267cc6469404c499ad1e84d116f55c573ebb5e"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481408962"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.linux-x64-baseline"]
+checksum = "sha256:5227a155b29e6a51a468fd7b76267cc6469404c499ad1e84d116f55c573ebb5e"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481408962"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.linux-x64-musl"]
+checksum = "sha256:2339ab2124d9c46ce4940322259d31db18a7c5200209f3fc2067f54fedf73926"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481409163"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:2339ab2124d9c46ce4940322259d31db18a7c5200209f3fc2067f54fedf73926"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481409163"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.macos-arm64"]
+checksum = "sha256:aa28113506b6244ac023d3b86606d62b443f389f7f99d8c7f9cbc3fa0e3011e8"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481408681"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.macos-x64"]
+checksum = "sha256:4482f9659b7809f4f164d8aa4d350dc4a3a90c2d200c95379b9ab8b74676e3c9"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481409023"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.macos-x64-baseline"]
+checksum = "sha256:4482f9659b7809f4f164d8aa4d350dc4a3a90c2d200c95379b9ab8b74676e3c9"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481409023"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.windows-x64"]
+checksum = "sha256:dd9b5ca578e4618c61657ce4d3560a090e7284df74f37f99ee390668bbaecefa"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-pc-cygwin.zip"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481410277"
+
+[tools."github:michel-kraemer/zsh-patina"."platforms.windows-x64-baseline"]
+checksum = "sha256:dd9b5ca578e4618c61657ce4d3560a090e7284df74f37f99ee390668bbaecefa"
+url = "https://github.com/michel-kraemer/zsh-patina/releases/download/1.9.0/zsh-patina-v1.9.0-x86_64-pc-cygwin.zip"
+url_api = "https://api.github.com/repos/michel-kraemer/zsh-patina/releases/assets/481410277"
+
 [[tools."github:tmuxpack/tpack"]]
 version = "2.0.3"
 backend = "github:tmuxpack/tpack"

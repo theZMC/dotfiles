@@ -51,3 +51,6 @@ test -f ~/.zshrc.local &&
 eval "$(oh-my-posh init zsh --config "$HOME/.config/oh-my-posh/config.yaml")"
 
 unsetopt BEEP
+
+# Must be last: hooks ZLE after everything else (see zsh-patina README)
+command -v zsh-patina >/dev/null && eval "$(zsh-patina activate)"

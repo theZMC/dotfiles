@@ -4,7 +4,6 @@ zsh_plugins=(
   "zsh-users/zsh-autosuggestions"
   "zsh-users/zsh-completions"
   "Aloxaf/fzf-tab"
-  "zdharma-continuum/fast-syntax-highlighting kind:defer"
   "getantidote/use-omz"
 
   "ohmyzsh/ohmyzsh path:plugins/mise"
