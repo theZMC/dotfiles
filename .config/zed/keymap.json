@@ -107,6 +107,7 @@
 
       // AI (space A)
       "space shift-a c": "agent::ToggleFocus",
+      "space shift-a o": ["task::Spawn", { "task_name": "opencode", "reveal_target": "center" }],
 
       // Debugger (space d)
       "space d b": "editor::ToggleBreakpoint",

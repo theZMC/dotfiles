@@ -12,6 +12,17 @@
     "show_command": false,
   },
   {
+    "label": "opencode",
+    "command": "opencode",
+    "reveal": "always",
+    "reveal_target": "center",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "hide": "always",
+    "show_summary": false,
+    "show_command": false,
+  },
+  {
     // Parity with nvim <leader>gy (astrocore.lua): diff -U5 vs HEAD for the
     // current file, strip headers up to the first @@, fence as ```diff, copy.
     "label": "copy markdown git diff",
