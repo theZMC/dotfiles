@@ -63,6 +63,7 @@
     "light": "One Light",
     "dark": "One Dark",
   },
+  "restore_on_startup": "launchpad",
   "theme_overrides": {
     "One Dark": {
       // Terminal colors copied from .config/ghostty/config
