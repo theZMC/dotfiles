@@ -9,7 +9,6 @@ return {
   { import = "astrocommunity.code-runner.molten-nvim" },
   { import = "astrocommunity.color.transparent-nvim" },
   { import = "astrocommunity.colorscheme.monokai-pro-nvim" },
-  { import = "astrocommunity.completion.copilot-lua" },
   { import = "astrocommunity.diagnostics.trouble-nvim" },
   { import = "astrocommunity.docker.lazydocker" },
   { import = "astrocommunity.editing-support.conform-nvim" },
