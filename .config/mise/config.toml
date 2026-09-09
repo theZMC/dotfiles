@@ -129,6 +129,7 @@ hyperfine = "latest"
 "github:zarf-dev/zarf" = { version = "v0.84.0", bin = "zarf" }
 "github:defenseunicorns/uds-cli" = { version = "v0.36.0", bin = "uds" }
 claude-code = "2.1.257"
+"github:macropower/kat" = "0.28.1"
 
 [tools.docker-compose]
 version = "v5.5.0"
