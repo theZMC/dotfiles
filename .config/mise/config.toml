@@ -131,6 +131,9 @@ hyperfine = "latest"
 claude-code = "2.1.263"
 "github:macropower/kat" = "0.28.1"
 "github:tomasz-tomczyk/crit" = "v0.20.1"
+azure-cli = { version = "2.90.0", uvx_args = "--prerelease=allow" }
+atmos = "1.228.0"
+opentofu = "1.12.6"
 
 [tools.docker-compose]
 version = "v5.5.1"
