@@ -25,6 +25,12 @@
       "skillPath": "integrations/claude-code/skills/crit-story/SKILL.md",
       "computedHash": "c1d4d2079e480cb3f77dc3cc5922e9f98c71177a473417402a370a5d2ea0e7b1"
     },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
+    },
     "golang-troubleshooting": {
       "source": "samber/cc-skills-golang",
       "sourceType": "github",
