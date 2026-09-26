@@ -110,7 +110,7 @@ npm = { version = "12.0.2", lazy = true }
   "meridian",
   "claude-max-proxy",
 ] }
-"npm:@slidev/cli" = { version = "52.19.1", lazy = true, lazy_bins = ["slidev"] }
+"npm:@slidev/cli" = { version = "53.0.0", lazy = true, lazy_bins = ["slidev"] }
 "npm:@sveltejs/mcp" = { version = "0.1.26", lazy = true, lazy_bins = [
   "svelte-mcp",
 ] }
