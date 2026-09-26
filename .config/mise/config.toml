@@ -43,20 +43,20 @@ bat = "0.26.1"
 bottom = { version = "0.14.9", lazy = true }
 bun = { version = "1.4.2", lazy = true }
 crane = { version = "0.22.1", lazy = true }
-deno = { version = "2.9.6", lazy = true }
+deno = { version = "2.9.7", lazy = true }
 dive = { version = "0.13.1", lazy = true }
-docker-cli = "29.8.0"
+docker-cli = "29.8.1"
 fd = { version = "10.5.0", lazy = true }
 flux2 = { version = "2.9.5", lazy = true }
-fzf = "0.74.3"
-gh = "2.100.0"
+fzf = "0.74.4"
+gh = "2.101.0"
 "github:atanunq/viu" = { version = "1.6.1", bin = "viu", lazy = true, lazy_bins = [
   "viu",
 ] }
 "github:awslabs/eks-node-viewer" = { version = "0.7.4", bin = "eks-node-viewer", lazy = true, lazy_bins = [
   "eks-node-viewer",
 ] }
-"github:charmbracelet/crush" = { version = "v0.92.0", lazy = true, lazy_bins = [
+"github:charmbracelet/crush" = { version = "v0.95.0", lazy = true, lazy_bins = [
   "crush",
 ] }
 "github:charmbracelet/glow" = { version = "3.0.0", lazy = true, lazy_bins = [
@@ -74,75 +74,75 @@ gh = "2.100.0"
 "github:k3d-io/k3d" = { version = "v5.9.0", lazy = true, lazy_bins = ["k3d"] }
 "github:michel-kraemer/zsh-patina" = "1.10.0"
 "github:tmuxpack/tpack" = "v2.0.6"
-"github:tombi-toml/tombi" = { version = "v1.5.2", lazy = true, lazy_bins = [
+"github:tombi-toml/tombi" = { version = "v1.5.5", lazy = true, lazy_bins = [
   "tombi",
 ] }
-"github:uutils/coreutils" = { version = "0.11.0", lazy = true, lazy_bins = [
+"github:uutils/coreutils" = { version = "0.12.0", lazy = true, lazy_bins = [
   "coreutils",
 ] }
 "github:uutils/findutils" = "0.10.0"
 "github:uutils/sed" = "0.1.1"
-go = { version = "1.26.6", lazy = true }
+go = { version = "1.27.1", lazy = true }
 golangci-lint = { version = "2.13.2", lazy = true }
 golangci-lint-langserver = { version = "0.0.12", lazy = true }
-helm = { version = "4.2.4", lazy = true }
+helm = { version = "4.3.0", lazy = true }
 helm-ls = { version = "0.5.4", lazy = true }
 istioctl = { version = "1.31.0", lazy = true }
 java = { version = "26.0.1", lazy = true }
 k9s = { version = "0.51.0", lazy = true }
 kubectl = { version = "1.37.0", lazy = true }
-lazygit = { version = "0.65.0", lazy = true }
+lazygit = { version = "0.65.1", lazy = true }
 lua-language-server = { version = "3.19.1", lazy = true }
 mkcert = { version = "1.4.4", lazy = true }
 neovim = "0.12.5"
-node = { version = "26.8.1", lazy = true }
-npm = { version = "12.0.2", lazy = true }
-"npm:@astrojs/language-server" = { version = "2.16.16", lazy = true, lazy_bins = [
+node = { version = "26.9.0", lazy = true }
+npm = { version = "12.1.0", lazy = true }
+"npm:@astrojs/language-server" = { version = "2.17.1", lazy = true, lazy_bins = [
   "astro-ls",
 ] }
 "npm:@playwright/cli" = { version = "latest", lazy = true, lazy_bins = [
   "playwright-cli",
 ] }
-"npm:@playwright/mcp" = { version = "0.0.80", lazy = true, lazy_bins = [
+"npm:@playwright/mcp" = { version = "0.0.82", lazy = true, lazy_bins = [
   "playwright-mcp",
 ] }
-"npm:@rynfar/meridian" = { version = "1.71.0", lazy = true, lazy_bins = [
+"npm:@rynfar/meridian" = { version = "1.76.1", lazy = true, lazy_bins = [
   "meridian",
   "claude-max-proxy",
 ] }
-"npm:@slidev/cli" = { version = "52.19.1", lazy = true, lazy_bins = ["slidev"] }
+"npm:@slidev/cli" = { version = "52.20.1", lazy = true, lazy_bins = ["slidev"] }
 "npm:@sveltejs/mcp" = { version = "0.1.26", lazy = true, lazy_bins = [
   "svelte-mcp",
 ] }
-"npm:@upstash/context7-mcp" = { version = "4.1.0", lazy = true, lazy_bins = [
+"npm:@upstash/context7-mcp" = { version = "4.1.1", lazy = true, lazy_bins = [
   "context7-mcp",
 ] }
 "npm:@vtsls/language-server" = { version = "0.3.0", lazy = true, lazy_bins = [
   "vtsls",
 ] }
-"npm:agent-browser" = { version = "0.37.1", lazy = true, lazy_bins = [
+"npm:agent-browser" = { version = "0.38.1", lazy = true, lazy_bins = [
   "agent-browser",
 ] }
-"npm:bash-language-server" = { version = "5.6.0", lazy = true, lazy_bins = [
+"npm:bash-language-server" = { version = "5.8.1", lazy = true, lazy_bins = [
   "bash-language-server",
 ] }
-"npm:ctx7" = { version = "0.5.11", lazy = true, lazy_bins = ["ctx7"] }
-"npm:prettier" = { version = "3.9.6", lazy = true, lazy_bins = ["prettier"] }
-"npm:skills" = { version = "1.5.26", lazy = true, lazy_bins = [
+"npm:ctx7" = { version = "0.5.12", lazy = true, lazy_bins = ["ctx7"] }
+"npm:prettier" = { version = "3.9.9", lazy = true, lazy_bins = ["prettier"] }
+"npm:skills" = { version = "1.7.0", lazy = true, lazy_bins = [
   "skills",
   "add-skill",
 ] }
 "npm:svelte-language-server" = { version = "0.18.4", lazy = true, lazy_bins = [
   "svelteserver",
 ] }
-oh-my-posh = "31.2.0"
-packer = { version = "1.16.0", lazy = true }
-pnpm = { version = "11.26.0", lazy = true }
+oh-my-posh = "31.3.0"
+packer = { version = "1.16.1", lazy = true }
+pnpm = { version = "11.27.1", lazy = true }
 pre-commit = { version = "4.6.2", lazy = true }
-pulumi = { version = "3.261.0", lazy = true }
+pulumi = { version = "3.263.0", lazy = true }
 python = { version = "3.14.7", lazy = true }
 ripgrep = { version = "15.2.0", lazy = true }
-ruff = { version = "0.16.6", lazy = true }
+ruff = { version = "0.16.8", lazy = true }
 rust = { version = "1.98.1", lazy = true }
 rust-analyzer = { version = "2026-07-20", lazy = true }
 shellcheck = { version = "0.11.0", lazy = true }
@@ -150,42 +150,42 @@ shfmt = { version = "3.14.1", lazy = true }
 sops = { version = "3.13.3", lazy = true }
 stylua = { version = "2.5.2", lazy = true }
 taplo = { version = "0.10.0", lazy = true }
-terraform = { version = "1.16.1", lazy = true }
+terraform = { version = "1.16.3", lazy = true }
 terraform-ls = { version = "0.39.0", lazy = true }
 tmux = "3.7b"
 tree-sitter = { version = "0.27.0", lazy = true }
-trufflehog = { version = "v3.97.4", lazy = true }
+trufflehog = { version = "v3.97.5", lazy = true }
 usage = { version = "4.1.0", lazy = true }
-uv = { version = "0.12.10", lazy = true }
+uv = { version = "0.12.17", lazy = true }
 viddy = { version = "1.3.1", lazy = true }
 yamlfmt = { version = "0.21.0", lazy = true }
 yazi = { version = "26.9.1", lazy = true }
 yq = { version = "4.53.6", lazy = true }
 zoxide = "0.10.0"
-aws-cli = { version = "2.36.40", symlink_bins = "true", lazy = true }
-"github:docker/buildx" = { version = "v0.37.0", os = [
+aws-cli = { version = "2.36.49", symlink_bins = "true", lazy = true }
+"github:docker/buildx" = { version = "v0.37.1", os = [
   "darwin",
 ], bin = "docker-buildx", postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-buildx)" "$HOME/.docker/cli-plugins/docker-buildx"' }
 hyperfine = { version = "latest", lazy = true }
-"npm:opencode-ai" = { version = "1.18.30", allow_builds = [
+"npm:opencode-ai" = { version = "1.18.32", allow_builds = [
   "opencode-ai",
 ], minimum_release_age = "1d", lazy = true, lazy_bins = [
   "opencode",
 ] }
-"github:zarf-dev/zarf" = { version = "v0.85.0", bin = "zarf", lazy = true, lazy_bins = [
+"github:zarf-dev/zarf" = { version = "v0.86.0", bin = "zarf", lazy = true, lazy_bins = [
   "zarf",
 ] }
-"github:defenseunicorns/uds-cli" = { version = "v0.36.0", bin = "uds", lazy = true, lazy_bins = [
+"github:defenseunicorns/uds-cli" = { version = "v0.38.0", bin = "uds", lazy = true, lazy_bins = [
   "uds",
 ] }
-claude-code = { version = "2.1.263", lazy = true }
+claude-code = { version = "2.1.278", lazy = true }
 "github:macropower/kat" = { version = "0.28.1", lazy = true, lazy_bins = [
   "kat",
 ] }
-"github:tomasz-tomczyk/crit" = { version = "v0.20.1", lazy = true, lazy_bins = [
+"github:tomasz-tomczyk/crit" = { version = "v0.20.2", lazy = true, lazy_bins = [
   "crit",
 ] }
-atmos = { version = "1.228.0", lazy = true }
+atmos = { version = "1.229.0", lazy = true }
 opentofu = { version = "1.12.6", lazy = true }
 
 [tools.docker-compose]
