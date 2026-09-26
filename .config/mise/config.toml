@@ -62,7 +62,7 @@ gh = "2.100.0"
 "github:charmbracelet/glow" = { version = "3.0.0", lazy = true, lazy_bins = [
   "glow",
 ] }
-"github:charmbracelet/gum" = { version = "v0.17.0", lazy = true, lazy_bins = [
+"github:charmbracelet/gum" = { version = "v2.0.1", lazy = true, lazy_bins = [
   "gum",
 ] }
 "github:fullstorydev/grpcurl" = { version = "v1.9.4", lazy = true, lazy_bins = [
