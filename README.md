@@ -25,9 +25,11 @@ inspiration for how this repo is set up is taken from
    stow --no-folding -t "$HOME" .
    ```
 
-3. Restart your terminal and wait for mise to do its thing. It should
-   automatically install _everything_ you need to get up and running but it may
-   take a few minutes.
+3. Restart your terminal and wait for mise to do its thing. It installs only
+   the tools the shell itself needs up front; everything else is marked
+   `lazy = true` in `.config/mise/config.toml` and installs the first time you
+   run one of its commands. To pre-install everything instead, run
+   `mise install --include-lazy`.
 
 That's it! Enjoy the dotfiles. If you want to use this is a base for your own
 configuration, you can `rm -rf ~/dotfiles/.git && cd ~/dotfiles && git init` to

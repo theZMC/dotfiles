@@ -1,6 +1,8 @@
 #:schema https://mise.en.dev/schema/mise.json
 # tombi: format.rules.table-keys-order = "ascending"
 
+min_version = "2026.9.8"
+
 [bootstrap]
 macos.dock.autohide = true
 macos.dock.show_recents = false
@@ -38,103 +40,154 @@ helm3 = "mise x helm@3 -- helm"
 
 [tools]
 bat = "0.26.1"
-bottom = "0.14.9"
-bun = "1.4.2"
-crane = "0.22.1"
-deno = "2.9.6"
-dive = "0.13.1"
+bottom = { version = "0.14.9", lazy = true }
+bun = { version = "1.4.2", lazy = true }
+crane = { version = "0.22.1", lazy = true }
+deno = { version = "2.9.6", lazy = true }
+dive = { version = "0.13.1", lazy = true }
 docker-cli = "29.8.0"
-fd = "10.5.0"
-flux2 = "2.9.5"
+fd = { version = "10.5.0", lazy = true }
+flux2 = { version = "2.9.5", lazy = true }
 fzf = "0.74.3"
 gh = "2.100.0"
-"github:atanunq/viu" = "1.6.1"
-"github:awslabs/eks-node-viewer" = "0.7.4"
-"github:charmbracelet/crush" = "v0.92.0"
-"github:charmbracelet/glow" = "3.0.0"
-"github:charmbracelet/gum" = "v0.17.0"
-"github:fullstorydev/grpcurl" = "v1.9.4"
-"github:huseyinbabal/taws" = "v1.2.1"
-"github:k3d-io/k3d" = "v5.9.0"
+"github:atanunq/viu" = { version = "1.6.1", bin = "viu", lazy = true, lazy_bins = [
+  "viu",
+] }
+"github:awslabs/eks-node-viewer" = { version = "0.7.4", bin = "eks-node-viewer", lazy = true, lazy_bins = [
+  "eks-node-viewer",
+] }
+"github:charmbracelet/crush" = { version = "v0.92.0", lazy = true, lazy_bins = [
+  "crush",
+] }
+"github:charmbracelet/glow" = { version = "3.0.0", lazy = true, lazy_bins = [
+  "glow",
+] }
+"github:charmbracelet/gum" = { version = "v0.17.0", lazy = true, lazy_bins = [
+  "gum",
+] }
+"github:fullstorydev/grpcurl" = { version = "v1.9.4", lazy = true, lazy_bins = [
+  "grpcurl",
+] }
+"github:huseyinbabal/taws" = { version = "v1.2.1", lazy = true, lazy_bins = [
+  "taws",
+] }
+"github:k3d-io/k3d" = { version = "v5.9.0", lazy = true, lazy_bins = ["k3d"] }
 "github:michel-kraemer/zsh-patina" = "1.10.0"
 "github:tmuxpack/tpack" = "v2.0.6"
-"github:tombi-toml/tombi" = "v1.5.2"
-"github:uutils/coreutils" = "0.11.0"
+"github:tombi-toml/tombi" = { version = "v1.5.2", lazy = true, lazy_bins = [
+  "tombi",
+] }
+"github:uutils/coreutils" = { version = "0.11.0", lazy = true, lazy_bins = [
+  "coreutils",
+] }
 "github:uutils/findutils" = "0.10.0"
 "github:uutils/sed" = "0.1.1"
-go = "1.26.6"
-golangci-lint = "2.12.0"
-golangci-lint-langserver = "0.0.12"
-helm = "4.2.4"
-helm-ls = "0.5.4"
-istioctl = "1.31.0"
-java = "26.0.1"
-k9s = "0.51.0"
-kubectl = "1.37.0"
-lazygit = "0.65.0"
-lua-language-server = "3.19.1"
-mkcert = "1.4.4"
+go = { version = "1.26.6", lazy = true }
+golangci-lint = { version = "2.13.2", lazy = true }
+golangci-lint-langserver = { version = "0.0.12", lazy = true }
+helm = { version = "4.2.4", lazy = true }
+helm-ls = { version = "0.5.4", lazy = true }
+istioctl = { version = "1.31.0", lazy = true }
+java = { version = "26.0.1", lazy = true }
+k9s = { version = "0.51.0", lazy = true }
+kubectl = { version = "1.37.0", lazy = true }
+lazygit = { version = "0.65.0", lazy = true }
+lua-language-server = { version = "3.19.1", lazy = true }
+mkcert = { version = "1.4.4", lazy = true }
 neovim = "0.12.5"
-node = "26.8.1"
-npm = "12.0.2"
-"npm:@astrojs/language-server" = "2.16.16"
-"npm:@playwright/cli" = "latest"
-"npm:@playwright/mcp" = "0.0.80"
-"npm:@rynfar/meridian" = "1.71.0"
-"npm:@slidev/cli" = "52.19.1"
-"npm:@sveltejs/mcp" = "0.1.26"
-"npm:@upstash/context7-mcp" = "4.1.0"
-"npm:@vtsls/language-server" = "0.3.0"
-"npm:agent-browser" = "0.37.1"
-"npm:bash-language-server" = "5.6.0"
-"npm:ctx7" = "0.5.11"
-"npm:prettier" = "3.9.6"
-"npm:skills" = "1.5.26"
-"npm:svelte-language-server" = "0.18.4"
+node = { version = "26.8.1", lazy = true }
+npm = { version = "12.0.2", lazy = true }
+"npm:@astrojs/language-server" = { version = "2.16.16", lazy = true, lazy_bins = [
+  "astro-ls",
+] }
+"npm:@playwright/cli" = { version = "latest", lazy = true, lazy_bins = [
+  "playwright-cli",
+] }
+"npm:@playwright/mcp" = { version = "0.0.80", lazy = true, lazy_bins = [
+  "playwright-mcp",
+] }
+"npm:@rynfar/meridian" = { version = "1.71.0", lazy = true, lazy_bins = [
+  "meridian",
+  "claude-max-proxy",
+] }
+"npm:@slidev/cli" = { version = "52.19.1", lazy = true, lazy_bins = ["slidev"] }
+"npm:@sveltejs/mcp" = { version = "0.1.26", lazy = true, lazy_bins = [
+  "svelte-mcp",
+] }
+"npm:@upstash/context7-mcp" = { version = "4.1.0", lazy = true, lazy_bins = [
+  "context7-mcp",
+] }
+"npm:@vtsls/language-server" = { version = "0.3.0", lazy = true, lazy_bins = [
+  "vtsls",
+] }
+"npm:agent-browser" = { version = "0.37.1", lazy = true, lazy_bins = [
+  "agent-browser",
+] }
+"npm:bash-language-server" = { version = "5.6.0", lazy = true, lazy_bins = [
+  "bash-language-server",
+] }
+"npm:ctx7" = { version = "0.5.11", lazy = true, lazy_bins = ["ctx7"] }
+"npm:prettier" = { version = "3.9.6", lazy = true, lazy_bins = ["prettier"] }
+"npm:skills" = { version = "1.5.26", lazy = true, lazy_bins = [
+  "skills",
+  "add-skill",
+] }
+"npm:svelte-language-server" = { version = "0.18.4", lazy = true, lazy_bins = [
+  "svelteserver",
+] }
 oh-my-posh = "31.2.0"
-packer = "1.16.0"
-pnpm = "11.26.0"
-pre-commit = "4.6.2"
-pulumi = "3.261.0"
-python = "3.14.7"
-ripgrep = "15.2.0"
-ruff = "0.16.6"
-rust = "1.98.1"
-rust-analyzer = "2026-07-20"
-shellcheck = "0.11.0"
-shfmt = "3.14.1"
-sops = "3.13.3"
-stylua = "2.5.2"
-taplo = "0.10.0"
-terraform = "1.16.1"
-terraform-ls = "0.39.0"
+packer = { version = "1.16.0", lazy = true }
+pnpm = { version = "11.26.0", lazy = true }
+pre-commit = { version = "4.6.2", lazy = true }
+pulumi = { version = "3.261.0", lazy = true }
+python = { version = "3.14.7", lazy = true }
+ripgrep = { version = "15.2.0", lazy = true }
+ruff = { version = "0.16.6", lazy = true }
+rust = { version = "1.98.1", lazy = true }
+rust-analyzer = { version = "2026-07-20", lazy = true }
+shellcheck = { version = "0.11.0", lazy = true }
+shfmt = { version = "3.14.1", lazy = true }
+sops = { version = "3.13.3", lazy = true }
+stylua = { version = "2.5.2", lazy = true }
+taplo = { version = "0.10.0", lazy = true }
+terraform = { version = "1.16.1", lazy = true }
+terraform-ls = { version = "0.39.0", lazy = true }
 tmux = "3.7b"
-tree-sitter = "0.27.0"
-trufflehog = "v3.97.4"
-usage = "4.1.0"
-uv = "0.12.10"
-viddy = "1.3.1"
-yamlfmt = "0.21.0"
-yazi = "26.9.1"
-yq = "4.53.6"
+tree-sitter = { version = "0.27.0", lazy = true }
+trufflehog = { version = "v3.97.4", lazy = true }
+usage = { version = "4.1.0", lazy = true }
+uv = { version = "0.12.10", lazy = true }
+viddy = { version = "1.3.1", lazy = true }
+yamlfmt = { version = "0.21.0", lazy = true }
+yazi = { version = "26.9.1", lazy = true }
+yq = { version = "4.53.6", lazy = true }
 zoxide = "0.10.0"
-aws-cli = { version = "2.36.40", symlink_bins = "true" }
+aws-cli = { version = "2.36.40", symlink_bins = "true", lazy = true }
 "github:docker/buildx" = { version = "v0.37.0", os = [
   "darwin",
 ], bin = "docker-buildx", postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-buildx)" "$HOME/.docker/cli-plugins/docker-buildx"' }
-hyperfine = "latest"
+hyperfine = { version = "latest", lazy = true }
 "npm:opencode-ai" = { version = "1.18.30", allow_builds = [
   "opencode-ai",
-], minimum_release_age = "1d" }
-"github:zarf-dev/zarf" = { version = "v0.85.0", bin = "zarf" }
-"github:defenseunicorns/uds-cli" = { version = "v0.36.0", bin = "uds" }
-claude-code = "2.1.263"
-"github:macropower/kat" = "0.28.1"
-"github:tomasz-tomczyk/crit" = "v0.20.1"
-azure-cli = { version = "2.90.0", uvx_args = "--prerelease=allow" }
-atmos = "1.228.0"
-opentofu = "1.12.6"
+], minimum_release_age = "1d", lazy = true, lazy_bins = [
+  "opencode",
+] }
+"github:zarf-dev/zarf" = { version = "v0.85.0", bin = "zarf", lazy = true, lazy_bins = [
+  "zarf",
+] }
+"github:defenseunicorns/uds-cli" = { version = "v0.36.0", bin = "uds", lazy = true, lazy_bins = [
+  "uds",
+] }
+claude-code = { version = "2.1.263", lazy = true }
+"github:macropower/kat" = { version = "0.28.1", lazy = true, lazy_bins = [
+  "kat",
+] }
+"github:tomasz-tomczyk/crit" = { version = "v0.20.1", lazy = true, lazy_bins = [
+  "crit",
+] }
+atmos = { version = "1.228.0", lazy = true }
+opentofu = { version = "1.12.6", lazy = true }
 
 [tools.docker-compose]
 version = "v5.5.1"
-postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-cli-plugin-docker-compose)" "$HOME/.docker/cli-plugins/docker-compose"'
+postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-compose)" "$HOME/.docker/cli-plugins/docker-compose"'

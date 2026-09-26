@@ -25,9 +25,10 @@ if ! (($+commands[mise])); then
   else
     wget -qO- https://mise.run | sh
   fi
-  rehash # detect mise
-  mise install
-  rehash # detect everything mise installed
+  rehash       # detect mise
+  mise install # eager tools only; lazy = true tools install on first use
+  mise reshim  # write bootstrap shims for the lazy tools
+  rehash       # detect everything mise installed
 fi
 
 export CODE_HOME="${CODE_HOME:-${HOME}/Sync/code}"
