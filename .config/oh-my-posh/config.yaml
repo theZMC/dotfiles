@@ -45,9 +45,6 @@ blocks:
   - options:
       branch_gone_icon: ''
       git_icon: ''
-      fetch_upstream_icon: true
-      fetch_status: true
-      fetch_push_status: true
       github_icon: 
       gitlab_icon: 
       bitbucket_icon: 
