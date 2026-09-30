@@ -41,7 +41,7 @@ blocks:
     type: path
     min_width: 0
     style: plain
-    template: '  {{ .Path }}'
+    template: '  {{ if contains "defenseunicorns" .AbsolutePWD }}🦄 {{ end }}{{ .Path }}'
   - options:
       branch_gone_icon: ''
       git_icon: ''
