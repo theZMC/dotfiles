@@ -187,6 +187,9 @@ claude-code = { version = "2.1.263", lazy = true }
 ] }
 atmos = { version = "1.228.0", lazy = true }
 opentofu = { version = "1.12.6", lazy = true }
+azure-cli = { version = "2.90.0", lazy = true, dependency_prereleases = "allow", with = [
+  "pip",
+] }
 
 [tools.docker-compose]
 version = "v5.5.1"
