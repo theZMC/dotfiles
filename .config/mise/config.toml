@@ -155,7 +155,7 @@ terraform-ls = { version = "0.39.0", lazy = true }
 tmux = "3.7b"
 tree-sitter = { version = "0.27.0", lazy = true }
 trufflehog = { version = "v3.97.4", lazy = true }
-usage = { version = "4.1.0", lazy = true }
+usage = { version = "6.11.1", lazy = true }
 uv = { version = "0.12.10", lazy = true }
 viddy = { version = "1.3.1", lazy = true }
 yamlfmt = { version = "0.21.0", lazy = true }
