@@ -6,11 +6,14 @@ min_version = "2026.9.8"
 [bootstrap]
 macos.dock.autohide = true
 macos.dock.show_recents = false
+macos.dock.autohide_delay = 0
 macos.finder.show_all_files = true
 macos.finder.show_pathbar = true
 macos.finder.preferred_view_style = "column"
 macos.keyboard.key_repeat = 2
 macos.keyboard.initial_key_repeat = 15
+macos.keyboard.press_and_hold = false
+macos.keyboard.fn_state = true
 
 [dotfiles]
 "~/.config" = { source = ".config" }
