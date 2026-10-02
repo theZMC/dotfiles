@@ -77,6 +77,7 @@ ZSH_COMPL_CACHE="${ZSH_COMPL_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/completi
 _lazy_completion_loader() {
   emulate -L zsh
   local cmd=${words[1]:t}
+  setopt nonomatch
   local gen=${ZSH_LAZY_COMPLETIONS[$cmd]}
   local cache="${ZSH_COMPL_CACHE}/${cmd}.zsh"
 
