@@ -1,4 +1,18 @@
 plugins:
+  netshoot-debug:
+    shortCut: Shift-N
+    confirm: true
+    description: Debug with Netshoot
+    scopes:
+    - po
+    command: bash
+    background: false
+    args:
+    - -c
+    - |
+      kubectl --context "$CONTEXT" -n "$NAMESPACE" debug "pod/$NAME" -it \
+        --profile=restricted \
+        --image=docker.io/nicolaka/netshoot:v0.16 -- sh
   refresh-external-secrets:
     shortCut: Shift-R
     confirm: false
