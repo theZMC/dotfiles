@@ -190,6 +190,9 @@ opentofu = { version = "1.12.6", lazy = true }
 azure-cli = { version = "2.90.0", lazy = true, dependency_prereleases = "allow", with = [
   "pip",
 ] }
+"github:kanywst/y509" = { version = "v1.4.0", lazy = true, lazy_bins = [
+  "y509",
+] }
 
 [tools.docker-compose]
 version = "v5.5.1"

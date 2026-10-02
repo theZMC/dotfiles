@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# [MISE] description="Load a registry image into the current Zarf-initialized cluster"
+# [MISE] raw=true
+# [MISE] tools={"github:zarf-dev/zarf"="v0.86.0", "github:charmbracelet/gum"="v0.17.0", kubectl="1.37.1"}
+# [USAGE] flag "--image <reference>" help="Registry image reference (prompt if omitted)"
+# [USAGE] flag "--arch <architecture>" help="Target architecture (detect from cluster if omitted)"
+# [USAGE] flag "--yes" help="Skip confirmation; requires --image and an unambiguous architecture"
+set -euo pipefail
+
+image="${usage_image:-}"
+arch="${usage_arch:-}"
+yes="${usage_yes:-false}"
+
+if [[ -z "$image" ]]; then
+  if [[ "$yes" == true || ! -t 0 || ! -t 1 ]]; then
+    printf 'Provide --image when running non-interactively.\n' >&2
+    exit 64
+  fi
+  image="$(gum input --header 'Image to load' --placeholder 'ghcr.io/example/app:1.2.3')" || exit 1
+fi
+
+if [[ -z "$image" || "$image" == *[[:space:]]* ]]; then
+  printf 'Provide a nonempty registry image reference without whitespace.\n' >&2
+  exit 64
+fi
+
+context="$(kubectl config current-context)"
+if [[ -z "$context" ]]; then
+  printf 'No current kubecontext is selected.\n' >&2
+  exit 1
+fi
+
+if [[ -z "$arch" ]]; then
+  node_arches="$(kubectl get nodes -o 'jsonpath={range .items[*]}{.status.nodeInfo.architecture}{"\n"}{end}')"
+  architectures=()
+  while IFS= read -r node_arch; do
+    [[ -z "$node_arch" ]] && continue
+    if [[ " ${architectures[*]} " != *" $node_arch "* ]]; then
+      architectures+=("$node_arch")
+    fi
+  done <<<"$node_arches"
+
+  if ((${#architectures[@]} == 0)); then
+    printf 'No node architectures found in kubecontext %s; pass --arch explicitly.\n' "$context" >&2
+    exit 1
+  elif ((${#architectures[@]} == 1)); then
+    arch="${architectures[0]}"
+  elif [[ "$yes" == true || ! -t 0 || ! -t 1 ]]; then
+    printf 'Cluster has multiple architectures (%s); pass --arch explicitly.\n' "${architectures[*]}" >&2
+    exit 64
+  else
+    arch="$(gum choose --header 'Choose a target node architecture' "${architectures[@]}")" || exit 1
+  fi
+fi
+
+if [[ ! "$arch" =~ ^[a-z0-9_]+$ ]]; then
+  printf 'Invalid architecture: %s\n' "$arch" >&2
+  exit 64
+fi
+
+printf 'Kubecontext: %s\nImage: %s\nArchitecture: %s\n' "$context" "$image" "$arch"
+if [[ "$yes" != true ]]; then
+  if [[ ! -t 0 || ! -t 1 ]]; then
+    printf 'Confirmation requires a terminal; pass --yes for non-interactive use.\n' >&2
+    exit 64
+  fi
+  if ! gum confirm 'Create and deploy this image-only Zarf package?' --default=false; then
+    printf 'Aborted.\n' >&2
+    exit 1
+  fi
+fi
+
+temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/zarf-image-load.XXXXXXXX")"
+trap 'rm -rf -- "$temp_dir"' EXIT
+package_name="image-load-${temp_dir##*.}"
+package_name="${package_name,,}"
+
+cat >"$temp_dir/zarf.yaml" <<EOF
+kind: ZarfPackageConfig
+metadata:
+  name: $package_name
+components:
+  - name: image
+    required: true
+    images:
+      - '###ZARF_PKG_TMPL_IMAGE###'
+EOF
+
+zarf package create "$temp_dir" --output "$temp_dir" --architecture "$arch" --set "IMAGE=$image" --skip-sbom --confirm
+
+shopt -s nullglob
+archives=("$temp_dir"/zarf-package-*.tar.zst)
+if ((${#archives[@]} != 1)); then
+  printf 'Expected one Zarf package archive in %s; found %s.\n' "$temp_dir" "${#archives[@]}" >&2
+  exit 1
+fi
+
+zarf package deploy "${archives[0]}" --architecture "$arch" --confirm
+printf 'Loaded %s into %s (package %s).\n' "$image" "$context" "$package_name"
