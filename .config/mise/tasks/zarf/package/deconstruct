@@ -1,0 +1,309 @@
+#!/usr/bin/env bash
+# [MISE] description="Recover a best-effort source tree from a Zarf package"
+# [MISE] raw=true
+# [MISE] dir="{{cwd}}"
+# [MISE] tools={"github:zarf-dev/zarf"="v0.86.0", yq="4.53.6"}
+# [USAGE] arg "<package>" help="Local .tar.zst archive or oci:// package reference"
+# [USAGE] flag "--architecture <arch>" help="Architecture to select when pulling an OCI package"
+# [USAGE] flag "--output <directory>" help="Output directory (default: package-name-arch-version-source in the current directory)"
+set -euo pipefail
+
+umask 077
+
+source_ref="${usage_package?missing package}"
+architecture="${usage_architecture:-}"
+destination="${usage_output:-}"
+original_cwd="$PWD"
+scratch=''
+result=''
+incomplete=0
+
+die() {
+  printf 'zarf:package:deconstruct: %s\n' "$*" >&2
+  exit 1
+}
+
+note_gap() {
+  printf -- '- **Incomplete:** %s\n' "$*" >>"$result/RECONSTRUCTION.md"
+  incomplete=1
+  component_incomplete=1
+}
+
+note() {
+  printf -- '- %s\n' "$*" >>"$result/RECONSTRUCTION.md"
+}
+
+cleanup() {
+  if [[ -n "$scratch" ]]; then
+    rm -rf -- "$scratch"
+  fi
+}
+trap cleanup EXIT
+
+[[ -n "$source_ref" ]] || die 'Provide a package.'
+[[ -z "$architecture" || "$architecture" =~ ^[a-z0-9_-]+$ ]] || die 'Invalid --architecture.'
+
+if [[ "$source_ref" == oci://* || (! -f "$source_ref" && "$source_ref" == */*:*) ]]; then
+  input_type=oci
+else
+  input_type=local
+  [[ -z "$architecture" ]] || die '--architecture is only used for OCI packages.'
+  [[ -f "$source_ref" ]] || die "Package not found: $source_ref"
+  [[ "$source_ref" == *.tar.zst ]] || die 'Local packages must be .tar.zst archives.'
+  if [[ "$source_ref" != /* ]]; then
+    source_ref="$original_cwd/$source_ref"
+  fi
+fi
+
+# Keep the work area beside the output, so a successful move is atomic.
+if [[ -n "$destination" ]]; then
+  [[ "$destination" == /* ]] || destination="$original_cwd/$destination"
+  [[ ! -e "$destination" && ! -L "$destination" ]] || die "Output already exists: $destination"
+  work_parent="$(dirname "$destination")"
+  [[ -d "$work_parent" ]] || die "Output parent directory does not exist: $work_parent"
+else
+  work_parent="$original_cwd"
+fi
+scratch="$(mktemp -d "$work_parent/.zarf-deconstruct.XXXXXXXX")"
+
+if [[ "$input_type" == oci ]]; then
+  mkdir "$scratch/pulled"
+  pull_args=(package pull "$source_ref" --output-directory "$scratch/pulled")
+  [[ -z "$architecture" ]] || pull_args+=(--architecture "$architecture")
+  zarf "${pull_args[@]}" || die "Unable to pull $source_ref"
+  shopt -s nullglob
+  archives=("$scratch"/pulled/*.tar.zst)
+  shopt -u nullglob
+  ((${#archives[@]} == 1)) || die "Expected one pulled archive; found ${#archives[@]}."
+  archive="${archives[0]}"
+else
+  archive="$source_ref"
+fi
+
+# Reject unsafe paths and links before extracting anything from an untrusted archive.
+while IFS= read -r entry; do
+  case "$entry" in
+    /* | ../* | */../* | */..)
+      die "Unsafe archive path: $entry"
+      ;;
+  esac
+done < <(tar -tf "$archive")
+while IFS= read -r entry; do
+  case "$entry" in
+    l* | h*) die 'Package contains a link; refusing to extract it.' ;;
+  esac
+done < <(tar -tvf "$archive")
+
+mkdir "$scratch/packaged"
+# images/ contains OCI blobs, not reconstructable source. Excluding it keeps
+# output small, although the compressed stream must still be read in full.
+tar -xf "$archive" -C "$scratch/packaged" --exclude 'images' --exclude 'images/*'
+packaged="$scratch/packaged"
+[[ -f "$packaged/zarf.yaml" ]] || die 'Archive has no zarf.yaml.'
+
+name="$(yq -r '.metadata.name // ""' "$packaged/zarf.yaml")"
+version="$(yq -r '.metadata.version // "unversioned"' "$packaged/zarf.yaml")"
+pkg_arch="$(yq -r '.metadata.architecture // .build.architecture // "unknown"' "$packaged/zarf.yaml")"
+[[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ && "$version" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ && "$pkg_arch" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ ]] || die 'Invalid package name, version, or architecture.'
+if [[ -z "$destination" ]]; then
+  destination="$original_cwd/$name-$pkg_arch-$version-source"
+fi
+[[ ! -e "$destination" && ! -L "$destination" ]] || die "Output already exists: $destination"
+
+result="$scratch/source"
+mkdir -p "$result/provenance"
+cp "$packaged/zarf.yaml" "$result/provenance/zarf.packaged.yaml"
+yq 'del(.build, .metadata.aggregateChecksum, .metadata.architecture)' "$packaged/zarf.yaml" >"$result/zarf.yaml"
+
+cat >"$result/RECONSTRUCTION.md" <<EOF
+# Zarf package reconstruction
+
+Source: \`$source_ref\`
+Package: \`$name\` / \`$pkg_arch\` / \`$version\`
+
+This is a best-effort reconstruction, not the original source tree. The packaged
+definition is preserved in \`provenance/zarf.packaged.yaml\`. Charts, values,
+manifests, and files below are recovered from component archives. Paths in
+\`zarf.yaml\` are rewritten to the recovered assets. Original imports, build
+templates, and pre-build values cannot be inferred. Image names remain in the
+definition; rebuilding requires access to their registries.
+
+**Sensitive data:** Package contents are preserved verbatim, including possible
+secrets. Generated files are readable only by their owner by default.
+
+## Recovery log
+
+EOF
+
+component_count="$(yq -r '.components | length' "$result/zarf.yaml")"
+for ((i = 0; i < component_count; i++)); do
+  component_incomplete=0
+  component="$(yq -r ".components[$i].name" "$result/zarf.yaml")"
+  [[ "$component" =~ ^[a-z0-9][a-z0-9-]*$ ]] || die "Unsafe component name: $component"
+  bundle="$packaged/components/$component.tar"
+  charts="$(yq -r ".components[$i].charts | length" "$result/zarf.yaml")"
+  manifests="$(yq -r ".components[$i].manifests | length" "$result/zarf.yaml")"
+  files="$(yq -r ".components[$i].files | length" "$result/zarf.yaml")"
+  repos="$(yq -r ".components[$i].repos | length" "$result/zarf.yaml")"
+
+  if [[ ! -f "$bundle" ]]; then
+    if ((charts + manifests + files + repos > 0)); then
+      note_gap "Component \`$component\` declares assets but has no component archive."
+    fi
+    for field in imageArchives dataInjections; do
+      count="$(FIELD="$field" yq -r ".components[$i][strenv(FIELD)] | length" "$result/zarf.yaml")"
+      if ((count > 0)); then
+        note_gap "Component \`$component\` uses $field; its build inputs need manual review."
+      fi
+    done
+    continue
+  fi
+
+  # Component tars contain a top-level directory named after the component.
+  while IFS= read -r entry; do
+    case "$entry" in
+      /* | ../* | */../* | */..) die "Unsafe component path: $entry" ;;
+    esac
+  done < <(tar -tf "$bundle")
+  while IFS= read -r entry; do
+    case "$entry" in
+      l* | h*) die "Component $component contains a link." ;;
+    esac
+  done < <(tar -tvf "$bundle")
+  mkdir -p "$scratch/unpacked/$component"
+  tar -xf "$bundle" -C "$scratch/unpacked/$component"
+  root="$scratch/unpacked/$component/$component"
+
+  for ((j = 0; j < charts; j++)); do
+    chart="$(yq -r ".components[$i].charts[$j].name" "$result/zarf.yaml")"
+    chart_version="$(yq -r ".components[$i].charts[$j].version" "$result/zarf.yaml")"
+    if [[ ! "$chart" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ || ! "$chart_version" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ ]]; then
+      note_gap "Chart $j in \`$component\` has an unsafe name or version."
+      continue
+    fi
+    tgz="$root/charts/$chart-$chart_version.tgz"
+    if [[ ! -f "$tgz" ]]; then
+      note_gap "Missing packaged chart \`$component/$chart-$chart_version.tgz\`."
+      continue
+    fi
+    chart_base="charts/$component"
+    while IFS= read -r entry; do
+      case "$entry" in
+        /* | ../* | */../* | */..) die "Unsafe chart path: $entry" ;;
+      esac
+    done < <(tar -tf "$tgz")
+    while IFS= read -r entry; do
+      case "$entry" in
+        l* | h*) die "Chart $chart contains a link." ;;
+      esac
+    done < <(tar -tvf "$tgz")
+    mkdir -p "$result/$chart_base"
+    tar -xzf "$tgz" -C "$result/$chart_base"
+    if [[ ! -f "$result/$chart_base/$chart/Chart.yaml" ]]; then
+      note_gap "Chart \`$component/$chart\` did not unpack to its expected directory."
+      continue
+    fi
+    CHART_PATH="$chart_base/$chart" yq -i ".components[$i].charts[$j].localPath = strenv(CHART_PATH) | del(.components[$i].charts[$j].url, .components[$i].charts[$j].gitPath)" "$result/zarf.yaml"
+    note "Chart \`$component/$chart\` → \`$chart_base/$chart\`."
+
+    values_count="$(yq -r ".components[$i].charts[$j].valuesFiles | length" "$result/zarf.yaml")"
+    for ((k = 0; k < values_count; k++)); do
+      original="$(yq -r ".components[$i].charts[$j].valuesFiles[$k]" "$result/zarf.yaml")"
+      bundled="$root/values/$chart-$chart_version-$k"
+      if [[ ! -f "$bundled" ]]; then
+        note_gap "Missing values file $k for \`$component/$chart\` (originally \`$original\`)."
+        continue
+      fi
+      recovered="values/$component/$chart-$j-$k.yaml"
+      mkdir -p "$result/values/$component"
+      cp "$bundled" "$result/$recovered"
+      RECOVERED="$recovered" yq -i ".components[$i].charts[$j].valuesFiles[$k] = strenv(RECOVERED)" "$result/zarf.yaml"
+      note "Values \`$original\` → \`$recovered\` (packaged bytes)."
+    done
+  done
+
+  for ((j = 0; j < manifests; j++)); do
+    manifest="$(yq -r ".components[$i].manifests[$j].name" "$result/zarf.yaml")"
+    [[ "$manifest" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ ]] || die "Unsafe manifest name: $manifest"
+    kustomizations="$(yq -r ".components[$i].manifests[$j].kustomizations | length" "$result/zarf.yaml")"
+    if ((kustomizations > 0)); then
+      note_gap "Manifest \`$component/$manifest\` includes $kustomizations Kustomize sources; inspect the retained component archive."
+    fi
+    manifest_files="$(yq -r ".components[$i].manifests[$j].files | length" "$result/zarf.yaml")"
+    for ((k = 0; k < manifest_files; k++)); do
+      bundled="$root/manifests/$manifest-$k.yaml"
+      if [[ ! -f "$bundled" ]]; then
+        note_gap "Missing manifest $k for \`$component/$manifest\`."
+        continue
+      fi
+      recovered="manifests/$component/$manifest-$j-$k.yaml"
+      mkdir -p "$result/manifests/$component"
+      cp "$bundled" "$result/$recovered"
+      RECOVERED="$recovered" yq -i ".components[$i].manifests[$j].files[$k] = strenv(RECOVERED)" "$result/zarf.yaml"
+      note "Manifest \`$component/$manifest\` → \`$recovered\`."
+    done
+  done
+
+  for ((j = 0; j < files; j++)); do
+    original="$(yq -r ".components[$i].files[$j].source" "$result/zarf.yaml")"
+    [[ "$original" != /* && "$original" != *'/../'* && "$original" != ../* ]] || {
+      note_gap "File $j in \`$component\` has a nonlocal or unsafe source: \`$original\`."
+      continue
+    }
+    basename="${original%/}"
+    basename="${basename##*/}"
+    [[ -n "$basename" && "$basename" != '.' && "$basename" != '..' ]] || {
+      note_gap "File $j in \`$component\` has no recoverable basename."
+      continue
+    }
+    bundled="$root/files/$j/$basename"
+    if [[ ! -e "$bundled" ]]; then
+      note_gap "Missing file $j in \`$component\` (originally \`$original\`)."
+      continue
+    fi
+    recovered="files/$component/$j/$basename"
+    mkdir -p "$result/files/$component/$j"
+    cp -R "$bundled" "$result/$recovered"
+    RECOVERED="$recovered" yq -i ".components[$i].files[$j].source = strenv(RECOVERED)" "$result/zarf.yaml"
+    note "File \`$original\` → \`$recovered\`."
+  done
+
+  if ((repos > 0)); then
+    note_gap "Component \`$component\` includes $repos Git repositories; their original remotes and build inputs need manual review."
+  fi
+  for field in imageArchives dataInjections; do
+    count="$(FIELD="$field" yq -r ".components[$i][strenv(FIELD)] | length" "$result/zarf.yaml")"
+    if ((count > 0)); then
+      note_gap "Component \`$component\` uses $field; its build inputs need manual review."
+    fi
+  done
+  if ((component_incomplete)); then
+    mkdir -p "$result/provenance/unmapped-components"
+    cp "$bundle" "$result/provenance/unmapped-components/$component.tar"
+    note "Original \`$component\` component archive retained under \`provenance/unmapped-components/\` for manual recovery."
+  fi
+done
+
+if [[ "$(yq -r '.values.files | length' "$result/zarf.yaml")" != 0 || "$(yq -r '.values.schema // ""' "$result/zarf.yaml")" != '' ]]; then
+  note_gap 'Package-level values files or schema require manual recovery.'
+fi
+if [[ "$(yq -r '.documentation | length' "$result/zarf.yaml")" != 0 ]]; then
+  note_gap 'Package documentation paths require manual recovery.'
+fi
+if ! zarf dev inspect definition "$result" >/dev/null; then
+  note_gap 'Zarf could not resolve the reconstructed definition.'
+fi
+
+if ((incomplete)); then
+  printf '\nStatus: **incomplete** (review gaps above before rebuilding).\n' >>"$result/RECONSTRUCTION.md"
+else
+  printf '\nStatus: **recovered** (a full rebuild still requires external image access).\n' >>"$result/RECONSTRUCTION.md"
+fi
+
+mv "$result" "$destination"
+result=''
+printf 'Recovered source tree: %s\n' "$destination"
+if ((incomplete)); then
+  printf 'Recovery is incomplete; see %s/RECONSTRUCTION.md\n' "$destination" >&2
+  exit 1
+fi

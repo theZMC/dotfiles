@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# [MISE] description="Test HTTPS with a PIV smartcard client certificate"
+# [MISE] raw=true
+# [MISE] tools={ripgrep="15.2.0"}
+# [USAGE] arg "<url>" help="HTTPS URL or host/path (https:// is optional)"
+# [USAGE] flag "--identity <label>" help="Keychain identity label (defaults to the PIV authentication identity)"
+set -euo pipefail
+
+target="${usage_url?missing URL}"
+identity="${usage_identity:-}"
+
+if [[ "$target" != https://* ]]; then
+  if [[ "$target" == *://* ]]; then
+    printf 'Only HTTPS URLs are supported.\n' >&2
+    exit 64
+  fi
+  target="https://$target"
+fi
+
+if [[ -z "$identity" ]]; then
+  cards="$(security list-smartcards)"
+  if [[ "$cards" =~ (com\.apple\.pivtoken:[[:xdigit:]]+) ]]; then
+    token="${BASH_REMATCH[1]}"
+  else
+    printf 'No macOS PIV smartcard found.\n' >&2
+    exit 1
+  fi
+
+  details="$(security export-smartcard "$token" -t certs)"
+  label_pattern='labl : "(Certificate For PIV Authentication [^"]+)"'
+  if [[ "$details" =~ $label_pattern ]]; then
+    identity="${BASH_REMATCH[1]}"
+  else
+    printf 'No PIV authentication identity found on the card.\n' >&2
+    exit 1
+  fi
+fi
+
+printf 'Testing %s with %s\n' "$target" "$identity"
+CURL_SSL_BACKEND=secure-transport /usr/bin/curl \
+  --silent --show-error --verbose \
+  --max-time 30 --output /dev/null \
+  --write-out 'HTTP %{http_code}; server certificate verification: %{ssl_verify_result}\n' \
+  --cert "$identity" "$target" 2>&1 |
+  rg '^\* Client certificate:|^\* TLS |^< HTTP/|^HTTP |^curl:'
