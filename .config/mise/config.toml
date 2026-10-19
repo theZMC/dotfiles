@@ -170,8 +170,8 @@ aws-cli = { version = "2.37.9", symlink_bins = "true", lazy = true }
   "darwin",
 ], bin = "docker-buildx", postinstall = 'mkdir -p "$HOME/.docker/cli-plugins" && ln -sf "$(which docker-buildx)" "$HOME/.docker/cli-plugins/docker-buildx"' }
 hyperfine = { version = "latest", lazy = true }
-"npm:opencode-ai" = { version = "1.18.35", allow_builds = [
-  "opencode-ai",
+"npm:@opencode/cli" = { version = "2.0.25", allow_builds = [
+  "@opencode/cli",
 ], minimum_release_age = "1d", lazy = true, lazy_bins = [
   "opencode",
 ] }
