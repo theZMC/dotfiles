@@ -1,0 +1,265 @@
+#!/usr/bin/env bash
+# [MISE] description="Apply Arch Wiki Framework Laptop 16 recommendations"
+# [MISE] raw=true
+# [USAGE] flag "--dry-run" help="Print actions without changing anything"
+set -euo pipefail
+
+# Source: https://wiki.archlinux.org/title/Framework_Laptop_16
+# Safe to re-run: every step checks current state before changing anything.
+
+dry_run="${usage_dry_run:-false}"
+ua='Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0'
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+restart_nm=false
+
+step() { printf '\n\033[1;34m==> %s\033[0m\n' "$*"; }
+info() { printf '    %s\n' "$*"; }
+skip() { printf '    \033[2m[skip] %s\033[0m\n' "$*"; }
+run() {
+  printf '    \033[33m$ %s\033[0m\n' "$*"
+  [[ "$dry_run" == "true" ]] || "$@"
+}
+
+pkg_install() {
+  local missing=()
+  for p in "$@"; do pacman -Qq "$p" &>/dev/null || missing+=("$p"); done
+  if ((${#missing[@]} == 0)); then
+    skip "already installed: $*"
+  else
+    run sudo pacman -S --needed --noconfirm "${missing[@]}"
+  fi
+}
+
+aur_install() {
+  local missing=()
+  for p in "$@"; do pacman -Qq "$p" &>/dev/null || missing+=("$p"); done
+  if ((${#missing[@]} == 0)); then
+    skip "already installed: $*"
+  else
+    # makepkg must use the system toolchain, not mise-managed python/node/etc.
+    local yay_bin sys_path
+    yay_bin="$(command -v yay)"
+    sys_path="$(tr ':' '\n' <<<"$PATH" | grep -v '/mise/' | paste -sd:)"
+    run env PATH="$sys_path" "$yay_bin" -S --needed --noconfirm "${missing[@]}"
+  fi
+}
+
+# fetch <url> <out>: download to a local file, failing on HTTP errors.
+fetch() { curl -fsSL -A "$ua" -o "$2" "$1"; }
+
+# install_file <src> <dest> [sudo]: copy only if content differs; returns 1 when unchanged.
+install_file() {
+  local src="$1" dest="$2" pre=()
+  [[ "${3:-}" == "sudo" ]] && pre=(sudo)
+  if [[ -f "$dest" ]] && cmp -s "$src" "$dest"; then
+    skip "$dest is up to date"
+    return 1
+  fi
+  run "${pre[@]}" install -Dm644 "$src" "$dest"
+}
+
+enable_unit() {
+  if systemctl is-enabled --quiet "$1" 2>/dev/null && systemctl is-active --quiet "$1"; then
+    skip "$1 enabled and running"
+  else
+    run sudo systemctl enable --now "$1"
+  fi
+}
+
+# --- pre-flight -------------------------------------------------------------
+
+if ((EUID == 0)); then
+  echo "run as your user, not root (sudo is used where needed)" >&2
+  exit 1
+fi
+if ! grep -q 'Laptop 16' /sys/class/dmi/id/product_name 2>/dev/null; then
+  echo "this is not a Framework Laptop 16 ($(cat /sys/class/dmi/id/product_name 2>/dev/null))" >&2
+  exit 1
+fi
+if ! command -v yay &>/dev/null; then
+  echo "yay not found on PATH" >&2
+  exit 1
+fi
+if [[ "$dry_run" == "true" ]]; then
+  info "dry run: no changes will be made"
+else
+  sudo -v
+fi
+
+# --- 1. packages ------------------------------------------------------------
+
+step "Base packages"
+pkg_install base-devel git linux-firmware amd-ucode wireless-regdb iwd \
+  power-profiles-daemon fprintd brightnessctl \
+  easyeffects calf lsp-plugins fwupd
+
+# --- 2. Wi-Fi regulatory domain ---------------------------------------------
+
+step "Wi-Fi regulatory domain (US)"
+regdom=/etc/conf.d/wireless-regdom
+if grep -qx 'WIRELESS_REGDOM="US"' "$regdom" 2>/dev/null; then
+  skip "already set in $regdom"
+else
+  run sudo sed -i -E 's/^(WIRELESS_REGDOM=)/#\1/; s/^#(WIRELESS_REGDOM="US")/\1/' "$regdom"
+  if [[ "$dry_run" != "true" ]] && ! grep -qx 'WIRELESS_REGDOM="US"' "$regdom"; then
+    run sudo tee -a "$regdom" <<<'WIRELESS_REGDOM="US"' >/dev/null
+  fi
+  if command -v iw &>/dev/null; then
+    run sudo iw reg set US
+  fi
+fi
+
+# --- 3. iwd as NetworkManager backend ----------------------------------------
+
+step "NetworkManager Wi-Fi backend: iwd"
+printf '[device]\nwifi.backend=iwd\n' >"$tmp/wifi_backend.conf"
+if install_file "$tmp/wifi_backend.conf" /etc/NetworkManager/conf.d/wifi_backend.conf sudo; then
+  restart_nm=true
+  info "NetworkManager restart deferred to the end of the run"
+fi
+if systemctl is-enabled --quiet wpa_supplicant 2>/dev/null; then
+  restart_nm=true
+fi
+
+# --- 4. power profiles ------------------------------------------------------
+
+step "power-profiles-daemon"
+enable_unit power-profiles-daemon.service
+
+# --- 5. fingerprint ---------------------------------------------------------
+
+step "Fingerprint reader"
+if [[ "$dry_run" == "true" ]] && ! command -v fprintd-list &>/dev/null; then
+  info "would enroll a finger with fprintd-enroll"
+elif fprintd-list "$USER" 2>/dev/null | grep -q ' - #'; then
+  skip "finger already enrolled"
+else
+  info "touch the sensor repeatedly when prompted"
+  run fprintd-enroll
+fi
+
+if grep -q 'pam_fprintd.so' /etc/pam.d/sudo; then
+  skip "pam_fprintd already in /etc/pam.d/sudo"
+else
+  [[ -f /etc/pam.d/sudo.bak ]] || run sudo cp -a /etc/pam.d/sudo /etc/pam.d/sudo.bak
+  run sudo sed -i '/^#%PAM-1.0/a auth\t\tsufficient\tpam_fprintd.so' /etc/pam.d/sudo
+fi
+
+# --- 6. ambient light sensor ------------------------------------------------
+
+step "Ambient light sensor / automatic brightness"
+if [[ -r /sys/bus/iio/devices/iio:device0/in_illuminance_raw ]]; then
+  info "sensor reads $(cat /sys/bus/iio/devices/iio:device0/in_illuminance_raw)"
+else
+  info "warning: illuminance sensor not readable"
+fi
+if [[ "$(gsettings get org.gnome.settings-daemon.plugins.power ambient-enabled)" == "true" ]]; then
+  skip "GNOME automatic brightness already enabled"
+else
+  run gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled true
+fi
+
+# --- 7. display ICC profile -------------------------------------------------
+
+step "Display ICC profile (BOE NE160QDM-NZ6)"
+icc_name='BOE_CQ_______NE160QDM_NZ6.icm'
+icc_path="$HOME/.local/share/icc/$icc_name"
+if [[ ! -f "$icc_path" ]]; then
+  fetch "https://www.notebookcheck.net/uploads/tx_nbc2/$icc_name" "$tmp/$icc_name"
+  # ICC files carry the "acsp" signature at byte 36.
+  if [[ "$(dd if="$tmp/$icc_name" bs=1 skip=36 count=4 2>/dev/null)" != "acsp" ]]; then
+    echo "downloaded ICC profile is not a valid ICC file" >&2
+    exit 1
+  fi
+  run colormgr import-profile "$tmp/$icc_name"
+else
+  skip "$icc_path already imported"
+fi
+device="$(colormgr get-devices-by-kind display | awk '
+  /^Object Path:/ { path = $3 }
+  /^Embedded:/ && $2 == "Yes" { print path; exit }' || true)"
+profile="$(colormgr find-profile-by-filename "$icc_name" 2>/dev/null | awk '/^Object Path:/ { print $3 }' || true)"
+if [[ -z "$device" ]]; then
+  info "warning: built-in display not found in colord"
+elif [[ -z "$profile" ]]; then
+  info "would assign $icc_name to $device"
+elif colormgr device-get-default-profile "$device" | grep -q "$icc_name"; then
+  skip "already the default profile for the built-in display"
+else
+  colormgr device-add-profile "$device" "$profile" 2>/dev/null || true
+  run colormgr device-make-profile-default "$device" "$profile"
+fi
+
+# --- 8. Easy Effects --------------------------------------------------------
+
+step "Easy Effects profile (amesb FW16)"
+fetch 'https://gist.githubusercontent.com/amesb/cc5d717472d7e322b5f551b643ff03f4/raw/amesb%20fw16%20EE%20profile.json' \
+  "$tmp/ee.json"
+install_file "$tmp/ee.json" "$HOME/.config/easyeffects/output/amesb fw16 EE profile.json" || true
+
+# --- 9. QMK / VIA udev rules ------------------------------------------------
+
+step "QMK udev rules for keyboard.frame.work"
+fetch 'https://raw.githubusercontent.com/qmk/qmk_udev/master/50-qmk.rules' "$tmp/50-qmk.rules"
+if install_file "$tmp/50-qmk.rules" /etc/udev/rules.d/50-qmk.rules sudo; then
+  run sudo udevadm control --reload
+  run sudo udevadm trigger
+fi
+
+# --- 10. lm-sensors ---------------------------------------------------------
+
+step "lm-sensors Framework 16 config"
+fetch 'https://raw.githubusercontent.com/FrameworkComputer/lm-sensors/framework/configs/Framework/Framework16-AMD.conf' \
+  "$tmp/Framework16-AMD.conf"
+install_file "$tmp/Framework16-AMD.conf" /etc/sensors.d/Framework16-AMD.conf sudo || true
+
+# --- 11. fan control --------------------------------------------------------
+
+step "fw-fanctrl"
+aur_install fw-fanctrl-git
+enable_unit fw-fanctrl.service
+
+# --- 12. apply NetworkManager backend change ---------------------------------
+
+step "Switch NetworkManager to iwd"
+if [[ "$restart_nm" == "true" ]]; then
+  if systemctl is-enabled --quiet wpa_supplicant 2>/dev/null; then
+    run sudo systemctl disable --now wpa_supplicant
+  fi
+  run sudo systemctl restart NetworkManager
+  if [[ "$dry_run" != "true" ]]; then
+    nm-online -t 30 >/dev/null || info "warning: not back online yet; reconnect Wi-Fi manually"
+  fi
+else
+  skip "already using iwd"
+fi
+
+# --- 13. firmware -----------------------------------------------------------
+
+step "Firmware updates (fwupd)"
+enable_unit fwupd-refresh.timer
+run sudo fwupdmgr refresh --force || true
+if [[ "$dry_run" == "true" ]]; then
+  if command -v fwupdmgr &>/dev/null; then
+    fwupdmgr get-updates || true
+  else
+    info "would check for and apply firmware updates"
+  fi
+else
+  # Exit code 2 means there is nothing to update.
+  rc=0
+  sudo fwupdmgr update -y --no-reboot-check || rc=$?
+  ((rc == 0 || rc == 2)) || exit "$rc"
+fi
+
+# --- 14. manual follow-ups --------------------------------------------------
+
+step "Manual follow-ups"
+cat <<'EOF'
+    - BIOS: enable "Linux audio compatibility" (better speaker output).
+    - Easy Effects: open it, load the "amesb fw16 EE profile" preset, and turn on autostart.
+    - Wi-Fi: if a saved network no longer connects under iwd, re-enter its password.
+    - Audio Expansion Card: if headphones are quiet, alsamixer → F6 → card → Speaker Volume 100%.
+    - Reboot if fwupd staged a firmware update (and to apply the regulatory domain).
+EOF
