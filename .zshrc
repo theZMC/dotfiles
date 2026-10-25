@@ -31,7 +31,7 @@ if ! (($+commands[mise])); then
   rehash       # detect everything mise installed
 fi
 
-export CODE_HOME="${CODE_HOME:-${HOME}/Sync/code}"
+export CODE_HOME="${CODE_HOME:-${HOME}/Code}"
 
 source "${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh/plugins/antidote/provision.zsh
 
