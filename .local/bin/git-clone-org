@@ -1,0 +1,136 @@
+#!/usr/bin/env sh
+
+# Clone every repo in a GitHub org/user or GitLab group via `git steal`.
+#
+#   git clone-org [--https] [--include-archived] [--forge gh|glab] <target> [git clone args...]
+#
+# <target> is host/org[/subgroup...], a URL, or a bare org (github.com).
+# Everything after <target> is passed through to `git clone`.
+
+set -eu
+
+usage() {
+  echo "usage: git clone-org [--https] [--include-archived] [--forge gh|glab] <target> [git clone args...]" >&2
+  exit 2
+}
+
+https=false
+archived=false
+forge=""
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --https) https=true ;;
+    --include-archived) archived=true ;;
+    --forge)
+      [ $# -ge 2 ] || usage
+      forge="$2"
+      shift
+      ;;
+    --forge=*) forge="${1#--forge=}" ;;
+    -h | --help) usage ;;
+    -*) usage ;;
+    *) break ;;
+  esac
+  shift
+done
+
+[ $# -ge 1 ] || usage
+target="$1"
+shift
+
+case "$target" in
+  */*) ;;
+  *) target="github.com/$target" ;;
+esac
+
+# Reuse git-steal's URL parsing. It requires two path segments, so add a
+# placeholder repo name and strip it back off.
+parsed="$(git steal --parse "${target%/}/_")" || usage
+host="${parsed%% *}"
+org="${parsed#* }"
+org="${org%/_}"
+
+if [ -z "$forge" ]; then
+  case "$host" in
+    github.com) forge=gh ;;
+    *gitlab*) forge=glab ;;
+    *)
+      echo "can't tell which forge $host is; pass --forge gh|glab" >&2
+      exit 2
+      ;;
+  esac
+fi
+
+case "$forge" in
+  gh | glab) ;;
+  *) usage ;;
+esac
+
+if ! command -v "$forge" >/dev/null 2>&1; then
+  echo "$forge CLI not found" >&2
+  exit 1
+fi
+
+if ! "$forge" auth status --hostname "$host" >/dev/null 2>&1; then
+  echo "$forge is not logged in to $host; run: $forge auth login --hostname $host" >&2
+  exit 1
+fi
+
+list_gh() {
+  field=sshUrl
+  [ "$https" = false ] || field=url
+  set -- --limit 100000 --json "$field" --jq ".[].$field"
+  [ "$archived" = true ] || set -- "$@" --no-archived
+  GH_HOST="$host" gh repo list "$org" "$@"
+}
+
+list_glab() {
+  field=ssh_url_to_repo
+  [ "$https" = false ] || field=http_url_to_repo
+  group="$(printf '%s' "$org" | sed 's|/|%2F|g')"
+  query="include_subgroups=true&per_page=100"
+  [ "$archived" = true ] || query="$query&archived=false"
+  glab api --hostname "$host" --paginate "groups/$group/projects?$query" |
+    jq -r ".[].$field"
+}
+
+if ! urls="$(list_"$forge")"; then
+  echo "failed to list repos for $host/$org" >&2
+  exit 1
+fi
+
+if [ -z "$urls" ]; then
+  echo "no repos found for $host/$org" >&2
+  exit 0
+fi
+
+cloned=0
+skipped=0
+failed=0
+failures=""
+
+# Read from a heredoc rather than a pipe so the counters survive the loop,
+# and give git-steal /dev/null on stdin so it can't consume the list.
+while IFS= read -r url; do
+  [ -n "$url" ] || continue
+  if out="$(git steal "$url" "$@" </dev/null)"; then
+    if [ -n "$out" ]; then
+      cloned=$((cloned + 1))
+    else
+      skipped=$((skipped + 1))
+    fi
+  else
+    failed=$((failed + 1))
+    failures="$failures
+  $url"
+  fi
+done <<EOF
+$urls
+EOF
+
+echo "cloned $cloned, skipped $skipped, failed $failed" >&2
+if [ "$failed" -gt 0 ]; then
+  echo "failed:$failures" >&2
+  exit 1
+fi

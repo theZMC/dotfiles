@@ -1,0 +1,90 @@
+#!/usr/bin/env sh
+
+# Clone a repo into $CODE_HOME/<host>/<path>, mirroring the remote layout.
+#
+#   git steal <url> [git clone args...]
+#   git steal --parse <url>   # print "<host> <path>" and exit
+
+set -eu
+
+usage() {
+  echo "usage: git steal <url> [git clone args...]" >&2
+  exit 2
+}
+
+# Sets $host and $path from a git URL in any of the forms git accepts:
+# scheme://[user@]host[:port]/path, [user@]host:path, or host/path.
+parse() {
+  rest="$1"
+
+  # Trailing slashes, then .git
+  while [ "${rest%/}" != "$rest" ]; do rest="${rest%/}"; done
+  rest="${rest%.git}"
+
+  case "$rest" in
+    *://*)
+      rest="${rest#*://}"
+      case "$rest" in
+        */*) authority="${rest%%/*}" path="${rest#*/}" ;;
+        *) authority="$rest" path="" ;;
+      esac
+      host="${authority##*@}"
+      host="${host%%:*}"
+      ;;
+    *)
+      # scp-style when a ':' comes before the first '/'
+      first="${rest%%/*}"
+      case "$first" in
+        *:*)
+          authority="${rest%%:*}"
+          path="${rest#*:}"
+          host="${authority##*@}"
+          ;;
+        *)
+          host="$first"
+          case "$rest" in
+            */*) path="${rest#*/}" ;;
+            *) path="" ;;
+          esac
+          ;;
+      esac
+      ;;
+  esac
+
+  host="$(printf '%s' "$host" | tr '[:upper:]' '[:lower:]')"
+  while [ "${path#/}" != "$path" ]; do path="${path#/}"; done
+  while [ "${path%/}" != "$path" ]; do path="${path%/}"; done
+
+  [ -n "$host" ] || return 1
+  case "/$path/" in
+    //* | *//* | */./* | */../*) return 1 ;;
+  esac
+  case "$path" in
+    */*) ;;
+    *) return 1 ;;
+  esac
+}
+
+[ $# -ge 1 ] || usage
+
+if [ "$1" = "--parse" ]; then
+  [ $# -eq 2 ] || usage
+  parse "$2" || usage
+  printf '%s %s\n' "$host" "$path"
+  exit 0
+fi
+
+url="$1"
+shift
+parse "$url" || usage
+
+dest="${CODE_HOME:-${HOME}/Sync/code}/$host/$path"
+
+if [ -d "$dest" ] && [ -n "$(ls -A "$dest")" ]; then
+  echo "already cloned: $dest" >&2
+  exit 0
+fi
+
+mkdir -p "$(dirname "$dest")"
+git clone "$url" "$@" "$dest" >&2
+echo "$dest"
