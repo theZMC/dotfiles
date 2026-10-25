@@ -53,6 +53,7 @@ fd = { version = "10.5.0", lazy = true }
 flux2 = { version = "2.9.6", lazy = true }
 fzf = "0.74.4"
 gh = "2.102.0"
+glab = { version = "1.123.0", lazy = true }
 "github:atanunq/viu" = { version = "1.6.1", bin = "viu", lazy = true, lazy_bins = [
   "viu",
 ] }
@@ -92,6 +93,7 @@ helm = { version = "4.3.0", lazy = true }
 helm-ls = { version = "0.5.4", lazy = true }
 istioctl = { version = "1.31.1", lazy = true }
 java = { version = "26.0.1", lazy = true }
+jq = { version = "1.8.2", lazy = true }
 k9s = { version = "0.51.0", lazy = true }
 kubectl = { version = "1.37.1", lazy = true }
 lazygit = { version = "0.65.1", lazy = true }
