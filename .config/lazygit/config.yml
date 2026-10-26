@@ -1,0 +1,9 @@
+customCommands:
+- key: a
+  context: remotes
+  description: Enable and fetch all remote branches
+  command: >-
+    git remote set-branches {{.SelectedRemote.Name | quote}} '*'
+    && git fetch {{.SelectedRemote.Name | quote}}
+  loadingText: Fetching all remote branches
+  output: log
