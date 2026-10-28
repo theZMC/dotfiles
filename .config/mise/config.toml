@@ -180,7 +180,7 @@ hyperfine = { version = "latest", lazy = true }
 "github:zarf-dev/zarf" = { version = "v0.87.0", bin = "zarf", lazy = true, lazy_bins = [
   "zarf",
 ] }
-"github:defenseunicorns/uds-cli" = { version = "v0.38.0", bin = "uds", lazy = true, lazy_bins = [
+"github:defenseunicorns/uds-cli" = { version = "v0.40.0", bin = "uds", lazy = true, lazy_bins = [
   "uds",
 ] }
 claude-code = { version = "2.1.289", lazy = true }
