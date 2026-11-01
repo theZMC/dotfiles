@@ -32,6 +32,7 @@ fi
 
 if (($+commands[tmux])) && [[ -t 0 ]]; then
   export ZSH_TMUX_AUTOSTART=true
+  export ZSH_TMUX_DEFAULT_SESSION_NAME=main
   zsh_plugins+=("ohmyzsh/ohmyzsh path:plugins/tmux")
 fi
 
