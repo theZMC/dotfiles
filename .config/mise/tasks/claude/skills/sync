@@ -23,15 +23,20 @@ for skill in "$src"/*/; do
   if [[ "$(readlink "$link" 2>/dev/null || true)" == "$target" ]]; then
     continue
   fi
-  rm -rf "$link"
-  ln -s "$target" "$link"
+  if [[ -e "$link" && ! -L "$link" ]]; then
+    echo "skipping $link: exists and is not a symlink" >&2
+    continue
+  fi
+  ln -sfn "$target" "$link"
   echo "linked $link -> $target"
 done
 
+# Only prune links this task made; anything else in $dst is left alone
 for link in "$dst"/*; do
+  [[ -L "$link" && "$(readlink "$link")" == ../../.agents/skills/* ]] || continue
   name="$(basename "$link")"
   if [[ ! -d "$src/$name" ]]; then
-    rm -rf "$link"
+    unlink "$link"
     echo "removed stale $link"
   fi
 done
