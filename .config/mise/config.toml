@@ -10,20 +10,76 @@ macos.dock.autohide_delay = 0
 macos.finder.show_all_files = true
 macos.finder.show_pathbar = true
 macos.finder.preferred_view_style = "column"
-macos.keyboard.key_repeat = 2
-macos.keyboard.initial_key_repeat = 15
+macos.keyboard.key_repeat = 1
+macos.keyboard.initial_key_repeat = 10
 macos.keyboard.press_and_hold = false
 macos.keyboard.fn_state = true
 
+[bootstrap.hooks.final]
+description = "Enable systemd lingering so user services outlive login sessions"
+run = '''
+if [ "$(uname -s)" = Linux ] && command -v loginctl >/dev/null; then
+  loginctl show-user "$(id -un)" -p Linger | grep -q '=yes' ||
+    sudo loginctl enable-linger "$(id -un)"
+fi
+'''
+
+[bootstrap.packages]
+"apt:curl" = "latest"
+"apt:git" = "latest"
+"apt:gnupg" = "latest"
+"apt:pinentry-gnome3" = "latest"
+"apt:zsh" = "latest"
+"brew-cask:claude" = { os = "macos" }
+"brew-cask:discord" = { os = "macos" }
+"brew-cask:font-monaspace-nf" = { os = "macos" }
+"brew-cask:font-recursive-mono-nerd-font" = { os = "macos" }
+"brew-cask:ghostty" = { os = "macos" }
+"brew-cask:google-drive" = { os = "macos" }
+"brew-cask:neovide-app" = { os = "macos" }
+"brew-cask:opencode-desktop" = { os = "macos" }
+"brew-cask:orbstack" = { os = "macos" }
+"brew-cask:proton-drive" = { os = "macos" }
+"brew-cask:proton-mail-bridge" = { os = "macos" }
+"brew-cask:proton-pass" = { os = "macos" }
+"brew-cask:protonvpn" = { os = "macos" }
+"brew-cask:raycast" = { os = "macos" }
+"brew-cask:zed" = { os = "macos" }
+"brew:bash" = { os = "macos" }
+"brew:gnupg" = { os = "macos" }
+"brew:grep" = { os = "macos" }
+"brew:pinentry-mac" = { os = "macos" }
+"brew:syncthing" = { os = "macos" }
+"brew:tailscale" = { os = "macos" }
+"dnf:curl" = "latest"
+"dnf:git" = "latest"
+"dnf:gnupg2" = "latest"
+"dnf:pinentry-gnome3" = "latest"
+"dnf:zsh" = "latest"
+"pacman:curl" = "latest"
+"pacman:git" = "latest"
+"pacman:gnupg" = "latest"
+"pacman:pinentry" = "latest"
+"pacman:zsh" = "latest"
+
+# Persistent tmux server; the shell's omz tmux plugin attaches to `main`.
+# -D keeps it in the foreground for launchd/systemd and turns exit-empty off.
+[bootstrap.services.tmux]
+command = "~/.local/bin/mise exec -- tmux -D"
+description = "tmux server"
+requires_tools = true
+restart = "always"
+scope = "user"
+
 [dotfiles]
-"~/.config" = { source = ".config" }
-"~/.claude" = { source = ".claude" }
-"~/.agents" = { source = ".agents" }
-"~/.gnupg" = { source = ".gnupg" }
-"~/.ssh" = { source = ".ssh" }
-"~/.gitconfig" = { source = ".gitconfig" }
-"~/.zshrc" = { source = ".zshrc" }
-"~/.local" = { source = ".local" }
+"~/.agents" = { manifest = "git", mode = "symlink-each" }
+"~/.claude" = { manifest = "git", mode = "symlink-each" }
+"~/.config" = { manifest = "git", mode = "symlink-each" }
+"~/.gitconfig" = { mode = "symlink" }
+"~/.gnupg" = { manifest = "git", mode = "symlink-each" }
+"~/.local" = { manifest = "git", mode = "symlink-each" }
+"~/.ssh" = { manifest = "git", mode = "symlink-each" }
+"~/.zshrc" = { mode = "symlink" }
 
 [settings]
 experimental = true
@@ -33,7 +89,7 @@ minimum_release_age = "7d"
 
 [settings.dotfiles]
 default_mode = "symlink-each"
-root = "~/.dotfiles"
+root = "~/Code/github.com/thezmc/dotfiles"
 
 [settings.npm]
 package_manager = "pnpm"
