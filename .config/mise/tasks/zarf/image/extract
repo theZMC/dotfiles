@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# [MISE] description="Extract images from explicit Zarf packages as Docker tarballs"
+# [MISE] dir="{{cwd}}"
+# [MISE] tools={"github:zarf-dev/zarf"="v0.87.0", jq="1.8.2", "conda:skopeo"="1.24.1"}
+# [USAGE] arg "<packages>" var=#true help="Local Zarf package paths to extract"
+# [USAGE] flag "--output <directory>" help="Tarball directory (default: image-tarballs in the current directory)"
+set -euo pipefail
+export LC_ALL=C
+
+out="${usage_output:-$PWD/image-tarballs}"
+# Mise supplies variadic arguments as a shell-quoted string.
+packages=()
+eval "packages=(${usage_packages:?At least one package path is required})"
+if ((${#packages[@]} == 0)); then
+  printf 'At least one package path is required\n' >&2
+  exit 1
+fi
+for pkg in "${packages[@]}"; do
+  if [[ ! -f "$pkg" || ! -r "$pkg" ]]; then
+    printf 'Package is not a readable file: %s\n' "$pkg" >&2
+    exit 1
+  fi
+done
+
+mkdir -p "$out"
+# Serialize writers so filename selection and index updates cannot race.
+lock="$out/.zarf-image-extract.lock"
+if ! mkdir "$lock"; then
+  printf 'Output is locked: %s (remove the lock directory if a previous run was interrupted)\n' "$lock" >&2
+  exit 1
+fi
+scratch=""
+trap '[[ -z "$scratch" ]] || rm -rf -- "$scratch"; rm -f -- "$lock/index.json"; rmdir "$lock"' EXIT
+scratch=$(mktemp -d "${TMPDIR:-/tmp}/zarf-image-extract.XXXXXXXX")
+index="$out/.zarf-image-extract.json"
+if [[ -e "$index" || -L "$index" ]]; then
+  jq -e 'type == "object" and all(.[]; type == "string" and test("^sha256:[0-9a-f]{64}$"))' "$index" >/dev/null
+else
+  printf '{}\n' >"$index"
+fi
+
+for pkg in "${packages[@]}"; do
+  layout="$scratch/package"
+  zarf tools archiver decompress "$pkg" "$layout"
+  # Materialize the list so a jq failure stops the task rather than being lost
+  # in process substitution. Zarf images use OCI reference annotations.
+  jq -r '.manifests[] |
+    (.annotations["org.opencontainers.image.ref.name"] // error("Image has no OCI reference annotation")) as $ref |
+    if ($ref | test("^[^\\t\\r\\n]+$")) and (.digest | test("^sha256:[0-9a-f]{64}$"))
+    then [$ref, .digest] | @tsv else error("Invalid image reference or manifest digest") end' \
+    "$layout/images/index.json" >"$scratch/references"
+
+  while IFS=$'\t' read -r ref digest; do
+    name="${ref//[^a-zA-Z0-9._-]/_}"
+    # Leave room for a full digest qualifier and the archive extension.
+    name="${name:0:160}"
+    filename="$name.tar"
+    while :; do
+      dest="$out/$filename"
+      recorded=$(jq -r --arg name "$filename" '.[$name] // empty' "$index")
+      if [[ -e "$dest" || -L "$dest" ]]; then
+        if [[ -z "$recorded" || ! -f "$dest" || -L "$dest" ]]; then
+          printf 'Refusing to overwrite untracked or non-regular output: %s\n' "$dest" >&2
+          exit 1
+        fi
+        if [[ "$recorded" == "$digest" ]]; then
+          printf 'Skipping matching manifest %s: %s\n' "$digest" "$dest"
+          break
+        fi
+      elif [[ -z "$recorded" || "$recorded" == "$digest" ]]; then
+        break
+      fi
+      qualified="$name-${digest/:/_}.tar"
+      if [[ "$filename" == "$qualified" ]]; then
+        printf 'Conflicting manifest recorded for digest-qualified output: %s\n' "$dest" >&2
+        exit 1
+      fi
+      filename="$qualified"
+    done
+    [[ ! -e "$dest" ]] || continue
+
+    printf '%s → %s\n' "$pkg" "$dest"
+    target="docker-archive:$scratch/image.tar"
+    # Docker archive tags cannot contain digest references.
+    [[ "$ref" == *@* ]] || target+=":$ref"
+    # Trust these local package images without requiring a system policy.json.
+    skopeo --insecure-policy copy "oci:$layout/images:$ref" "$target"
+    mv "$scratch/image.tar" "$dest"
+    # Update beside the index so replacement is atomic on the output filesystem.
+    jq --arg name "$filename" --arg digest "$digest" '.[$name] = $digest' "$index" >"$lock/index.json"
+    mv "$lock/index.json" "$index"
+  done <"$scratch/references"
+
+  rm -rf -- "$layout"
+done
+
+printf 'Extracted images into %s\n' "$out"
