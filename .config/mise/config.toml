@@ -144,6 +144,7 @@ glab = { version = "1.124.0", lazy = true }
 "github:uutils/sed" = "0.3.0"
 go = { version = "1.27.3", lazy = true }
 golangci-lint = { version = "2.15.0", lazy = true }
+"conda:skopeo" = { version = "1.24.1", lazy = true, lazy_bins = ["skopeo"] }
 golangci-lint-langserver = { version = "0.0.12", lazy = true }
 helm = { version = "4.3.1", lazy = true }
 helm-ls = { version = "0.5.4", lazy = true }
