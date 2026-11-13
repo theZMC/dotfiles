@@ -3,7 +3,7 @@ name: work-github-issues
 description: Use when the user wants to work multiple GitHub issues serially with subagents, wrapping `work-github-issue`, coordinating local review subagents unless Copilot review is explicitly requested, and managing dependency-aware PRs, checks, and approved merges.
 metadata:
   author: Zach Callahan
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Work GitHub Issues
@@ -219,6 +219,8 @@ Rules:
 - Ask for user input only for true product or behavior decisions.
 - Do not ask the user directly from the subagent. Return blockers to the
   coordinator.
+- Do not post PR comments or thread replies. Return reply drafts to the
+  coordinator.
 
 Return only a concise final status with: issue number/title, branch, PR URL,
 commit SHA, local validation performed (note that PR checks may still be running
@@ -277,6 +279,13 @@ Return only:
   not inspected because the worker owns them,
 - clear recommendation: "resume worker for fixes" or "local review cleared".
 ```
+
+## PR Comment Replies
+
+The coordinator owns replies to PR comments and follows the "Replying to PR
+comments" rules in `work-github-issue`: start each reply with
+`**Zach's robot 🤖:**` on its own line, show the user every draft, and post only
+after approval. Workers and review subagents never post replies.
 
 ## Intervention Policy
 

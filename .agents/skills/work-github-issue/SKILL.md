@@ -7,7 +7,7 @@ description: |
   and performs final ff-only merge after user approval.
 metadata:
   author: Zach Callahan
-  version: "1.6"
+  version: "1.7"
 ---
 
 # Work GitHub Issue (gh CLI)
@@ -145,6 +145,17 @@ Closes #<issue-number>
 13. After user approval, ff-only merge:
     `git fetch origin && git checkout <base> && git merge --ff-only <branch> && git push origin <base>`.
     If ff-only merge blocked, stop and report blocker.
+
+## Replying to PR comments
+
+Replies are posted from the user's GitHub account, so mark them as agent-written:
+
+- Start every PR comment or review-thread reply with `**Zach's robot 🤖:**` on
+  its own line, followed by a blank line and the reply.
+- Show the user the full draft of each reply and post only after they approve.
+- Reply in the existing thread:
+  `gh api repos/<owner>/<repo>/pulls/<pr-number>/comments/<comment-id>/replies -F body=@<reply-file>`.
+- Do not resolve threads, and do not open follow-up issues unless the user asks.
 
 ## Progress updates to user
 
