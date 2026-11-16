@@ -255,6 +255,7 @@ azure-cli = { version = "2.90.0", lazy = true, dependency_prereleases = "allow",
 "github:kanywst/y509" = { version = "v1.15.0", lazy = true, lazy_bins = [
   "y509",
 ] }
+"github:clawscli/claws" = "0.18.0"
 
 [tools.docker-compose]
 version = "v5.7.0"
