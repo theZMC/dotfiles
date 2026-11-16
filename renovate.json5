@@ -1,27 +1,29 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "dependencyDashboard": true,
-  "extends": [
-    "config:best-practices",
-    "group:allNonMajor",
-    "schedule:weekly"
-  ],
-  "pre-commit": {
-    "enabled": true,
-    "pinDigests": true
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  dependencyDashboard: {
+    enabled: true,
   },
-  "minimumReleaseAge": "7 days",
-  "minimumReleaseAgeBehaviour": "timestamp-optional",
-  "packageRules": [
+  extends: [
+    'config:best-practices',
+    'group:allNonMajor',
+    'schedule:weekly',
+  ],
+  'pre-commit': {
+    enabled: true,
+    pinDigests: true,
+  },
+  minimumReleaseAge: '7 days',
+  minimumReleaseAgeBehaviour: 'timestamp-optional',
+  packageRules: [
     {
-      "description": "Keep mise java updates installable by dropping LTS/build suffixes",
-      "matchManagers": [
-        "mise"
+      description: 'Keep mise java updates installable by dropping LTS/build suffixes',
+      matchManagers: [
+        'mise',
       ],
-      "matchDepNames": [
-        "java"
+      matchDepNames: [
+        'java',
       ],
-      "extractVersion": "^(?<version>\\d+\\.\\d+\\.\\d+)"
-    }
-  ]
+      extractVersion: '^(?<version>\\d+\\.\\d+\\.\\d+)',
+    },
+  ],
 }
