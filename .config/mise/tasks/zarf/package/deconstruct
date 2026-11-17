@@ -2,7 +2,7 @@
 # [MISE] description="Recover a best-effort source tree from a Zarf package"
 # [MISE] raw=true
 # [MISE] dir="{{cwd}}"
-# [MISE] tools={"github:zarf-dev/zarf"="v0.86.0", yq="4.53.6"}
+# [MISE] tools={"github:zarf-dev/zarf"="v0.87.0", yq="4.53.6"}
 # [USAGE] arg "<package>" help="Local .tar.zst archive or oci:// package reference"
 # [USAGE] flag "--architecture <arch>" help="Architecture to select when pulling an OCI package"
 # [USAGE] flag "--output <directory>" help="Output directory (default: package-name-arch-version-source in the current directory)"
