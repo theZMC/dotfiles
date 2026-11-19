@@ -1,0 +1,487 @@
+#!/usr/bin/env bash
+# [MISE] description="Preload OCI Zarf packages into the Zarf cache with resumable, retrying downloads"
+# [MISE] dir="{{cwd}}"
+# [MISE] tools={"github:zarf-dev/zarf"="v0.89.0", crane="0.22.1", jq="1.8.2", yq="4.54.2"}
+# [USAGE] arg "<sources>" var=#true help="OCI package refs (oci:// optional) and/or UDS bundle files (*.hcl, *.yaml, *.yml)"
+# [USAGE] flag "--architecture <arch>" help="Package architecture (default: a YAML bundle's metadata.architecture, else the host)"
+# [USAGE] flag "--output <directory>" help="Also write .tar.zst package archives to this directory"
+# [USAGE] flag "--jobs <n>" default="4" help="Concurrent layer downloads"
+# [USAGE] flag "--retries <n>" default="100" help="Download attempts per layer before giving up"
+# [USAGE] flag "--cache <directory>" help="Zarf cache directory (default: $ZARF_CACHE, else ~/.zarf-cache)"
+# [USAGE] flag "--force" help="Replace existing archives in --output"
+set -euo pipefail
+
+# Zarf OCI packages store each archive file as one layer whose
+# org.opencontainers.image.title is its path in the archive, and Zarf reads
+# package (and image) layers through a digest-keyed cache at
+# <zarf-cache>/images. Zarf only caches a blob once it is read completely, so
+# a connection reset restarts that blob. This task fills the same cache with
+# `curl --continue-at`, resuming interrupted blobs (also across runs).
+#
+# `zarf package pull/deploy` use the cache. UDS CLI (as of v0.41.0) does not
+# pass Zarf's cache to its OCI remote, so for `uds bundle create` use --output
+# and point bundle sources at the written archives.
+
+umask 022
+
+architecture="${usage_architecture:-}"
+output_dir="${usage_output:-}"
+jobs="${usage_jobs:-4}"
+retries="${usage_retries:-100}"
+cache="${usage_cache:-${ZARF_CACHE:-$HOME/.zarf-cache}}"
+force="${usage_force:-false}"
+scratch=''
+
+log() { printf 'zarf:package:preload: %s\n' "$*" >&2; }
+die() {
+  log "$*"
+  exit 1
+}
+
+cleanup() {
+  local status=$? children
+  # Stop in-flight downloads; their partial files remain resumable.
+  children="$(jobs -pr)"
+  # shellcheck disable=SC2086 # One PID per word.
+  [[ -z "$children" ]] || kill $children 2>/dev/null || true
+  wait 2>/dev/null || true
+  [[ -z "$scratch" ]] || rm -rf -- "$scratch"
+  exit "$status"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+sha256() {
+  if command -v sha256sum >/dev/null; then
+    sha256sum -- "$1" | cut -d' ' -f1
+  else
+    shasum -a 256 -- "$1" | cut -d' ' -f1
+  fi
+}
+
+file_size() { wc -c <"$1" | tr -d '[:space:]'; }
+
+human() { awk -v b="$1" 'BEGIN { split("B KiB MiB GiB TiB", u); i = 1; while (b >= 1024 && i < 5) { b /= 1024; i++ } printf (i == 1 ? "%d %s" : "%.1f %s"), b, u[i] }'; }
+
+# Retry small metadata requests (manifests) as well as blobs.
+with_retries() {
+  local attempt
+  for ((attempt = 1; attempt <= 5; attempt++)); do
+    "$@" && return 0
+    sleep $((attempt * 2))
+  done
+  return 1
+}
+
+# --- Validate inputs -------------------------------------------------------
+
+[[ "$jobs" =~ ^[1-9][0-9]*$ ]] || die '--jobs must be a positive integer.'
+[[ "$retries" =~ ^[1-9][0-9]*$ ]] || die '--retries must be a positive integer.'
+
+# Mise supplies variadic arguments as a shell-quoted string.
+inputs=()
+eval "inputs=(${usage_sources:?Provide at least one OCI reference or bundle file})"
+((${#inputs[@]} > 0)) || die 'Provide at least one OCI reference or bundle file.'
+
+[[ "$cache" != '~'* ]] || cache="$HOME${cache#\~}"
+mkdir -p -- "$cache/images/blobs/sha256" "$cache/preload-partial"
+cache="$(cd -- "$cache" && pwd)"
+store="$cache/images"
+[[ -f "$store/oci-layout" ]] || printf '{"imageLayoutVersion":"1.0.0"}' >"$store/oci-layout"
+
+if [[ -n "$output_dir" ]]; then
+  mkdir -p -- "$output_dir"
+  output_dir="$(cd -- "$output_dir" && pwd)"
+  # Keep the work area beside the output so archive moves are atomic.
+  scratch="$(mktemp -d "$output_dir/.zarf-package-preload.XXXXXXXX")"
+else
+  scratch="$(mktemp -d "${TMPDIR:-/tmp}/zarf-package-preload.XXXXXXXX")"
+fi
+
+# --- Collect package references -------------------------------------------
+
+refs=()
+add_ref() {
+  local ref="${1#oci://}" existing
+  [[ -n "$ref" && "$ref" != *[[:space:]]* && "$ref" == */* ]] || die "Invalid OCI reference: $1"
+  for existing in "${refs[@]+"${refs[@]}"}"; do
+    [[ "$existing" != "$ref" ]] || return 0
+  done
+  refs+=("$ref")
+}
+
+bundle_arches=()
+for input in "${inputs[@]}"; do
+  case "$input" in
+    *.hcl)
+      [[ -f "$input" ]] || die "Bundle file not found: $input"
+      found=0
+      while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*source[[:space:]]*=[[:space:]]*\"oci://([^\"]+)\" ]]; then
+          add_ref "${BASH_REMATCH[1]}"
+          found=1
+        elif [[ "$line" =~ ^[[:space:]]*source[[:space:]]*=[[:space:]]*\"([^\"]+)\" ]]; then
+          log "Skipping local source in $input: ${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^[[:space:]]*source[[:space:]]*= ]]; then
+          log "Skipping non-literal source in $input: ${line#"${line%%[![:space:]]*}"}"
+        fi
+      done <"$input"
+      ((found)) || log "No oci:// package sources in $input"
+      ;;
+    *.yaml | *.yml)
+      [[ -f "$input" ]] || die "Bundle file not found: $input"
+      [[ "$(yq -r '.kind // ""' "$input")" == UDSBundle ]] || die "$input is not a UDS bundle (kind: UDSBundle)."
+      bundle_arch="$(yq -r '.metadata.architecture // ""' "$input")"
+      [[ -z "$bundle_arch" ]] || bundle_arches+=("$bundle_arch")
+      found=0
+      # Emit nonempty fields only: tab IFS collapses empty TSV fields.
+      while IFS=$'\t' read -r kind value; do
+        if [[ "$kind" == oci ]]; then
+          add_ref "$value"
+          found=1
+        else
+          log "Skipping non-OCI package in $input: $value"
+        fi
+      done < <(yq -o=json '.packages // []' "$input" | jq -r '.[] |
+        if (.repository // "") != "" and (.ref // "") != "" then ["oci", "\(.repository):\(.ref)"]
+        else ["skip", "\(.name // "unnamed")\(if .path then " (\(.path))" else "" end)"] end | @tsv')
+      ((found)) || log "No OCI packages in $input"
+      ;;
+    *)
+      add_ref "$input"
+      ;;
+  esac
+done
+((${#refs[@]} > 0)) || die 'No OCI packages to preload.'
+
+if [[ -z "$architecture" ]]; then
+  if ((${#bundle_arches[@]} > 0)); then
+    architecture="${bundle_arches[0]}"
+    for bundle_arch in "${bundle_arches[@]}"; do
+      [[ "$bundle_arch" == "$architecture" ]] || die "Bundles declare different architectures; pass --architecture."
+    done
+  else
+    case "$(uname -m)" in
+      x86_64 | amd64) architecture=amd64 ;;
+      aarch64 | arm64) architecture=arm64 ;;
+      *) die "Cannot map host architecture $(uname -m); pass --architecture." ;;
+    esac
+  fi
+fi
+[[ "$architecture" =~ ^[a-z0-9_]+$ ]] || die "Invalid architecture: $architecture"
+
+# --- Resolve manifests -----------------------------------------------------
+
+# Split host/repository from the tag or digest for the registry blob API.
+parse_ref() {
+  local ref="$1" repo_ref last
+  if [[ "$ref" == *@* ]]; then
+    repo_ref="${ref%%@*}"
+  else
+    last="${ref##*/}"
+    if [[ "$last" == *:* ]]; then repo_ref="${ref%:*}"; else repo_ref="$ref"; fi
+  fi
+  ref_host="${repo_ref%%/*}"
+  ref_repository="${repo_ref#*/}"
+  if [[ "$ref_host" != *.* && "$ref_host" != *:* && "$ref_host" != localhost ]]; then
+    ref_host=docker.io # Docker Hub shorthand.
+    ref_repository="$repo_ref"
+  fi
+}
+
+# Per-package work files live in $scratch/pkg/<n>/; layers.tsv aggregates
+# every layer as: digest, size, title, host, repository.
+mkdir "$scratch/pkg"
+: >"$scratch/all-layers.tsv"
+total_bytes=0
+for i in "${!refs[@]}"; do
+  ref="${refs[$i]}"
+  [[ "$ref" == *@* || "${ref##*/}" == *:* ]] || ref="$ref:latest"
+  parse_ref "$ref"
+  dir="$scratch/pkg/$i"
+  mkdir "$dir"
+  printf '%s\n' "$ref" >"$dir/ref"
+
+  with_retries crane manifest "$ref" >"$dir/top.json" 2>"$dir/crane.err" ||
+    die "Unable to fetch the manifest for $ref: $(tail -n 1 "$dir/crane.err")"
+  if jq -e 'has("manifests")' "$dir/top.json" >/dev/null; then
+    digest="$(jq -r --arg arch "$architecture" '[.manifests[] | select(.platform.architecture == $arch) | .digest] | if length == 1 then .[0] else empty end' "$dir/top.json")"
+    if [[ -z "$digest" ]]; then
+      available="$(jq -r '[.manifests[].platform.architecture // "unknown"] | unique | join(", ")' "$dir/top.json")"
+      die "No unique $architecture manifest in $ref (available: $available)."
+    fi
+    with_retries crane manifest "$ref_host/$ref_repository@$digest" >"$dir/manifest.json" 2>"$dir/crane.err" ||
+      die "Unable to fetch manifest $digest for $ref: $(tail -n 1 "$dir/crane.err")"
+  else
+    cp -- "$dir/top.json" "$dir/manifest.json"
+  fi
+  jq -e '.config.mediaType == "application/vnd.zarf.config.v1+json"' "$dir/manifest.json" >/dev/null ||
+    die "$ref is not a Zarf package (unexpected config media type)."
+
+  jq -r '.layers[] |
+    (.annotations["org.opencontainers.image.title"] // error("Layer \(.digest) has no title annotation")) as $title |
+    [.digest, (.size | tostring), $title] | @tsv' "$dir/manifest.json" >"$dir/layers.tsv"
+
+  pkg_bytes=0
+  count=0
+  while IFS=$'\t' read -r digest size title; do
+    [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]] || die "Unsupported layer digest in $ref: $digest"
+    [[ "$size" =~ ^[0-9]+$ ]] || die "Invalid layer size in $ref: $digest"
+    case "$title" in
+      '' | /* | ../* | */../* | */.. | .. | *[[:space:]]* | *[[:cntrl:]]*) die "Unsafe layer path in $ref: $title" ;;
+    esac
+    pkg_bytes=$((pkg_bytes + size))
+    count=$((count + 1))
+    printf '%s\t%s\t%s\t%s\t%s\n' "$digest" "$size" "$title" "$ref_host" "$ref_repository" >>"$scratch/all-layers.tsv"
+  done <"$dir/layers.tsv"
+  total_bytes=$((total_bytes + pkg_bytes))
+  log "$ref ($architecture): $count layers, $(human "$pkg_bytes")"
+done
+
+# --- Registry authentication ----------------------------------------------
+
+# Write each repository's Authorization header to a file read by curl
+# (-H @file) so tokens never appear in process arguments. Prefer a bearer
+# token; fall back to basic credentials, then anonymous access.
+auth_file() {
+  local host="$1" repository="$2"
+  printf '%s/auth.%s\n' "$scratch" "$(printf '%s/%s' "$host" "$repository" | tr -c 'a-zA-Z0-9._-' '_')"
+}
+
+refresh_auth() {
+  local host="$1" repository="$2" header tmp token creds user secret
+  header="$(auth_file "$host" "$repository")"
+  tmp="$(mktemp "$scratch/auth-tmp.XXXXXXXX")"
+  if token="$(crane auth token "$host/$repository" 2>/dev/null | jq -r '.token // .access_token // empty')" && [[ -n "$token" ]]; then
+    printf 'Authorization: Bearer %s\n' "$token" >"$tmp"
+  elif creds="$(crane auth get "$host" 2>/dev/null)" &&
+    user="$(jq -r '.Username // empty' <<<"$creds")" && secret="$(jq -r '.Secret // empty' <<<"$creds")" &&
+    [[ -n "$user" && -n "$secret" ]]; then
+    printf 'Authorization: Basic %s\n' "$(printf '%s:%s' "$user" "$secret" | base64 | tr -d '\n')" >"$tmp"
+  else
+    : >"$tmp"
+  fi
+  mv -f -- "$tmp" "$header"
+}
+
+# Tokens are short-lived; refresh after four minutes or after a failure.
+ensure_auth() {
+  local header
+  header="$(auth_file "$1" "$2")"
+  if [[ "${3:-}" == force || ! -f "$header" || -z "$(find "$header" -mmin -4 2>/dev/null)" ]]; then
+    refresh_auth "$1" "$2"
+  fi
+}
+
+# --- Layer download --------------------------------------------------------
+
+acquire_lock() {
+  local lock="$1" owner
+  while ! mkdir "$lock" 2>/dev/null; do
+    owner="$(cat "$lock/pid" 2>/dev/null || true)"
+    if [[ -n "$owner" ]] && ! kill -0 "$owner" 2>/dev/null; then
+      rm -rf -- "$lock" # Stale lock from a killed run.
+      continue
+    fi
+    sleep 2
+  done
+  printf '%s\n' "$BASHPID" >"$lock/pid"
+}
+
+fetch_blob() {
+  local digest="$1" size="$2" title="$3" host="$4" repository="$5"
+  local hex="${digest#sha256:}"
+  local final="$store/blobs/sha256/$hex"
+  local partial="$cache/preload-partial/$hex"
+  local lock="$partial.lock"
+  local api_host="$host" url attempt have delay header curl_pid=''
+  [[ "$api_host" != docker.io ]] || api_host=registry-1.docker.io
+  url="https://$api_host/v2/$repository/blobs/$digest"
+  header="$(auth_file "$host" "$repository")"
+
+  [[ -f "$final" ]] && return 0
+  # Serialize concurrent runs that need the same blob.
+  acquire_lock "$lock"
+  # This runs in a background subshell. On interrupt, stop curl too (an
+  # orphaned curl would keep writing the partial), keeping what it fetched.
+  trap '[[ -z "$curl_pid" ]] || kill "$curl_pid" 2>/dev/null; rm -rf -- "$lock" "$partial.err"; exit 143' TERM INT
+  trap 'rm -rf -- "$lock"' RETURN
+  [[ -f "$final" ]] && return 0
+
+  if [[ -f "$partial" ]]; then
+    log "Resuming $title at $(human "$(file_size "$partial")")/$(human "$size")"
+  elif ((size >= 1048576)); then
+    log "Downloading $title ($(human "$size"))"
+  fi
+  for ((attempt = 1; attempt <= retries; attempt++)); do
+    have=0
+    [[ ! -f "$partial" ]] || have="$(file_size "$partial")"
+    if ((have > size)); then
+      rm -f -- "$partial"
+      have=0
+    fi
+    if ((have < size)); then
+      ensure_auth "$host" "$repository"
+      # HTTP/1.1 avoids HTTP/2 stream resets seen on large GHCR blobs. Abort a
+      # stalled transfer so the loop can resume it on a fresh connection.
+      # Run curl as a waited-on child so the TERM trap can stop it.
+      curl --fail --location --silent --show-error --http1.1 \
+        --connect-timeout 30 --speed-limit 1024 --speed-time 60 \
+        --continue-at - -H "@$header" -o "$partial" "$url" 2>"$partial.err" &
+      curl_pid=$!
+      if ! wait "$curl_pid"; then
+        curl_pid=''
+        have=0
+        [[ ! -f "$partial" ]] || have="$(file_size "$partial")"
+        delay=$((attempt < 6 ? 1 << attempt : 60))
+        log "Interrupted $title at $(human "$have")/$(human "$size") (attempt $attempt/$retries): $(tail -n 1 "$partial.err"); retrying in ${delay}s"
+        rm -f -- "$partial.err"
+        # Interruptible: traps run immediately during `wait`, not during sleep.
+        sleep "$delay" &
+        wait $!
+        ensure_auth "$host" "$repository" force
+        continue
+      fi
+      curl_pid=''
+      rm -f -- "$partial.err"
+    fi
+    if [[ "$(file_size "$partial")" == "$size" && "$(sha256 "$partial")" == "$hex" ]]; then
+      chmod 0444 "$partial"
+      mv -f -- "$partial" "$final"
+      ((size < 1048576)) || log "Verified $title"
+      return 0
+    fi
+    log "Digest or size mismatch for $title (attempt $attempt/$retries); restarting the layer"
+    rm -f -- "$partial"
+  done
+  log "Giving up on $title after $retries attempts; the partial download is kept for the next run."
+  return 1
+}
+
+# Download each missing blob once, across all packages.
+missing=0
+missing_bytes=0
+: >"$scratch/queue.tsv"
+while IFS=$'\t' read -r digest size title host repository; do
+  [[ ! -f "$store/blobs/sha256/${digest#sha256:}" ]] || continue
+  if ! grep -q "^$digest"$'\t' "$scratch/queue.tsv"; then
+    printf '%s\t%s\t%s\t%s\t%s\n' "$digest" "$size" "$title" "$host" "$repository" >>"$scratch/queue.tsv"
+    missing=$((missing + 1))
+    missing_bytes=$((missing_bytes + size))
+  fi
+done <"$scratch/all-layers.tsv"
+log "Cache: $(human $((total_bytes - missing_bytes))) present, $(human "$missing_bytes") to download in $missing layers"
+
+while IFS=$'\t' read -r host repository; do
+  ensure_auth "$host" "$repository" force
+done < <(cut -f4,5 "$scratch/queue.tsv" | sort -u)
+
+pids=()
+failed=0
+while IFS=$'\t' read -r digest size title host repository; do
+  fetch_blob "$digest" "$size" "$title" "$host" "$repository" &
+  pids+=("$!")
+  if ((${#pids[@]} >= jobs)); then
+    wait "${pids[0]}" || failed=1
+    pids=("${pids[@]:1}")
+  fi
+  ((failed == 0)) || break
+done <"$scratch/queue.tsv"
+for pid in "${pids[@]+"${pids[@]}"}"; do
+  wait "$pid" || failed=1
+done
+((failed == 0)) || die 'One or more layers failed to download; rerun to resume.'
+
+# --- Verify packages and optionally archive -------------------------------
+
+blob_path() { printf '%s/blobs/sha256/%s\n' "$store" "${1#sha256:}"; }
+
+# Copy-on-write clone where supported (btrfs/XFS via GNU cp, APFS via macOS
+# cp -c): instant and space-free. Otherwise a regular copy.
+clone_file() {
+  cp --reflink=auto -- "$1" "$2" 2>/dev/null || cp -c -- "$1" "$2" 2>/dev/null || cp -- "$1" "$2"
+}
+
+for i in "${!refs[@]}"; do
+  dir="$scratch/pkg/$i"
+  ref="$(cat "$dir/ref")"
+
+  # Each layer is a package file, so its digest is that file's sha256:
+  # checksums.txt must agree with the layer digests, and aggregateChecksum
+  # with the checksums.txt layer digest.
+  zarf_yaml_digest="$(awk -F'\t' '$3 == "zarf.yaml" { print $1 }' "$dir/layers.tsv")"
+  [[ -n "$zarf_yaml_digest" ]] || die "$ref has no zarf.yaml layer."
+  zarf_yaml="$(blob_path "$zarf_yaml_digest")"
+  checksums_digest="$(awk -F'\t' '$3 == "checksums.txt" { print $1 }' "$dir/layers.tsv")"
+  if [[ -n "$checksums_digest" ]]; then
+    aggregate="$(yq -r '.metadata.aggregateChecksum // ""' "$zarf_yaml")"
+    [[ -z "$aggregate" || "sha256:$aggregate" == "$checksums_digest" ]] ||
+      die "$ref: checksums.txt does not match metadata.aggregateChecksum."
+    while read -r expected path; do
+      [[ -n "$path" ]] || continue
+      actual="$(awk -F'\t' -v p="$path" '$3 == p { print $1; exit }' "$dir/layers.tsv")"
+      [[ -n "$actual" ]] || die "$ref: checksums.txt lists $path, which has no layer."
+      [[ "$actual" == "sha256:$expected" ]] || die "$ref: checksum mismatch for $path."
+    done <"$(blob_path "$checksums_digest")"
+  else
+    log "$ref has no checksums.txt; relying on layer digests only."
+  fi
+
+  if [[ -z "$output_dir" ]]; then
+    log "Cached $ref"
+    continue
+  fi
+
+  kind="$(yq -r '.kind // ""' "$zarf_yaml")"
+  name="$(yq -r '.metadata.name // ""' "$zarf_yaml")"
+  version="$(yq -r '.metadata.version // ""' "$zarf_yaml")"
+  pkg_arch="$(yq -r '.build.architecture // .metadata.architecture // ""' "$zarf_yaml")"
+  flavor="$(yq -r '.build.flavor // ""' "$zarf_yaml")"
+  for field in "$name" "$pkg_arch" "$version" "$flavor"; do
+    [[ -z "$field" || "$field" =~ ^[a-zA-Z0-9][a-zA-Z0-9._+-]*$ ]] || die "$ref: unsafe package metadata value: $field"
+  done
+  [[ -n "$name" && -n "$pkg_arch" ]] || die "$ref: zarf.yaml is missing metadata.name or the build architecture."
+  # Match Zarf's own archive naming.
+  if [[ "$kind" == ZarfInitConfig ]]; then
+    archive_name="zarf-init-$pkg_arch"
+  else
+    archive_name="zarf-package-$name-$pkg_arch"
+  fi
+  [[ -z "$version" ]] || archive_name+="-$version"
+  [[ -z "$flavor" ]] || archive_name+="-$flavor"
+  archive_name+=".tar.zst"
+  destination="$output_dir/$archive_name"
+  if [[ -e "$destination" || -L "$destination" ]] && [[ "$force" != true ]]; then
+    log "Keeping existing $destination (pass --force to replace it)"
+    printf '%s\t%s\n' "oci://$ref" "$destination"
+    continue
+  fi
+
+  package="$dir/package"
+  mkdir "$package"
+  while IFS=$'\t' read -r digest size title; do
+    blob="$(blob_path "$digest")"
+    # Cache entries can be removed externally; recheck before trusting them.
+    [[ -f "$blob" && "$(file_size "$blob")" == "$size" ]] || die "Cached layer is missing or truncated: $blob (delete it and rerun)"
+    mkdir -p -- "$package/$(dirname -- "$title")"
+    clone_file "$blob" "$package/$title"
+    # Match Zarf's archive modes; cache blobs are read-only.
+    chmod 0644 "$package/$title"
+  done <"$dir/layers.tsv"
+
+  log "Archiving $archive_name"
+  sources=()
+  while IFS= read -r entry; do
+    sources+=("$package/$entry")
+  done < <(cd "$package" && ls -A)
+  zarf tools archiver compress "${sources[@]}" "$dir/$archive_name" --no-color >/dev/null
+  zarf package inspect definition "$dir/$archive_name" --skip-signature-validation --no-color >/dev/null 2>"$dir/inspect.err" ||
+    die "Zarf could not read the assembled archive for $ref: $(tail -n 1 "$dir/inspect.err")"
+  mv -f -- "$dir/$archive_name" "$destination"
+  rm -rf -- "$package"
+  log "Wrote $destination ($(human "$(file_size "$destination")"))"
+  printf '%s\t%s\n' "oci://$ref" "$destination"
+done
+
+log "Preloaded ${#refs[@]} package(s) into $store"

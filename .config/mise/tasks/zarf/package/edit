@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# [MISE] description="Edit the zarf.yaml in a local Zarf package archive"
+# [MISE] dir="{{cwd}}"
+# [MISE] raw=true
+# [MISE] tools={"github:zarf-dev/zarf"="v0.89.0", yq="4.54.2"}
+# [USAGE] arg "<package>" help="Local unsigned Zarf .tar.zst package to edit in place"
+set -euo pipefail
+
+die() { printf 'zarf:package:edit: %s\n' "$*" >&2; exit 1; }
+
+archive="${usage_package:?Provide a package archive}"
+[[ "$archive" == *.tar.zst && -f "$archive" && ! -L "$archive" ]] ||
+  die 'Provide a regular, non-symlink .tar.zst package file.'
+parent="$(cd "$(dirname "$archive")" && pwd -P)"
+archive="$parent/$(basename "$archive")"
+scratch="$(mktemp -d "$parent/.zarf-package-edit.XXXXXXXX")"
+trap 'rm -rf -- "$scratch"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+# Reject traversal and links before extracting. Only edit packages you trust.
+tar -tf "$archive" >"$scratch/entries" || die 'Cannot list the package archive.'
+tar -tvf "$archive" >"$scratch/details" || die 'Cannot inspect the package archive.'
+while IFS= read -r entry; do
+  case "$entry" in
+    /* | ../* | */../* | */..) die "Unsafe archive path: $entry" ;;
+  esac
+done <"$scratch/entries"
+if grep -q '^[lh]' "$scratch/details"; then
+  die 'Archive contains a symbolic or hard link; refusing to extract it.'
+fi
+
+mkdir "$scratch/package"
+zarf tools archiver decompress "$archive" "$scratch/package" --no-color >/dev/null || die 'Could not unpack the package.'
+definition="$scratch/package/zarf.yaml"
+[[ -f "$definition" && -f "$scratch/package/checksums.txt" ]] || die 'Package must contain zarf.yaml and checksums.txt.'
+[[ "$(yq -r '.build.signed // false' "$definition")" == false ]] || die 'Signed packages cannot be edited without invalidating their signature.'
+if find "$scratch/package" -maxdepth 1 -type f \( -name '*.sig' -o -name '*.signature' -o -name '*.pem' -o -name '*.bundle' \) | grep -q .; then
+  die 'Package contains a possible signature; refusing to modify it.'
+fi
+if grep -Eq '(^|[[:space:]])(\./)?zarf\.yaml$' "$scratch/package/checksums.txt"; then
+  die 'This package checksums zarf.yaml; its checksum format is not supported.'
+fi
+
+checksum() {
+  if command -v sha256sum >/dev/null; then sha256sum "$1" | awk '{print $1}';
+  else shasum -a 256 "$1" | awk '{print $1}'; fi
+}
+aggregate="$(yq -r '.metadata.aggregateChecksum // ""' "$definition")"
+[[ -n "$aggregate" && "$aggregate" == "$(checksum "$scratch/package/checksums.txt")" ]] ||
+  die 'Missing or invalid metadata.aggregateChecksum.'
+cp "$definition" "$scratch/original.yaml"
+
+editor="${VISUAL:-${EDITOR:-vi}}"
+# Allow conventional editor options such as EDITOR='code --wait'.
+read -r -a editor_args <<<"$editor"
+((${#editor_args[@]})) || die 'EDITOR is empty.'
+"${editor_args[@]}" "$definition" || die 'Editor failed; package was not changed.'
+if cmp -s "$scratch/original.yaml" "$definition"; then
+  printf 'No changes; package left untouched.\n'
+  exit 0
+fi
+
+[[ "$(yq -r '.kind // ""' "$definition")" == ZarfPackageConfig || "$(yq -r '.kind // ""' "$definition")" == ZarfInitConfig ]] || die 'Edited definition is not a Zarf package.'
+[[ "$(yq -r '.metadata.aggregateChecksum // ""' "$definition")" == "$aggregate" ]] || die 'Do not change metadata.aggregateChecksum.'
+[[ "$(yq -r '.build.signed // false' "$definition")" == false ]] || die 'Edited definition must not claim to be signed.'
+
+# The aggregate covers checksums.txt, which covers the unchanged payload, not
+# zarf.yaml. Verify the original payload before publishing the edited archive.
+if ! grep -q '[^[:space:]]' "$scratch/package/checksums.txt"; then
+  : # A package with no payload has an empty checksum manifest.
+elif command -v sha256sum >/dev/null; then
+  (cd "$scratch/package" && sha256sum -c checksums.txt >/dev/null) || die 'Package payload checksum verification failed.'
+else
+  (cd "$scratch/package" && shasum -a 256 -c checksums.txt >/dev/null) || die 'Package payload checksum verification failed.'
+fi
+
+entries=("$scratch/package"/* "$scratch/package"/.[!.]* "$scratch/package"/..?*)
+existing=()
+for entry in "${entries[@]}"; do [[ ! -e "$entry" ]] || existing+=("$entry"); done
+output="$scratch/edited.tar.zst"
+zarf tools archiver compress "${existing[@]}" "$output" --no-color >/dev/null || die 'Could not rebuild the package.'
+zarf package inspect definition "$output" --verify=never --no-color >/dev/null || die 'Zarf could not read the rebuilt package.'
+mv -f "$output" "$archive"
+printf 'Updated %s\n' "$archive"
+printf 'Existing external checksums and signatures no longer apply.\n' >&2
