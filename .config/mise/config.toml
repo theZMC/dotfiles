@@ -234,7 +234,7 @@ hyperfine = { version = "latest", lazy = true }
 ], minimum_release_age = "1d", lazy = true, lazy_bins = [
   "opencode",
 ] }
-"github:zarf-dev/zarf" = { version = "v0.89.0", bin = "zarf", lazy = true, lazy_bins = [
+"github:zarf-dev/zarf" = { version = "v1.0.1", bin = "zarf", lazy = true, lazy_bins = [
   "zarf",
 ] }
 "github:defenseunicorns/uds-cli" = { version = "v0.41.0", bin = "uds", lazy = true, lazy_bins = [
